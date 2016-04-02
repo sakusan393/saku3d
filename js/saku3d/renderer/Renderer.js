@@ -5,7 +5,6 @@ Renderer = function (gl, scene) {
 
   //program object
   this.programs = null;
-  this.programs_bump = null;
   this.programs_points = null;
 
   //uniform location

@@ -2,6 +2,7 @@ AbstractModel = function (gl, scene3D, initObject) {
   this.gl = gl;
   this.scene3D = scene3D;
   this.isLookAt = false;
+  this.isPoint = false;
   this.lookTarget = null;
   this.PI = Math.PI;
 
