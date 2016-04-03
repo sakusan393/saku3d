@@ -27,9 +27,9 @@ World.prototype.init = function () {
     this.vicviper = new Vicviper(this.gl, this.scene3D, {modelData: modelData, specularIndex: 2});
     this.vicviper.setScale(0.3);
     this.vicviper.x = 1;
+    this.vicviper.isMoveForward = true;
     this.vicviper.rotationX = 0;
 
-    this.scene3D.addChild(this.vicviper);
     this.scene3D.addChild(this.vicviper);
 
     ObjLoader.load(srcFiles2, (function(modelData){

@@ -72,7 +72,8 @@ AbstractModel.prototype = {
     mat4.translate(this.mMatrix, this.mMatrix, translatePosition);
     mat4.scale(this.mMatrix, this.mMatrix, [this.scaleX, this.scaleY, this.scaleZ]);
     var targetPosition = {x: 1, y: 0, z: 0};
-    var lookVector,rotationAxis,qAngle
+    var lookVector,rotationAxis,qAngle;
+
     if (this.isLookAt) {
       targetPosition.x = this.lookTarget.x;
       targetPosition.y = this.lookTarget.y;
@@ -89,12 +90,16 @@ AbstractModel.prototype = {
       mat4.identity(this.qMatrix);
       mat4.fromQuat(this.qMatrix, this.qtn);
       mat4.multiply(this.mMatrix, this.mMatrix, this.qMatrix);
-    }else if(this.isMoveForward){
+    }
+    else if(this.isMoveForward){
       targetPosition.x = this.x;
       targetPosition.y = this.y;
       targetPosition.z = this.z;
       //クォータニオンによる姿勢制御
-      lookVector = vec3.subtract([], [targetPosition.x, targetPosition.y, targetPosition.z], [this.previousX, this.previousY, this.previousZ])
+      lookVector = vec3.subtract([], [targetPosition.x, targetPosition.y, targetPosition.z], [this.previousX, this.previousY, this.previousZ]);
+      console.log(vec3.length(lookVector));
+      if(! vec3.length(lookVector)) return;
+
       //回転軸(外積)
       rotationAxis = vec3.cross([], lookVector, this.defaultPosture);
       vec3.normalize(rotationAxis, rotationAxis);

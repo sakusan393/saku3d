@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>index</title>
+  <meta charset="UTF-8">
+  <title>index</title>
 
-    <script id="vs" type="x-shader/x-vertex">
+  <script id="vs" type="x-shader/x-vertex">
     attribute vec3 position;
     attribute vec3 normal;
     attribute vec4 color;
@@ -28,7 +28,7 @@
 
     </script>
 
-    <script id="fs" type="x-shader/x-fragment">
+  <script id="fs" type="x-shader/x-fragment">
     #extension GL_OES_standard_derivatives : enable
 
     precision highp float;
@@ -46,19 +46,18 @@
     uniform vec3 eyePosition;
     uniform vec3 lookPoint;
     uniform bool isLightEnable;
+    uniform bool isFlatShade;
     uniform bool useTexture;
-    uniform bool isObjData;
-    uniform vec3 kdColor;
     uniform sampler2D texture;
     uniform float alpha;
+    uniform float diffuseIntensity;
     uniform int specularIndex;
 
 
     void main(){
 
-        vec4 destColor = vec4(0,0,0,0);
-        if(isObjData)
-        {
+        vec4 destColor = vec4(1.0);
+        if(isLightEnable){
             vec3 eyeDirection = normalize(eyePosition - lookPoint);
             vec3 invEye = normalize(normalize(invMatrix * vec4(eyeDirection, 1.0)).xyz);
             vec3 invLight = (invMatrix * vec4(lightDirection,0.0)).xyz;
@@ -72,44 +71,31 @@
                 vec3 refVec = normalize(reflect((-invLight), vNormal));
                 specular = pow(max(dot(invEye, refVec), 0.0), 90.0); // 鏡面光は視線ベクトルと反射光ベクトルの内積
             }
-
             //flat shading normalmap
-            vec3 dx = dFdx(vPosition.xyz);
-            vec3 dy = dFdy(vPosition.xyz);
-            vec3 n = normalize(cross(normalize(dx), normalize(dy)));
-            float diff = clamp(dot(n, invLight) ,1.0,4.0)* 0.2;
-            float diffuse = max(dot(n, invLight),0.0) * 1.0;
-            if(!bool(vTexCoord)){
-                destColor = vec4(kdColor*diff+specular + ambientColor.rgb, 1.0);
+            vec3 n;
+            if(isFlatShade){
+              vec3 dx = dFdx(vPosition.xyz);
+              vec3 dy = dFdy(vPosition.xyz);
+              n = normalize(cross(normalize(dx), normalize(dy)));
             }else{
-                vec3 col = texture2D(texture, vTexCoord).rgb;
-                destColor = vec4(col*diff+specular+ ambientColor.rgb  ,1.0);
+              n = vNormal;
             }
-        }
-        else if(!bool(vTexCoord))
-        {
-            //ビームの描画はライトの計算不要
-            destColor = vec4(vColor);
-        } else {
-            if(isLightEnable){
-                vec3 eyeDirection = normalize(eyePosition - lookPoint);
-                vec3 invEye = normalize(invMatrix * vec4(eyeDirection, 1.0)).xyz;
-                vec3 invLight = (invMatrix * vec4(lightDirection,0.0)).xyz;
-                vec3 halfVector = normalize(invLight + invEye);
-                float diff = clamp(dot(normalize(invLight), vNormal) , 0.8 , 1.0);
-                float spec = pow(clamp(dot(halfVector,vNormal),0.0,2.0),10.0);
-                vec3 dest = texture2D(texture, vTexCoord).rgb * diff + spec + ambientColor.rgb;
-                destColor = vec4(dest, alpha);
+            float diff = clamp(dot(n, invLight) ,1.0,3.0)* .3 * diffuseIntensity;
+            if(bool(vTexCoord)){
+                vec4 col = texture2D(texture, vTexCoord);
+                destColor = vec4(col.rgb*diff+specular+ ambientColor.rgb  ,alpha * col.a);
             }else{
-                vec3 dest = texture2D(texture, vTexCoord).rgb + ambientColor.rgb;
-                destColor = vec4(dest,alpha);
+                vec4 col = vColor;
+                destColor = vec4(col.rgb*diff+specular, col.a);
             }
+        }else{
+
         }
         gl_FragColor = destColor;
     }
     </script>
 
-    <script id="vs_points" type="x-shader/x-vertex">
+  <script id="vs_points" type="x-shader/x-vertex">
     attribute vec3 position;
     uniform mat4 mvpMatrix;
 
@@ -119,7 +105,7 @@
     }
 
     </script>
-    <script id="fs_points" type="x-shader/x-fragment">
+  <script id="fs_points" type="x-shader/x-fragment">
     precision mediump float;
     uniform sampler2D texture;
 
@@ -134,7 +120,7 @@
     }
     </script>
 
-    <script id="vs_bump" type="x-shader/x-vertex">
+  <script id="vs_bump" type="x-shader/x-vertex">
     precision highp float;
     attribute vec3 position;
     attribute vec3 normal;
@@ -176,7 +162,7 @@
     }
     </script>
 
-    <script id="fs_bump" type="x-shader/x-fragment">
+  <script id="fs_bump" type="x-shader/x-fragment">
     precision highp float;
 
     uniform sampler2D texture0;
@@ -200,13 +186,6 @@
     }
 
     </script>
-
-
-
-    <link rel="stylesheet" type="text/css" media="screen,print" href="./css/index.css">
-</head>
-<body>
-<script>
 
 </script>
 <script src="js/lib/stats.min.js"></script>
