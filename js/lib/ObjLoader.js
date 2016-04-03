@@ -249,7 +249,6 @@ var ObjParser = {};
 				currentMtlName = face[0].mtlName;
         mtlIndex++;
 			}
-      console.log("mtlIndex : ", mtlIndex)
 			// "f"が3つ以上あるときに、頂点は(0, 1, 2), (0, 2, 3), (0, 3, 4), ... という風に処理する
 			for(var ti = 1; ti < face.length - 1; ti++) {
 				// 三角形の頂点インデックスの取得（1ずれているのに注意）
@@ -270,7 +269,6 @@ var ObjParser = {};
         indexCounter++;
         indexes[indexCounter] = indexCounter;
         indexCounter++;
-        console.log(indexCounter)
 
         var c = vec4.fromValues(mtl[currentMtlName].kd[0], mtl[currentMtlName].kd[1], mtl[currentMtlName].kd[2],0.5);
         colors.set(c, triangleCount * 12);
@@ -336,7 +334,6 @@ var ObjParser = {};
 		}
 
 		// すべてのデータが揃ったらcallback関数を呼び出す
-    console.log(indexes)
 		var ret = {
 			p: vertices,
 			n: normals,

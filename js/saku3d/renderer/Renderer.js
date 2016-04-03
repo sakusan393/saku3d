@@ -77,15 +77,7 @@ Renderer.prototype = {
           this.gl.bindTexture(this.gl.TEXTURE_2D, this.scene.meshList[i].mesh.textureObject.diffuse);
         }
 
-        var pos = 0;
-        for (var j = 0; j < this.scene.meshList[i].mesh.modelData.mtlInfos.length; j++) {
-          var mtlInfo = this.scene.meshList[i].mesh.modelData.mtlInfos[j];
-          this.gl.uniform3fv(this.uniLocation.kdColor, mtlInfo.kd);
-          this.gl.uniform4fv(this.uniLocation.kd2, mtlInfo.kd2);
-          this.gl.drawArrays(this.gl.TRIANGLES, pos / 3, (mtlInfo.endPos - pos) / 3);
-          pos = mtlInfo.endPos;
-        }
-        // this.gl.drawElements(this.gl.TRIANGLES, this.scene.meshList[i].mesh.modelData.i.length, this.gl.UNSIGNED_SHORT, 0);
+        this.gl.drawElements(this.gl.TRIANGLES, this.scene.meshList[i].mesh.modelData.i.length, this.gl.UNSIGNED_SHORT, 0);
         this.gl.bindTexture(this.gl.TEXTURE_2D, null);
 
       }
