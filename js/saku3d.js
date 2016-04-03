@@ -29,6 +29,7 @@ World.prototype.init = function () {
     this.vicviper.x = 1;
     this.vicviper.isMoveForward = true;
     this.vicviper.rotationX = 0;
+    this.camera.lookTarget =  this.vicviper;
 
     this.scene3D.addChild(this.vicviper);
 
@@ -58,6 +59,10 @@ World.prototype.enterFrameHandler = function () {
   this.vicviper.x = Math.sin(time) * 15;
   this.vicviper.y = Math.cos(time*2) * 5;
   this.vicviper.z = Math.cos(time) * 34;
+  this.camera.x = Math.cos(time*.2) * 30;
+  this.camera.y = Math.sin(time*.3) * 25;
+  this.camera.z = Math.sin(time*.1) * 54;
+
 
   for(var i= 0; i < this.optionLength; i++){
     var scale = Math.sin(CLOCK.getElapsedTime()*.6) * 0.03 + 0.2;
