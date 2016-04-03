@@ -7,7 +7,7 @@ Option.prototype = {
   initialize: function (initObject) {
     //拡張用
     this.isLightEnable = true;
-    this.isObjData = true;
+    this.isObjData = false;
     this.alpha = 1.0;
     this.specularIndex = 0;
     if (initObject && initObject.specularIndex) this.specularIndex = initObject.specularIndex;

@@ -314,6 +314,7 @@ var ObjParser = {};
 		}
 
 		// すべてのデータが揃ったらcallback関数を呼び出す
+    console.log(indexes.length,vertices.length )
 		var ret = {
 			p: vertices,
 			n: normals,

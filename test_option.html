@@ -93,7 +93,7 @@
         else if(!bool(vTexCoord))
         {
             //ビームの描画はライトの計算不要
-            destColor = vec4(vec3(vColor.xyz) , alpha);
+            destColor = vec4(vColor);
         } else {
             if(isLightEnable){
                 vec3 eyeDirection = normalize(eyePosition - lookPoint);
@@ -106,7 +106,7 @@
                 destColor = vec4(dest, alpha);
             }else{
                 vec3 dest = texture2D(texture, vTexCoord).rgb + ambientColor.rgb;
-                destColor = vec4(dest, 1.0);
+                destColor = vec4(dest,alpha);
             }
         }
         gl_FragColor = destColor;
