@@ -1,4 +1,4 @@
-Cokpit = function (gl) {
+Cockpit = function (gl) {
   this.gl = gl;
   this.modelData = window.sphere(20, 20, .3);
   this.mMatrix = mat4.identity(mat4.create());
@@ -13,26 +13,20 @@ Cokpit = function (gl) {
   this.scaleY = 1;
   this.scaleZ = 1;
   this.count = 0;
-  this.gainRatio = 100;
-  this.rnd = Math.random() * 10 + 30;
-  this.rnd1 = Math.random() * 10 + 30;
-  this.rnd2 = Math.random() * 10 + 30;
   this.speed = .02;
+  this.isObjData = false;
   this.isLightEnable = true;
   this.isBump = false;
   this.textureObject = {};
   this.textureObject.diffuse = null;
-  // this.textureObject.bump = null;
 
-  var diffuseMapSource = ImageLoader.images["images/texturesazabycokpit.jpg"];
-  // var bumpMapSource = ImageLoader.images["images/texturesazabycokpit_n.png"];
+  var diffuseMapSource = ImageLoader.images["images/beans.jpg"];
   console.log(ImageLoader.images)
   this.initTexture(diffuseMapSource, "diffuse");
-  // this.initTexture(bumpMapSource, "bump");
   this.texture = this.textureObject.diffuse;
 
 };
-Cokpit.prototype = {
+Cockpit.prototype = {
   initTexture: function (img, type) {
     // テクスチャオブジェクトの生成
     this.textureObject[type] = this.gl.createTexture();
@@ -49,6 +43,9 @@ Cokpit.prototype = {
     var translatePosition = [this.x, this.y, this.z];
     mat4.identity(this.mMatrix);
     mat4.translate(this.mMatrix, this.mMatrix, translatePosition);
+    var scale = Math.random() * 10;
+    this.scaleX = this.scaleY = this.scaleZ = scale;
+    mat4.scale(this.mMatrix, this.mMatrix, [this.scaleX, this.scaleY, this.scaleZ]);
     var radians = (this.count * 50 % 360) * Math.PI / 180;
     var axis = [1.0, 0.5, 0.1];
     mat4.rotate(this.mMatrix, this.mMatrix, radians, axis);

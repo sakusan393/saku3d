@@ -68,6 +68,10 @@ var ObjParser = {};
 					// 拡散光の保存
 					current.kd = vec3.fromValues(+words[1], +words[2], +words[3]);
 					break;
+        case "d":
+					// 透過情報の保存
+					current.d = +words[1]
+					break;
 				case "Ks":
 					// 鏡面光の保存
 					current.ks = vec3.fromValues(+words[1], +words[2], +words[3]);
@@ -130,6 +134,7 @@ var ObjParser = {};
 					var face = [];
 					for(var wi = 1; wi < words.length; wi++) {
 						// 定義は"数値" "数値/数値" "数値//数値" "数値/数値/数値"のどれか
+            // v , v/t/ , v//n, v/t/n
 						// 数値はindexの番号（1スタート）
 						var nums = (words[wi]+"//").split('/');
 						var vindex = +nums[0];
@@ -147,6 +152,7 @@ var ObjParser = {};
 					faces.push(face);
 					break;
 			}
+
 		}
 		return {
 			vertices: vertices,
@@ -161,6 +167,7 @@ var ObjParser = {};
 		// まずポリゴンの枚数を特定する
 		var numTriangles = 0;
 		for(var i = 0; i < obj.faces.length; i++) {
+      //枚数を加算
 			numTriangles += obj.faces[i].length - 2;
 		}
 		// ポリゴンの枚数に応じたTypedArrayを確保する
@@ -170,6 +177,9 @@ var ObjParser = {};
 		var normals = new Float32Array(numTriangles * 9);
 		// テクスチャ頂点座標（ポリゴン数×3頂点×2要素）
 		var texcoords = new Float32Array(numTriangles * 6);
+
+    // 頂点INDEX
+    var indexes = new Int16Array(numTriangles * 3);
 
 		// 頂点ごとの法線ベクトルの和用配列
 		var normalAtVertex = new Array(numTriangles * 3);
@@ -214,13 +224,16 @@ var ObjParser = {};
 				mtlInfos.push({
 					endPos: triangleCount * 9,
 					kd: mtl[currentMtlName].kd,
+          kd2: [mtl[currentMtlName].kd[0],mtl[currentMtlName].kd[1],mtl[currentMtlName].kd[2],mtl[currentMtlName].d],
 					ks: mtl[currentMtlName].ks,
 					ns: mtl[currentMtlName].ns,
 					texture: textureName
 				});
 			}
 		};
+
 		var triangleCount = 0;
+
 		for(var fi = 0; fi < obj.faces.length; fi++) {
 			// objファイルの"f"定義1行ごとに処理する
 			var face = obj.faces[fi];
@@ -239,10 +252,11 @@ var ObjParser = {};
 				var v0 = vec3.fromValues(obj.vertices[vi0 * 3], obj.vertices[vi0 * 3 + 1], obj.vertices[vi0 * 3 + 2]);
 				var v1 = vec3.fromValues(obj.vertices[vi1 * 3], obj.vertices[vi1 * 3 + 1], obj.vertices[vi1 * 3 + 2]);
 				var v2 = vec3.fromValues(obj.vertices[vi2 * 3], obj.vertices[vi2 * 3 + 1], obj.vertices[vi2 * 3 + 2]);
-				// 頂点座標をTypedArrayに保存
+				// 頂点座標をTypedArrayに保存(第一引数：値,第二引数：offset)
 				vertices.set(v0, triangleCount * 9);
 				vertices.set(v1, triangleCount * 9 + 3);
 				vertices.set(v2, triangleCount * 9 + 6);
+        indexes[triangleCount] = triangleCount;
 				// テクスチャのインデックスの取得（1ずれているのに注意）
 				var vti0 = face[0].tindex - 1;
 				var vti1 = face[ti].tindex - 1;
@@ -304,6 +318,8 @@ var ObjParser = {};
 			p: vertices,
 			n: normals,
 			t: texcoords,
+      c: mtlInfos.kd,
+      i: indexes,
 			mtlInfos: mtlInfos
 		};
 		if(!ImageLoader.isLoading) {

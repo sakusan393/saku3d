@@ -51,6 +51,7 @@ Renderer.prototype = {
       }
       else if (this.scene.meshList[i].mesh.isObjData) {
 
+        //objデータのrender
         this.gl.useProgram(this.programs);
         this.gl.uniform3fv(this.uniLocation.eyePosition, this.scene.camera.cameraPosition);
         this.gl.uniform1i(this.uniLocation.isObjData, this.scene.meshList[i].mesh.isObjData);
@@ -75,16 +76,21 @@ Renderer.prototype = {
         if (this.scene.meshList[i].mesh.textureObject.diffuse) {
           this.gl.bindTexture(this.gl.TEXTURE_2D, this.scene.meshList[i].mesh.textureObject.diffuse);
         }
+
         var pos = 0;
         for (var j = 0; j < this.scene.meshList[i].mesh.modelData.mtlInfos.length; j++) {
           var mtlInfo = this.scene.meshList[i].mesh.modelData.mtlInfos[j];
           this.gl.uniform3fv(this.uniLocation.kdColor, mtlInfo.kd);
+          this.gl.uniform4fv(this.uniLocation.kd2, mtlInfo.kd2);
           this.gl.drawArrays(this.gl.TRIANGLES, pos / 3, (mtlInfo.endPos - pos) / 3);
           pos = mtlInfo.endPos;
         }
+        // this.gl.drawElements(this.gl.TRIANGLES, this.scene.meshList[i].mesh.modelData.i.length, this.gl.UNSIGNED_SHORT, 0);
         this.gl.bindTexture(this.gl.TEXTURE_2D, null);
 
-      } else {
+      }
+      //Premitive:POINTでも、Objectでもないモデルデータ
+      else {
         this.gl.useProgram(this.programs);
         this.gl.uniform3fv(this.uniLocation.eyePosition, this.scene.camera.cameraPosition);
         this.gl.uniform1i(this.uniLocation.isObjData, false);
@@ -102,7 +108,7 @@ Renderer.prototype = {
         if (this.scene.meshList[i].mesh.isLightEnable) {
           this.gl.uniform3fv(this.uniLocation.lookPoint, this.scene.camera.lookPoint);
           this.gl.uniformMatrix4fv(this.uniLocation.invMatrix, false, this.scene.meshList[i].mesh.invMatrix);
-          //this.gl.uniform3fv(this.uniLocation.lightDirection, this.scene.light.lightDirection);
+          this.gl.uniform3fv(this.uniLocation.lightDirection, this.scene.light.lightDirection);
         }
         //明示的に0番目を指定
         //this.gl.uniform1i(this.uniLocation.texture, 0);
@@ -160,6 +166,7 @@ Renderer.prototype = {
     this.uniLocation.specularIndex = this.gl.getUniformLocation(this.programs, "specularIndex");
     this.uniLocation.isObjData = this.gl.getUniformLocation(this.programs, "isObjData");
     this.uniLocation.kdColor = this.gl.getUniformLocation(this.programs, "kdColor");
+    this.uniLocation.kd2 = this.gl.getUniformLocation(this.programs, "kd2");
 
     this.uniLocation_points.texture = this.gl.getUniformLocation(this.programs_points, "texture");
     this.uniLocation_points.mvpMatrix = this.gl.getUniformLocation(this.programs_points, "mvpMatrix");

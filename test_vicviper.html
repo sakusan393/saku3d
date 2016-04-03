@@ -77,8 +77,8 @@
             vec3 dx = dFdx(vPosition.xyz);
             vec3 dy = dFdy(vPosition.xyz);
             vec3 n = normalize(cross(normalize(dx), normalize(dy)));
-            float diff = clamp(dot(n, invLight) ,1.0,4.0)* 0.03;
-            float diffuse = max(dot(n, invLight),0.0) * 0.2;
+            float diff = clamp(dot(n, invLight) ,1.0,4.0)* 0.2;
+            float diffuse = max(dot(n, invLight),0.0) * 1.0;
             if(!bool(vTexCoord)){
                 destColor = vec4(kdColor*diff+specular + ambientColor.rgb, 1.0);
             }else{

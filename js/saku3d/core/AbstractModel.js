@@ -22,6 +22,8 @@ AbstractModel = function (gl, scene3D, initObject) {
   this.y = 0;
   this.z = 0;
 
+  this.alpha = 1.0;
+
   this.rotationX = 0;
   this.rotationY = 0;
   this.rotationZ = 0;
