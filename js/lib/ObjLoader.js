@@ -175,11 +175,15 @@ var ObjParser = {};
 		var vertices = new Float32Array(numTriangles * 9);
 		// 法線ベクトル（ポリゴン数×3頂点×3要素）
 		var normals = new Float32Array(numTriangles * 9);
-		// テクスチャ頂点座標（ポリゴン数×3頂点×2要素）
-		var texcoords = new Float32Array(numTriangles * 6);
 
     // 頂点INDEX
     var indexes = new Int16Array(numTriangles * 3);
+    // カラーINDEX
+    var colors = new Float32Array(numTriangles * 3 * 4);
+
+    // テクスチャ頂点座標（ポリゴン数×3頂点×2要素）
+    var texcoords = null;
+    if(obj.texcoords.length) texcoords = new Float32Array(numTriangles * 6);
 
 		// 頂点ごとの法線ベクトルの和用配列
 		var normalAtVertex = new Array(numTriangles * 3);
@@ -233,6 +237,8 @@ var ObjParser = {};
 		};
 
 		var triangleCount = 0;
+    var mtlIndex = -1;
+    var indexCounter = 0;
 
 		for(var fi = 0; fi < obj.faces.length; fi++) {
 			// objファイルの"f"定義1行ごとに処理する
@@ -241,7 +247,9 @@ var ObjParser = {};
 			if(currentMtlName != face[0].mtlName) {
 				saveMtlInfo();
 				currentMtlName = face[0].mtlName;
+        mtlIndex++;
 			}
+      console.log("mtlIndex : ", mtlIndex)
 			// "f"が3つ以上あるときに、頂点は(0, 1, 2), (0, 2, 3), (0, 3, 4), ... という風に処理する
 			for(var ti = 1; ti < face.length - 1; ti++) {
 				// 三角形の頂点インデックスの取得（1ずれているのに注意）
@@ -256,19 +264,33 @@ var ObjParser = {};
 				vertices.set(v0, triangleCount * 9);
 				vertices.set(v1, triangleCount * 9 + 3);
 				vertices.set(v2, triangleCount * 9 + 6);
-        indexes[triangleCount] = triangleCount;
+        indexes[indexCounter] = indexCounter;
+        indexCounter++;
+        indexes[indexCounter] = indexCounter;
+        indexCounter++;
+        indexes[indexCounter] = indexCounter;
+        indexCounter++;
+        console.log(indexCounter)
+
+        var c = vec4.fromValues(mtl[currentMtlName].kd[0], mtl[currentMtlName].kd[1], mtl[currentMtlName].kd[2],0.5);
+        colors.set(c, triangleCount * 12);
+        colors.set(c, triangleCount * 12 + 4);
+        colors.set(c, triangleCount * 12 + 8);
 				// テクスチャのインデックスの取得（1ずれているのに注意）
 				var vti0 = face[0].tindex - 1;
 				var vti1 = face[ti].tindex - 1;
 				var vti2 = face[ti + 1].tindex - 1;
 				// インデックスからテクスチャ頂点を持ってくる
-				var vt0 = vec2.fromValues(obj.texcoords[vti0 * 2], obj.texcoords[vti0 * 2 + 1]);
-				var vt1 = vec2.fromValues(obj.texcoords[vti1 * 2], obj.texcoords[vti1 * 2 + 1]);
-				var vt2 = vec2.fromValues(obj.texcoords[vti2 * 2], obj.texcoords[vti2 * 2 + 1]);
-				// テクスチャ頂点をTypedArrayに保存
-				texcoords.set(vt0, triangleCount * 6);
-				texcoords.set(vt1, triangleCount * 6 + 2);
-				texcoords.set(vt2, triangleCount * 6 + 4);
+        if(obj.texcoords.length){
+          // テクスチャ頂点座標（ポリゴン数×3頂点×2要素）
+          var vt0 = vec2.fromValues(obj.texcoords[vti0 * 2], obj.texcoords[vti0 * 2 + 1]);
+          var vt1 = vec2.fromValues(obj.texcoords[vti1 * 2], obj.texcoords[vti1 * 2 + 1]);
+          var vt2 = vec2.fromValues(obj.texcoords[vti2 * 2], obj.texcoords[vti2 * 2 + 1]);
+          // テクスチャ頂点をTypedArrayに保存
+          texcoords.set(vt0, triangleCount * 6);
+          texcoords.set(vt1, triangleCount * 6 + 2);
+          texcoords.set(vt2, triangleCount * 6 + 4);
+        }
 				// 法線を計算
 				var n = vec3.create();
 				vec3.sub(v1, v1, v0); // 頂点v0→v1のベクトルを計算
@@ -314,12 +336,12 @@ var ObjParser = {};
 		}
 
 		// すべてのデータが揃ったらcallback関数を呼び出す
-    console.log(indexes.length,vertices.length )
+    console.log(indexes)
 		var ret = {
 			p: vertices,
 			n: normals,
 			t: texcoords,
-      c: mtlInfos.kd,
+      c: colors,
       i: indexes,
 			mtlInfos: mtlInfos
 		};
