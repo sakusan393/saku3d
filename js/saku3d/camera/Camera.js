@@ -12,10 +12,10 @@ var Camera = function (canvas) {
     mat4.lookAt(this.vMatrix, this.cameraPosition, this.lookPoint, this.cameraUp);
 
     // プロジェクションのための情報を揃える
-    this.fov = 25 * Math.PI / 180;                           // 視野角
+    this.fov = 8 * Math.PI / 180;                           // 視野角
     this.aspect = canvas.width / canvas.height; // アスペクト比
     this.near = 0.1;                            // 空間の最前面
-    this.far = 200.0;                            // 空間の奥行き終端
+    this.far = 400.0;                            // 空間の奥行き終端
     mat4.perspective(this.pMatrix, this.fov, this.aspect, this.near, this.far);
     mat4.multiply(this.vpMatrix, this.pMatrix, this.vMatrix);
     this.count = 0;

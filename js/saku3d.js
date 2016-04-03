@@ -13,6 +13,7 @@ World.prototype.init = function () {
   this.scene3D = new Scene3D(this.gl, this.camera, this.light);
 
   this.optionLength = 60;
+  this.cubeLength = 60;
 
   var srcFiles1 = {
     obj: "models/vicviper_mirror_fix.obj",
@@ -26,25 +27,32 @@ World.prototype.init = function () {
   ObjLoader.load(srcFiles1, (function(modelData){
     this.vicviper = new Vicviper(this.gl, this.scene3D, {modelData: modelData, specularIndex: 2});
     this.vicviper.setScale(0.3);
-    this.vicviper.x = 1;
     this.vicviper.isMoveForward = true;
-    this.vicviper.rotationX = 0;
     this.camera.lookTarget =  this.vicviper;
 
     this.scene3D.addChild(this.vicviper);
 
     ObjLoader.load(srcFiles2, (function(modelData){
       this.options = [];
+      var option;
+      var cube;
+
       for(var i = 0 ; i < this.optionLength; i++){
-        this.option = new Option(this.gl, this.scene3D, {modelData: modelData, specularIndex: 2});
-        this.option.setScale(0.3);
-        this.option.rotationX = 0;
-        this.option.isMoveForward = true;
-        this.options.push(this.option)
-
-        this.scene3D.addChild(this.option);
-
+        option = new Option(this.gl, this.scene3D, {modelData: modelData, specularIndex: 2});
+        option.setScale(0.3);
+        option.isMoveForward = true;
+        this.options.push(option)
+        this.scene3D.addChild(option);
       }
+      // this.cubes = [];
+      // for(i = 0; i <this.cubeLength; i++){
+      //   cube = new Option(this.gl, this.scene3D, { specularIndex: 2});
+      //   cube.setScale(1.0);
+      //   this.cubes.push(cube);
+      //   this.scene3D.addChild(cube);
+      // }
+
+
       this.enterFrameHandler();
     }).bind(this));
 
