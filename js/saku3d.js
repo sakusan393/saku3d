@@ -12,7 +12,7 @@ World.prototype.init = function () {
   this.light = new DirectionLight();
   this.scene3D = new Scene3D(this.gl, this.camera, this.light);
 
-  this.optionLength = 50;
+  this.optionLength = 60;
 
   var srcFiles1 = {
     obj: "models/vicviper_mirror_fix.obj",
@@ -55,10 +55,10 @@ World.prototype.init = function () {
 World.prototype.enterFrameHandler = function () {
 
 
-  var time = CLOCK.getElapsedTime() * 0.0005;
-  this.vicviper.x = Math.sin(time) * 35;
-  this.vicviper.y = Math.cos(time*2) * 15;
-  this.vicviper.z = Math.cos(time) * 84;
+  var time = CLOCK.getElapsedTime() * 0.001;
+  this.vicviper.x = Math.sin(time*.4) * 35;
+  this.vicviper.y = Math.cos(time*2) * 3 * (Math.cos(time*.1)+1)
+  this.vicviper.z = Math.cos(time*.9) * 84;
   this.camera.x = Math.cos(time*.2) * 30;
   this.camera.y = Math.sin(time*.3) * 25;
   this.camera.z = Math.sin(time*.1) * 54;
@@ -75,9 +75,9 @@ World.prototype.enterFrameHandler = function () {
     }else{
       target = this.options[i-1];
     }
-    option.x += (target.x - option.x) * 0.07;
-    option.y += (target.y - option.y) * 0.07;
-    option.z += (target.z - option.z) * 0.07;
+    option.x += (target.x - option.x) * 0.2;
+    option.y += (target.y - option.y) * 0.2;
+    option.z += (target.z - option.z) * 0.2;
   }
 
 
