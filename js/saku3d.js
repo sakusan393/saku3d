@@ -7,7 +7,8 @@ World.prototype.init = function () {
   console.log("World.init")
 
   this.camera = new Camera(this.canvas);
-  this.camera.z = 20;
+  this.camera.z = 60;
+  this.camera.y = 10;
   this.light = new DirectionLight();
   this.scene3D = new Scene3D(this.gl, this.camera, this.light);
 
@@ -19,10 +20,10 @@ World.prototype.init = function () {
   };
   var srcFiles2 = {
     obj: "models/option.obj",
+
     mtl: "models/option.mtl"
   };
   ObjLoader.load(srcFiles1, (function(modelData){
-    console.log("this:" ,this)
     this.vicviper = new Vicviper(this.gl, this.scene3D, {modelData: modelData, specularIndex: 2});
     this.vicviper.setScale(0.3);
     this.vicviper.x = 1;
@@ -32,15 +33,12 @@ World.prototype.init = function () {
     this.scene3D.addChild(this.vicviper);
 
     ObjLoader.load(srcFiles2, (function(modelData){
-      console.log("this:" ,this);
       this.options = [];
       for(var i = 0 ; i < this.optionLength; i++){
         this.option = new Option(this.gl, this.scene3D, {modelData: modelData, specularIndex: 2});
         this.option.setScale(0.3);
-        this.option.x = (Math.random() - 0.5) * 20;
-        this.option.y = (Math.random() - 0.5) * 20;
-        this.option.z = (Math.random() - 0.5) * 20;
         this.option.rotationX = 0;
+        this.option.isMoveForward = true;
         this.options.push(this.option)
 
         this.scene3D.addChild(this.option);
@@ -54,19 +52,30 @@ World.prototype.init = function () {
 
 }
 World.prototype.enterFrameHandler = function () {
-  this.vicviper.rotationY += .3;
-  console.log(this.options);
+
+
+  var time = CLOCK.getElapsedTime() * 0.001;
+  this.vicviper.x = Math.sin(time) * 15;
+  this.vicviper.y = Math.cos(time*2) * 5;
+  this.vicviper.z = Math.cos(time) * 34;
 
   for(var i= 0; i < this.optionLength; i++){
     var scale = Math.sin(CLOCK.getElapsedTime()*.6) * 0.03 + 0.2;
     var option = this.options[i];
     option.setScale(scale);
-    option.setScale(scale);
     option.rotationY += .3;
+    var target;
+    if(i == 0){
+      target = this.vicviper
+    }else{
+      target = this.options[i-1];
+    }
+    option.x += (target.x - option.x) * 0.07;
+    option.y += (target.y - option.y) * 0.07;
+    option.z += (target.z - option.z) * 0.07;
   }
 
 
-  this.vicviper.y = 0;
   this.scene3D.render();
   requestAnimationFrame(this.enterFrameHandler.bind(this))
 }

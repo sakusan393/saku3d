@@ -9,6 +9,8 @@ Vicviper.prototype = {
   initialize: function (initObject) {
     this.isLightEnable = true;
     this.isFlatShade = true;
+    this.isLookAt = false;
+    this.isMoveForward = true;
     this.alpha = 1.0;
     this.specularIndex = 0;
     if (initObject && initObject.specularIndex) this.specularIndex = initObject.specularIndex;
