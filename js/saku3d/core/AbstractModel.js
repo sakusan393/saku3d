@@ -1,22 +1,14 @@
 AbstractModel = function (gl, scene3D, initObject) {
   this.gl = gl;
   this.scene3D = scene3D;
+
   this.isLookAt = false;
-  this.isPoint = false;
   this.lookTarget = null;
   this.PI = Math.PI;
 
-  if (initObject) {
-    this.lookTarget = initObject.lookTarget;
-    this.modelData = initObject.modelData;
-    if (this.lookTarget) this.isLookAt = true;
-  }
-
-  this.mMatrix = mat4.identity(mat4.create());
-  this.invMatrix = mat4.identity(mat4.create());
-
-  this.qtn = quat.identity(quat.create());
-  this.qMatrix = mat4.identity(mat4.create());
+  this.isPoint = false;
+  this.isFlatShade = false;
+  this.isLightEnable = false;
 
   this.x = 0;
   this.y = 0;
@@ -31,11 +23,22 @@ AbstractModel = function (gl, scene3D, initObject) {
   this.scaleX = 1;
   this.scaleY = 1;
   this.scaleZ = 1;
+  this.diffuseIntensity = 1.0;
 
   this.defaultPosture = [0, 0, 1];
 
-  this.initialize(initObject);
-}
+  this.mMatrix = mat4.identity(mat4.create());
+  this.invMatrix = mat4.identity(mat4.create());
+
+  this.qtn = quat.identity(quat.create());
+  this.qMatrix = mat4.identity(mat4.create());
+
+  if (initObject) {
+    this.lookTarget = initObject.lookTarget;
+    this.modelData = initObject.modelData;
+    if (this.lookTarget) this.isLookAt = true;
+  }
+};
 
 AbstractModel.prototype = {
   initialize: function () {

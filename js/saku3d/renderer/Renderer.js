@@ -49,53 +49,25 @@ Renderer.prototype = {
         this.gl.drawArrays(this.gl.POINTS, 0, this.scene.meshList[i].mesh.modelData.p.length / 3);
         this.gl.bindTexture(this.gl.TEXTURE_2D, null);
       }
-      else if (this.scene.meshList[i].mesh.isObjData) {
-
-        //objデータのrender
-        this.gl.useProgram(this.programs);
-        this.gl.uniform3fv(this.uniLocation.eyePosition, this.scene.camera.cameraPosition);
-        this.gl.uniform1i(this.uniLocation.isObjData, this.scene.meshList[i].mesh.isObjData);
-        this.gl.uniform1i(this.uniLocation.specularIndex, this.scene.meshList[i].mesh.specularIndex);
-
-        this.gl.uniform1i(this.uniLocation.isLightEnable, this.scene.meshList[i].mesh.isLightEnable);
-        this.gl.uniform1f(this.uniLocation.alpha, this.scene.meshList[i].mesh.alpha);
-
-        this.setAttribute(this.scene.meshList[i].vertexBufferList, this.attLocation, this.attStride);
-
-        this.scene.meshList[i].mesh.render();
-        mat4.multiply(this.mvpMatrix, this.scene.camera.vpMatrix, this.scene.meshList[i].mesh.mMatrix);
-
-
-        this.gl.uniformMatrix4fv(this.uniLocation.mMatrix, false, this.scene.meshList[i].mesh.mMatrix);
-        this.gl.uniformMatrix4fv(this.uniLocation.mvpMatrix, false, this.mvpMatrix);
-        if (this.scene.meshList[i].mesh.isLightEnable) {
-          this.gl.uniform3fv(this.uniLocation.lookPoint, this.scene.camera.lookPoint);
-          this.gl.uniformMatrix4fv(this.uniLocation.invMatrix, false, this.scene.meshList[i].mesh.invMatrix);
-        }
-        //明示的に0番目
-        if (this.scene.meshList[i].mesh.textureObject.diffuse) {
-          this.gl.bindTexture(this.gl.TEXTURE_2D, this.scene.meshList[i].mesh.textureObject.diffuse);
-        }
-
-        this.gl.drawElements(this.gl.TRIANGLES, this.scene.meshList[i].mesh.modelData.i.length, this.gl.UNSIGNED_SHORT, 0);
-        this.gl.bindTexture(this.gl.TEXTURE_2D, null);
-
-      }
-      //Premitive:POINTでも、Objectでもないモデルデータ
       else {
         this.gl.useProgram(this.programs);
         this.gl.uniform3fv(this.uniLocation.eyePosition, this.scene.camera.cameraPosition);
-        this.gl.uniform1i(this.uniLocation.isObjData, false);
         this.gl.uniform1f(this.uniLocation.alpha, this.scene.meshList[i].mesh.alpha);
+        this.gl.uniform1f(this.uniLocation.diffuseIntensity, this.scene.meshList[i].mesh.diffuseIntensity);
+        this.gl.uniform1i(this.uniLocation.specularIndex, this.scene.meshList[i].mesh.specularIndex);
         this.gl.uniform1i(this.uniLocation.isLightEnable, this.scene.meshList[i].mesh.isLightEnable);
+        this.gl.uniform1i(this.uniLocation.isFlatShade, this.scene.meshList[i].mesh.isFlatShade);
+
         //裏面をカリング(描画しない)
-        //this.gl.enable(this.gl.CULL_FACE);
-        //this.gl.cullFace(this.gl.BACK);
+        this.gl.enable(this.gl.CULL_FACE);
+        this.gl.cullFace(this.gl.BACK);
 
         this.setAttribute(this.scene.meshList[i].vertexBufferList, this.attLocation, this.attStride, this.scene.meshList[i].indexBuffer);
         this.scene.meshList[i].mesh.render();
+
         mat4.multiply(this.mvpMatrix, this.scene.camera.vpMatrix, this.scene.meshList[i].mesh.mMatrix);
 
+        this.gl.uniformMatrix4fv(this.uniLocation.mMatrix, false, this.scene.meshList[i].mesh.mMatrix);
         this.gl.uniformMatrix4fv(this.uniLocation.mvpMatrix, false, this.mvpMatrix);
         if (this.scene.meshList[i].mesh.isLightEnable) {
           this.gl.uniform3fv(this.uniLocation.lookPoint, this.scene.camera.lookPoint);
@@ -103,12 +75,14 @@ Renderer.prototype = {
           this.gl.uniform3fv(this.uniLocation.lightDirection, this.scene.light.lightDirection);
         }
         //明示的に0番目を指定
-        this.gl.uniform1i(this.uniLocation.texture, 0);
-        if (this.scene.meshList[i].mesh.textureObject.diffuse) this.gl.bindTexture(this.gl.TEXTURE_2D, this.scene.meshList[i].mesh.textureObject.diffuse);
+        if (this.scene.meshList[i].mesh.textureObject.diffuse) {
+          this.gl.bindTexture(this.gl.TEXTURE_2D, this.scene.meshList[i].mesh.textureObject.diffuse);
+        }
+
         this.gl.drawElements(this.gl.TRIANGLES, this.scene.meshList[i].mesh.modelData.i.length, this.gl.UNSIGNED_SHORT, 0);
         this.gl.bindTexture(this.gl.TEXTURE_2D, null);
 
-        //this.gl.disable(this.gl.CULL_FACE);
+        this.gl.disable(this.gl.CULL_FACE);
       }
     }
     this.gl.flush();
@@ -155,10 +129,9 @@ Renderer.prototype = {
     this.uniLocation.ambientColor = this.gl.getUniformLocation(this.programs, "ambientColor");
     this.uniLocation.alpha = this.gl.getUniformLocation(this.programs, "alpha");
     this.uniLocation.isLightEnable = this.gl.getUniformLocation(this.programs, "isLightEnable");
+    this.uniLocation.isFlatShade = this.gl.getUniformLocation(this.programs, "isFlatShade");
     this.uniLocation.specularIndex = this.gl.getUniformLocation(this.programs, "specularIndex");
-    this.uniLocation.isObjData = this.gl.getUniformLocation(this.programs, "isObjData");
-    this.uniLocation.kdColor = this.gl.getUniformLocation(this.programs, "kdColor");
-    this.uniLocation.kd2 = this.gl.getUniformLocation(this.programs, "kd2");
+    this.uniLocation.diffuseIntensity = this.gl.getUniformLocation(this.programs, "diffuseIntensity");
 
     this.uniLocation_points.texture = this.gl.getUniformLocation(this.programs_points, "texture");
     this.uniLocation_points.mvpMatrix = this.gl.getUniformLocation(this.programs_points, "mvpMatrix");
