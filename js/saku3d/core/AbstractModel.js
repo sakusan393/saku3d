@@ -97,7 +97,6 @@ AbstractModel.prototype = {
       targetPosition.z = this.z;
       //クォータニオンによる姿勢制御
       lookVector = vec3.subtract([], [targetPosition.x, targetPosition.y, targetPosition.z], [this.previousX, this.previousY, this.previousZ]);
-      console.log(vec3.length(lookVector));
       if(! vec3.length(lookVector)) return;
 
       //回転軸(外積)

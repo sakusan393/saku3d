@@ -28,7 +28,7 @@ World.prototype.init = function () {
     this.vicviper = new Vicviper(this.gl, this.scene3D, {modelData: modelData, specularIndex: 2});
     this.vicviper.setScale(0.3);
     this.vicviper.isMoveForward = true;
-    this.camera.lookTarget =  this.vicviper;
+    // this.camera.lookTarget =  this.vicviper;
 
     this.scene3D.addChild(this.vicviper);
 
@@ -44,13 +44,13 @@ World.prototype.init = function () {
         this.options.push(option)
         this.scene3D.addChild(option);
       }
-      // this.cubes = [];
-      // for(i = 0; i <this.cubeLength; i++){
-      //   cube = new Option(this.gl, this.scene3D, { specularIndex: 2});
-      //   cube.setScale(1.0);
-      //   this.cubes.push(cube);
-      //   this.scene3D.addChild(cube);
-      // }
+      this.cubes = [];
+      for(i = 0; i <this.cubeLength; i++){
+        cube = new Cube(this.gl, this.scene3D, { specularIndex: 2});
+        cube.setScale(1.0);
+        this.cubes.push(cube);
+        this.scene3D.addChild(cube);
+      }
 
 
       this.enterFrameHandler();
@@ -86,6 +86,10 @@ World.prototype.enterFrameHandler = function () {
     option.x += (target.x - option.x) * 0.15;
     option.y += (target.y - option.y) * 0.15;
     option.z += (target.z - option.z) * 0.15;
+  }
+  for(i = 0; i <this.cubeLength; i++){
+    var cube = this.cubes[i];
+    cube.rotationY += .3;
   }
 
 
