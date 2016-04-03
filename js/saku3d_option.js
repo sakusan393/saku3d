@@ -16,7 +16,7 @@ World.prototype.init = function () {
   };
   ObjLoader.load(srcFiles1, (function(modelData){
     console.log(this)
-    this.vicviper = new Option(this.gl, this.scene3D, {modelData: modelData, specularIndex: 1});
+    this.vicviper = new Option(this.gl, this.scene3D, {modelData: window.sphere(20, 20, .3), specularIndex: 1});
     this.vicviper.setScale(0.3);
     this.vicviper.x = -1;
     // this.vicviper.rotationX = 10;

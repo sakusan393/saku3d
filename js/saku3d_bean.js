@@ -10,27 +10,18 @@ World.prototype.init = function () {
   this.light = new DirectionLight();
   this.scene3D = new Scene3D(this.gl, this.camera, this.light);
 
-  var srcFiles1 = {
-    obj: "models/option.obj",
-    mtl: "models/option.mtl"
-  };
-  ObjLoader.load(srcFiles1, (function(modelData){
-    this.mesh = new Bean(this.gl);
-    // this.mesh.setScale(0.3);
+  this.mesh = new Bean(this.gl,this.scene3D
+    , {modelData:  window.sphere(20, 20, .3), specularIndex: 1});
 
-    this.scene3D.addChild(this.mesh);
-    this.enterFrameHandler();
-  }).bind(this));
+  this.scene3D.addChild(this.mesh);
+  this.enterFrameHandler();
 }
 World.prototype.enterFrameHandler = function () {
   this.mesh.rotationY += .3;
   this.mesh.rotationY += .3;
 
-  // var scale = Math.sin(CLOCK.getElapsedTime()*.6) * 0.03 + 0.2;
-  // this.mesh.setScale(scale);
-  // this.mesh.setScale(scale);
-
   this.scene3D.render();
+  
   requestAnimationFrame(this.enterFrameHandler.bind(this))
 }
 
