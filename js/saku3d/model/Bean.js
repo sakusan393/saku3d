@@ -1,4 +1,4 @@
-Cockpit = function (gl) {
+Bean = function (gl) {
   this.gl = gl;
   this.modelData = window.sphere(20, 20, .3);
   this.mMatrix = mat4.identity(mat4.create());
@@ -14,9 +14,9 @@ Cockpit = function (gl) {
   this.scaleZ = 1;
   this.count = 0;
   this.speed = .02;
+  this.alpha = 1.0;
   this.isObjData = false;
   this.isLightEnable = true;
-  this.isBump = false;
   this.textureObject = {};
   this.textureObject.diffuse = null;
 
@@ -26,7 +26,7 @@ Cockpit = function (gl) {
   this.texture = this.textureObject.diffuse;
 
 };
-Cockpit.prototype = {
+Bean.prototype = {
   initTexture: function (img, type) {
     // テクスチャオブジェクトの生成
     this.textureObject[type] = this.gl.createTexture();
@@ -43,8 +43,6 @@ Cockpit.prototype = {
     var translatePosition = [this.x, this.y, this.z];
     mat4.identity(this.mMatrix);
     mat4.translate(this.mMatrix, this.mMatrix, translatePosition);
-    var scale = Math.random() * 10;
-    this.scaleX = this.scaleY = this.scaleZ = scale;
     mat4.scale(this.mMatrix, this.mMatrix, [this.scaleX, this.scaleY, this.scaleZ]);
     var radians = (this.count * 50 % 360) * Math.PI / 180;
     var axis = [1.0, 0.5, 0.1];

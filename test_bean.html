@@ -89,7 +89,7 @@
         else if(!bool(vTexCoord))
         {
             //ビームの描画はライトの計算不要
-            destColor = vec4(vec3(1.0) , alpha);
+            destColor = vec4(vec3(1.0) , 1.0);
         } else {
             if(isLightEnable){
                 vec3 eyeDirection = normalize(eyePosition - lookPoint);
@@ -99,7 +99,7 @@
                 float diff = clamp(dot(normalize(invLight), vNormal) , 0.8 , 1.0);
                 float spec = pow(clamp(dot(halfVector,vNormal),0.0,2.0),10.0);
                 vec3 dest = texture2D(texture, vTexCoord).rgb * diff + spec + ambientColor.rgb;
-                destColor = vec4(1.0,1.0,1.0, alpha);
+                destColor = vec4(dest, alpha);
             }else{
                 vec3 dest = texture2D(texture, vTexCoord).rgb + ambientColor.rgb;
                 destColor = vec4(1.0);
@@ -225,9 +225,9 @@
 <script src="js/saku3d/core/AbstractWorld.js"></script>
 <script src="js/saku3d/core/AbstractModel.js"></script>
 <script src="js/saku3d/model/Face393.js"></script>
-<script src="js/saku3d/model/Cockpit.js"></script>
+<script src="js/saku3d/model/Bean.js"></script>
 <script src="js/saku3d/model/Option.js"></script>
 <script src="js/saku3d/model/Beans.js"></script>
-<script src="js/saku3d_cockpit.js"></script>
+<script src="js/saku3d_bean.js"></script>
 </body>
 </html>

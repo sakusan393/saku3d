@@ -111,7 +111,7 @@ Renderer.prototype = {
           this.gl.uniform3fv(this.uniLocation.lightDirection, this.scene.light.lightDirection);
         }
         //明示的に0番目を指定
-        //this.gl.uniform1i(this.uniLocation.texture, 0);
+        this.gl.uniform1i(this.uniLocation.texture, 0);
         if (this.scene.meshList[i].mesh.texture) this.gl.bindTexture(this.gl.TEXTURE_2D, this.scene.meshList[i].mesh.texture);
         this.gl.drawElements(this.gl.TRIANGLES, this.scene.meshList[i].mesh.modelData.i.length, this.gl.UNSIGNED_SHORT, 0);
         this.gl.bindTexture(this.gl.TEXTURE_2D, null);

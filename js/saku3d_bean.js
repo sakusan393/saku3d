@@ -15,7 +15,7 @@ World.prototype.init = function () {
     mtl: "models/option.mtl"
   };
   ObjLoader.load(srcFiles1, (function(modelData){
-    this.mesh = new Cockpit(this.gl);
+    this.mesh = new Bean(this.gl);
     // this.mesh.setScale(0.3);
 
     this.scene3D.addChild(this.mesh);
