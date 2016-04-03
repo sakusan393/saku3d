@@ -55,10 +55,10 @@ World.prototype.init = function () {
 World.prototype.enterFrameHandler = function () {
 
 
-  var time = CLOCK.getElapsedTime() * 0.001;
-  this.vicviper.x = Math.sin(time*.4) * 35;
-  this.vicviper.y = Math.cos(time*2) * 3 * (Math.cos(time*.1)+1)
-  this.vicviper.z = Math.cos(time*.9) * 84;
+  var time = CLOCK.getElapsedTime() * 0.002;
+  this.vicviper.x = Math.sin(time*.4) * 30 * (Math.cos(time*.2)+1)
+  this.vicviper.y = Math.cos(time*.7) * 5 * (Math.cos(time*.3)+1)
+  this.vicviper.z = Math.cos(time*.5) * 44 * (Math.sin(time*.4)+1)
   this.camera.x = Math.cos(time*.2) * 30;
   this.camera.y = Math.sin(time*.3) * 25;
   this.camera.z = Math.sin(time*.1) * 54;
@@ -75,9 +75,9 @@ World.prototype.enterFrameHandler = function () {
     }else{
       target = this.options[i-1];
     }
-    option.x += (target.x - option.x) * 0.2;
-    option.y += (target.y - option.y) * 0.2;
-    option.z += (target.z - option.z) * 0.2;
+    option.x += (target.x - option.x) * 0.15;
+    option.y += (target.y - option.y) * 0.15;
+    option.z += (target.z - option.z) * 0.15;
   }
 
 
