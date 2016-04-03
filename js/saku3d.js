@@ -12,7 +12,7 @@ World.prototype.init = function () {
   this.light = new DirectionLight();
   this.scene3D = new Scene3D(this.gl, this.camera, this.light);
 
-  this.optionLength = 100;
+  this.optionLength = 50;
 
   var srcFiles1 = {
     obj: "models/vicviper_mirror_fix.obj",
@@ -55,10 +55,10 @@ World.prototype.init = function () {
 World.prototype.enterFrameHandler = function () {
 
 
-  var time = CLOCK.getElapsedTime() * 0.001;
-  this.vicviper.x = Math.sin(time) * 15;
-  this.vicviper.y = Math.cos(time*2) * 5;
-  this.vicviper.z = Math.cos(time) * 34;
+  var time = CLOCK.getElapsedTime() * 0.0005;
+  this.vicviper.x = Math.sin(time) * 35;
+  this.vicviper.y = Math.cos(time*2) * 15;
+  this.vicviper.z = Math.cos(time) * 84;
   this.camera.x = Math.cos(time*.2) * 30;
   this.camera.y = Math.sin(time*.3) * 25;
   this.camera.z = Math.sin(time*.1) * 54;
