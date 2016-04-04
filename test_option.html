@@ -47,7 +47,7 @@
     uniform vec3 lookPoint;
     uniform bool isLightEnable;
     uniform bool isFlatShade;
-    uniform bool useTexture;
+    uniform bool isTexture;
     uniform sampler2D texture;
     uniform float alpha;
     uniform float diffuseIntensity;
@@ -81,12 +81,12 @@
               n = vNormal;
             }
             float diff = clamp(dot(n, invLight) ,1.0,3.0)* .3 * diffuseIntensity;
-            if(bool(vTexCoord)){
+            if(bool(isTexture)){
                 vec4 col = texture2D(texture, vTexCoord);
                 destColor = vec4(col.rgb*diff+specular+ ambientColor.rgb  ,alpha * col.a);
             }else{
                 vec4 col = vColor;
-                destColor = vec4(col.rgb*diff+specular, col.a);
+                destColor = vec4(col.rgb*diff+specular, col.a * alpha);
             }
         }else{
 
@@ -192,6 +192,8 @@
   <link rel="stylesheet" type="text/css" media="screen,print" href="./css/index.css">
 </head>
 <body>
+
+
 <script>
 
 

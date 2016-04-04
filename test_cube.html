@@ -86,7 +86,7 @@
                 destColor = vec4(col.rgb*diff+specular+ ambientColor.rgb  ,alpha * col.a);
             }else{
                 vec4 col = vColor;
-                destColor = vec4(col.rgb*diff+specular, col.a * alpha);
+                destColor = vec4(col.rgb*diff+specular, col.a * alpha + specular);
             }
         }else{
 
@@ -193,6 +193,10 @@
 </head>
 <body>
 
+
+
+
+
 <script src="js/lib/stats.min.js"></script>
 <script src="js/lib/gl-matrix.js"></script>
 <script src="js/lib/ImageLoader.js"></script>
@@ -205,10 +209,7 @@
 <script src="js/saku3d/scene/Scene3D.js"></script>
 <script src="js/saku3d/core/AbstractWorld.js"></script>
 <script src="js/saku3d/core/AbstractModel.js"></script>
-<script src="js/saku3d/model/Face393.js"></script>
-<script src="js/saku3d/model/Vicviper.js"></script>
-<script src="js/saku3d/model/Option.js"></script>
-<script src="js/saku3d/model/BevelCube.js"></script>
-<script src="js/saku3d.js"></script>
+<script src="js/saku3d/model/Cube.js"></script>
+<script src="js/saku3d_cube.js"></script>
 </body>
 </html>

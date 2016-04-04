@@ -16,27 +16,27 @@ World.prototype.init = function () {
   this.optionLength = 60;
   this.cubeLength = 100;
 
-  var srcFiles1 = {
+  var srcVicviper = {
     obj: "models/vicviper_mirror_fix.obj",
     mtl: "models/vicviper_mirror_fix.mtl"
   };
-  var srcFiles2 = {
-    obj: "models/option.obj",
+  this.modelLoadCount = 0;
+  this.modelLoadLength = 3;
 
-    mtl: "models/option.mtl"
-  };
-  ObjLoader.load(srcFiles1, (function(modelData){
+  ObjLoader.load(srcVicviper, (function(modelData){
     this.vicviper = new Vicviper(this.gl, this.scene3D, {modelData: modelData, specularIndex: 2});
     this.vicviper.setScale(0.3);
     this.vicviper.isMoveForward = true;
-    this.camera.lookTarget =  this.vicviper;
-
     this.scene3D.addChild(this.vicviper);
+    this.loadedHandler();
 
-    ObjLoader.load(srcFiles2, (function(modelData){
+    var srcOption = {
+      obj: "models/option.obj",
+      mtl: "models/option.mtl"
+    };
+    ObjLoader.load(srcOption, (function(modelData){
       this.options = [];
       var option;
-      var cube;
 
       for(var i = 0 ; i < this.optionLength; i++){
         option = new Option(this.gl, this.scene3D, {modelData: modelData, specularIndex: 2});
@@ -45,35 +45,55 @@ World.prototype.init = function () {
         this.options.push(option)
         this.scene3D.addChild(option);
       }
-      this.cubes = [];
-      for(i = 0; i <this.cubeLength; i++){
-        cube = new Cube(this.gl, this.scene3D, { specularIndex: 2});
-        cube.setScale(1.0);
-        cube.x = 100 * (Math.random() - 0.5);
-        cube.y = 100 * (Math.random() - 0.5);
-        cube.z = 100 * (Math.random() - 0.5);
-        this.cubes.push(cube);
-        this.scene3D.addChild(cube);
-      }
+      this.loadedHandler()
+
+      var srcBevelCube = {
+        obj: "models/bebelcube.obj",
+        mtl: "models/bebelcube.mtl"
+      };
+      ObjLoader.load(srcBevelCube, (function(modelData){
+        this.cubes = [];
+        var cube;
+        for(var i = 0; i <this.cubeLength; i++){
+          cube = new BevelCube(this.gl, this.scene3D,{modelData: modelData, specularIndex: 1});
+          cube.setScale(1.0);
+          cube.x = 100 * (Math.random() - 0.5);
+          cube.y = 100 * (Math.random() - 0.5);
+          cube.z = 100 * (Math.random() - 0.5);
+          this.cubes.push(cube);
+          this.scene3D.addChild(cube);
+        }
+        this.loadedHandler()
+      }).bind(this));
 
 
-      this.enterFrameHandler();
     }).bind(this));
+
 
   }).bind(this));
 
+}
+World.prototype.loadedHandler = function () {
+  this.modelLoadCount++;
+  console.log(this.modelLoadCount)
+
+  if(this.modelLoadCount >= this.modelLoadLength){
+    this.camera.lookTarget =  this.vicviper;
+    this.enterFrameHandler();
+  }
 
 }
 World.prototype.enterFrameHandler = function () {
 
 
   var time = CLOCK.getElapsedTime() * 0.002;
-  this.vicviper.x = Math.sin(time*.4) * 30 * (Math.cos(time*.2)+1)
-  this.vicviper.y = Math.cos(time*.7) * 5 * (Math.cos(time*.3)+1)
-  this.vicviper.z = Math.cos(time*.5) * 44 * (Math.sin(time*.4)+1)
-  this.camera.x = Math.cos(time*.2) * 30;
-  this.camera.y = Math.sin(time*.3) * 25;
-  this.camera.z = Math.sin(time*.1) * 54;
+  this.vicviper.x = Math.sin(time*.4) * 30 * (Math.cos(time*.2)+1);
+  this.vicviper.y = Math.cos(time*.7) * 5 * (Math.cos(time*.3)+1);
+  this.vicviper.z = Math.cos(time*.5) * 44 * (Math.sin(time*.4)+1);
+
+  this.camera.x = Math.cos(time*.2) * 30 * (Math.cos(time*.003));
+  this.camera.y = Math.sin(time*.3) * 125 * (Math.sin(time*.0010));
+  this.camera.z = Math.sin(time*.1) * 54 * (Math.cos(time*.0023));
 
 
   for(var i= 0; i < this.optionLength; i++){
