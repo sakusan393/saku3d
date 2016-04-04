@@ -12,6 +12,7 @@ Bean.prototype = {
     this.diffuseIntensity = 1.0;
     this.specularIndex = 2;
     this.isFlatShade = false;
+    this.isTexture = false;
     if (initObject && initObject.specularIndex) this.specularIndex = initObject.specularIndex;
     this.textureObject = {};
     this.textureObject.diffuse = null;

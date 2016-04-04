@@ -8,6 +8,7 @@ Option = function (gl, scene3D, initObject) {
 Option.prototype = {
   initialize: function (initObject) {
     this.isLightEnable = true;
+    this.isTexture = false;
     this.alpha = 1.0;
     this.diffuseIntensity = 3.0;
     this.specularIndex = 0;

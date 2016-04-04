@@ -9,11 +9,12 @@ World.prototype.init = function () {
   this.camera = new Camera(this.canvas);
   this.camera.z = 60;
   this.camera.y = 10;
+  this.camera.setFov(45);
   this.light = new DirectionLight();
   this.scene3D = new Scene3D(this.gl, this.camera, this.light);
 
   this.optionLength = 60;
-  this.cubeLength = 60;
+  this.cubeLength = 100;
 
   var srcFiles1 = {
     obj: "models/vicviper_mirror_fix.obj",
@@ -48,6 +49,9 @@ World.prototype.init = function () {
       for(i = 0; i <this.cubeLength; i++){
         cube = new Cube(this.gl, this.scene3D, { specularIndex: 2});
         cube.setScale(1.0);
+        cube.x = 100 * (Math.random() - 0.5);
+        cube.y = 100 * (Math.random() - 0.5);
+        cube.z = 100 * (Math.random() - 0.5);
         this.cubes.push(cube);
         this.scene3D.addChild(cube);
       }
@@ -89,7 +93,9 @@ World.prototype.enterFrameHandler = function () {
   }
   for(i = 0; i <this.cubeLength; i++){
     var cube = this.cubes[i];
-    cube.rotationY += .3;
+    cube.rotationY += .5;
+    cube.rotationX += .4;
+    cube.rotationZ += .8;
   }
 
 

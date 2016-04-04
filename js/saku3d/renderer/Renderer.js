@@ -56,11 +56,17 @@ Renderer.prototype = {
         this.gl.uniform1f(this.uniLocation.diffuseIntensity, this.scene.meshList[i].mesh.diffuseIntensity);
         this.gl.uniform1i(this.uniLocation.specularIndex, this.scene.meshList[i].mesh.specularIndex);
         this.gl.uniform1i(this.uniLocation.isLightEnable, this.scene.meshList[i].mesh.isLightEnable);
+        this.gl.uniform1i(this.uniLocation.isTexture, this.scene.meshList[i].mesh.isTexture);
         this.gl.uniform1i(this.uniLocation.isFlatShade, this.scene.meshList[i].mesh.isFlatShade);
 
         //裏面をカリング(描画しない)
-        this.gl.enable(this.gl.CULL_FACE);
-        this.gl.cullFace(this.gl.BACK);
+        if (this.scene.meshList[i].mesh.cullingIndex == 1){
+          this.gl.enable(this.gl.CULL_FACE);
+          this.gl.cullFace(this.gl.BACK);
+        }else if(this.scene.meshList[i].mesh.cullingIndex == 2){
+          this.gl.enable(this.gl.CULL_FACE);
+          this.gl.cullFace(this.gl.FRONT);
+        }
 
         this.setAttribute(this.scene.meshList[i].vertexBufferList, this.attLocation, this.attStride, this.scene.meshList[i].indexBuffer);
         this.scene.meshList[i].mesh.render();
@@ -82,7 +88,9 @@ Renderer.prototype = {
         this.gl.drawElements(this.gl.TRIANGLES, this.scene.meshList[i].mesh.modelData.i.length, this.gl.UNSIGNED_SHORT, 0);
         this.gl.bindTexture(this.gl.TEXTURE_2D, null);
 
-        this.gl.disable(this.gl.CULL_FACE);
+        if (this.scene.meshList[i].mesh.cullingIndex != 0){
+          this.gl.disable(this.gl.CULL_FACE);
+        }
       }
     }
     this.gl.flush();
@@ -130,6 +138,7 @@ Renderer.prototype = {
     this.uniLocation.alpha = this.gl.getUniformLocation(this.programs, "alpha");
     this.uniLocation.isLightEnable = this.gl.getUniformLocation(this.programs, "isLightEnable");
     this.uniLocation.isFlatShade = this.gl.getUniformLocation(this.programs, "isFlatShade");
+    this.uniLocation.isTexture = this.gl.getUniformLocation(this.programs, "isTexture");
     this.uniLocation.specularIndex = this.gl.getUniformLocation(this.programs, "specularIndex");
     this.uniLocation.diffuseIntensity = this.gl.getUniformLocation(this.programs, "diffuseIntensity");
 

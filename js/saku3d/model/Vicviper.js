@@ -10,6 +10,7 @@ Vicviper.prototype = {
     this.isLightEnable = true;
     this.isFlatShade = true;
     this.isLookAt = false;
+    this.isTexture = true;
     this.isMoveForward = false;
     this.alpha = 1.0;
     this.specularIndex = 0;
