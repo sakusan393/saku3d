@@ -86,7 +86,7 @@
                 destColor = vec4(col.rgb*diff+specular+ ambientColor.rgb  ,alpha * col.a);
             }else{
                 vec4 col = vColor;
-                destColor = vec4(col.rgb*diff+specular, col.a);
+                destColor = vec4(col.rgb*diff+specular, col.a * alpha);
             }
         }else{
 
