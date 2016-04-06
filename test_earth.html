@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>index</title>
+
+  <script id="vs" type="x-shader/x-vertex">
+    attribute vec3 position;
+    attribute vec3 normal;
+    attribute vec4 color;
+    attribute vec2 texCoord;
+    varying vec2 vTexCoord;
+    varying vec4 vColor;
+    uniform mat4 mvpMatrix;
+    uniform mat4 mMatrix;
+    varying vec3 vNormal;
+    varying vec4 vPosition;
+    varying vec4 mvpPosition;
+
+    void main(){
+        vNormal = normal;
+        vTexCoord = texCoord;
+        vColor = color;
+        vPosition = mMatrix * vec4(position, 1.0);
+        mvpPosition = mvpMatrix * vec4(position, 1.0);
+        gl_Position = mvpPosition;
+    }
+
+    </script>
+
+  <script id="fs" type="x-shader/x-fragment">
+    #extension GL_OES_standard_derivatives : enable
+
+    precision highp float;
+    varying vec2 vTexCoord;
+
+
+    varying vec3 vNormal;
+    varying vec4 vColor;
+    varying vec4 vPosition;
+    varying vec4 mvpPosition;
+
+    uniform vec3 ambientColor;
+    uniform mat4 invMatrix;
+    uniform vec3 lightDirection;
+    uniform vec3 eyePosition;
+    uniform vec3 lookPoint;
+    uniform bool isLightEnable;
+    uniform bool isFlatShade;
+    uniform bool isTexture;
+    uniform sampler2D texture;
+    uniform float alpha;
+    uniform float diffuseIntensity;
+    uniform int specularIndex;
+
+
+    void main(){
+
+        vec4 destColor = vec4(1.0);
+        if(isLightEnable){
+            vec3 eyeDirection = normalize(eyePosition - lookPoint);
+            vec3 invEye = normalize(normalize(invMatrix * vec4(eyeDirection, 1.0)).xyz);
+            vec3 invLight = (invMatrix * vec4(lightDirection,0.0)).xyz;
+            vec3 halfVector = normalize(invLight + invEye);
+
+            float specular = 0.0;
+            if(specularIndex==1){
+                //half vector specular
+                specular = pow(clamp(dot(halfVector,vNormal),0.0,1.5),40.0);
+            }else if(specularIndex==2){
+                vec3 refVec = normalize(reflect((-invLight), vNormal));
+                specular = pow(max(dot(invEye, refVec), 0.0), 90.0); // 鏡面光は視線ベクトルと反射光ベクトルの内積
+            }
+            //flat shading normalmap
+            vec3 n;
+            if(isFlatShade){
+              vec3 dx = dFdx(vPosition.xyz);
+              vec3 dy = dFdy(vPosition.xyz);
+              n = normalize(cross(normalize(dx), normalize(dy)));
+            }else{
+              n = vNormal;
+            }
+            float diff = clamp(dot(n, invLight) ,1.0,3.0)* .3 * diffuseIntensity;
+            if(bool(isTexture)){
+                vec4 col = texture2D(texture, vTexCoord);
+                destColor = vec4(col.rgb*diff+specular+ ambientColor.rgb  ,alpha * col.a);
+            }else{
+                vec4 col = vColor;
+                destColor = vec4(col.rgb*diff+specular, col.a * alpha);
+            }
+        }else{
+
+        }
+        gl_FragColor = destColor;
+    }
+    </script>
+
+  <script id="vs_points" type="x-shader/x-vertex">
+    attribute vec3 position;
+    uniform mat4 mvpMatrix;
+
+    void main(){
+        gl_Position = mvpMatrix * vec4(position, 1.0);
+        gl_PointSize = 5.0;
+    }
+
+    </script>
+  <script id="fs_points" type="x-shader/x-fragment">
+    precision mediump float;
+    uniform sampler2D texture;
+
+    void main(){
+        vec4 destColor = texture2D(texture, gl_PointCoord);
+        if(destColor.a == 0.0){
+            discard;
+        }else{
+            vec4 color = vec4(1.0,.4,.4,.9);
+            gl_FragColor = destColor * color;
+        }
+    }
+    </script>
+
+  <script id="vs_bump" type="x-shader/x-vertex">
+    precision highp float;
+    attribute vec3 position;
+    attribute vec3 normal;
+    attribute vec4 color;
+    attribute vec2 texCoord;
+
+    uniform mat4 mMatrix;
+    uniform mat4 mvpMatrix;
+    uniform mat4 invMatrix;
+    uniform vec3 lightDirection;
+    uniform vec3 eyePosition;
+
+    varying vec4 vColor;
+    varying vec2 vTexCoord;
+    varying vec3 vEyeDirection;
+    varying vec3 vLightDirection;
+
+    void main(){
+        vec3 lightPosition = vec3(-10.0, 10.0, 10.0);
+        vec3 pos = (mMatrix * vec4(position, 0.0)).xyz;
+        vec3 invEye = (invMatrix * vec4(eyePosition, 1.0)).xyz;
+        vec3 invLight = (invMatrix * vec4(lightDirection,0.0)).xyz;
+        vec3 eye = invEye - pos;
+        vec3 light = invLight - pos;
+        vec3 n = normalize(normal);
+        vec3 t = normalize(cross(normal, vec3(0.0,1.0,0.0)));
+        vec3 b = cross(n,t);
+        vEyeDirection.z = dot(n, eye);
+        vEyeDirection.x = dot(t, eye);
+        vEyeDirection.y = dot(b, eye);
+        vEyeDirection = normalize(vEyeDirection);
+        vLightDirection.z  =dot(n,light);
+        vLightDirection.x  =dot(t,light);
+        vLightDirection.y  =dot(b,light);
+        vLightDirection = normalize(vLightDirection);
+        vColor = color;
+        vTexCoord = texCoord;
+        gl_Position = mvpMatrix * vec4(position, 1.0);
+    }
+    </script>
+
+  <script id="fs_bump" type="x-shader/x-fragment">
+    precision highp float;
+
+    uniform sampler2D texture0;
+    uniform sampler2D texture1;
+    uniform vec3 ambientColor;
+
+    varying vec4 vColor;
+    varying vec2 vTexCoord;
+    varying vec3 vEyeDirection;
+    varying vec3 vLightDirection;
+
+
+    void main(void){
+        vec3 mNormal = (texture2D(texture1, vTexCoord) * 2.0 - 1.0).rgb;
+        vec3 halfLE = normalize(vLightDirection + vEyeDirection);
+        float diffuse = clamp(dot(vLightDirection,mNormal) , 0.3 , 1.0);
+        float specular = pow(clamp(dot(halfLE,mNormal),0.0,2.0),10.0);
+        vec3 d = texture2D(texture0, vTexCoord).rgb * diffuse + specular * .5  + ambientColor.rgb;
+        vec4 dc = vec4(d, 1.0);
+        gl_FragColor = dc;
+    }
+
+    </script>
+
+
+
+  <link rel="stylesheet" type="text/css" media="screen,print" href="./css/index.css">
+</head>
+<body>
+
+
+
+
+<script src="js/lib/stats.min.js"></script>
+<script src="js/lib/gl-matrix.js"></script>
+<script src="js/lib/ImageLoader.js"></script>
+<script src="js/lib/ObjLoader.js"></script>
+<script src="js/saku3d/util/utils.js"></script>
+<script src="js/saku3d/model/models.js"></script>
+<script src="js/saku3d/camera/Camera.js"></script>
+<script src="js/saku3d/light/Light.js"></script>
+<script src="js/saku3d/renderer/Renderer.js"></script>
+<script src="js/saku3d/scene/Scene3D.js"></script>
+<script src="js/saku3d/core/AbstractWorld.js"></script>
+<script src="js/saku3d/core/AbstractModel.js"></script>
+<script src="js/saku3d/model/Earth.js"></script>
+<script src="js/saku3d_earth.js"></script>
+</body>
+</html>
