@@ -10,6 +10,7 @@ Renderer = function (gl, scene) {
   //uniform location
   this.uniLocation = {};
   this.uniLocation_points = {};
+  this.uniLocation_random = {};
 
   //attribute location
   this.attLocation = [];
@@ -122,30 +123,40 @@ Renderer.prototype = {
     var fragmentShaderSource = document.getElementById("fs").textContent;
     var vertexShaderPointsSource = document.getElementById("vs_points").textContent;
     var fragmentShaderPointsSource = document.getElementById("fs_points").textContent;
+    var vertexShaderRandomSource = document.getElementById("vs_random").textContent;
+    var fragmentShaderRandomSource = document.getElementById("fs_random").textContent;
 
     //プログラムの生成
     this.programs = this.createShaderProgram(vertexShaderSource, fragmentShaderSource);
     this.programs_points = this.createShaderProgram(vertexShaderPointsSource, fragmentShaderPointsSource);
+    this.programs_random = this.createShaderProgram(vertexShaderRandomSource, fragmentShaderRandomSource);
 
     //uniformのindexの取得
-    this.uniLocation.texture = this.gl.getUniformLocation(this.programs, "texture");
-    this.uniLocation.mMatrix = this.gl.getUniformLocation(this.programs, "mMatrix");
-    this.uniLocation.mvpMatrix = this.gl.getUniformLocation(this.programs, "mvpMatrix");
-    this.uniLocation.invMatrix = this.gl.getUniformLocation(this.programs, "invMatrix");
-    this.uniLocation.lightDirection = this.gl.getUniformLocation(this.programs, "lightDirection");
-    this.uniLocation.eyePosition = this.gl.getUniformLocation(this.programs, "eyePosition");
-    this.uniLocation.lookPoint = this.gl.getUniformLocation(this.programs, "lookPoint");
-    this.uniLocation.ambientColor = this.gl.getUniformLocation(this.programs, "ambientColor");
-    this.uniLocation.alpha = this.gl.getUniformLocation(this.programs, "alpha");
-    this.uniLocation.isLightEnable = this.gl.getUniformLocation(this.programs, "isLightEnable");
-    this.uniLocation.isFlatShade = this.gl.getUniformLocation(this.programs, "isFlatShade");
-    this.uniLocation.isTexture = this.gl.getUniformLocation(this.programs, "isTexture");
-    this.uniLocation.specularIndex = this.gl.getUniformLocation(this.programs, "specularIndex");
-    this.uniLocation.diffuseIntensity = this.gl.getUniformLocation(this.programs, "diffuseIntensity");
-    this.uniLocation.time = this.gl.getUniformLocation(this.programs, "time");
+    var uniformPropertyArray = [
+      "texture",
+      "mMatrix",
+      "mvpMatrix",
+      "invMatrix",
+      "lightDirection",
+      "eyePosition",
+      "lookPoint",
+      "ambientColor",
+      "alpha",
+      "mMatrix",
+      "isLightEnable",
+      "isFlatShade",
+      "isTexture",
+      "specularIndex",
+      "diffuseIntensity"
+    ];
+    this.setUniformLocation(this.uniLocation, this.programs, uniformPropertyArray);
+    this.setUniformLocation(this.uniLocation_random, this.programs_random, uniformPropertyArray);
 
-    this.uniLocation_points.texture = this.gl.getUniformLocation(this.programs_points, "texture");
-    this.uniLocation_points.mvpMatrix = this.gl.getUniformLocation(this.programs_points, "mvpMatrix");
+    var uniformPointsPropertyArray = [
+      "texture",
+      "mvpMatrix"
+    ]
+    this.setUniformLocation(this.uniLocation_points, this.programs_points, uniformPointsPropertyArray);
 
     // attributeLocationを取得して配列に格納する
     this.attLocation[0] = this.gl.getAttribLocation(this.programs, 'position');
@@ -166,6 +177,13 @@ Renderer.prototype = {
     this.gl.uniform3fv(this.uniLocation.lightDirection, this.scene.light.lightDirection);
     this.gl.uniform3fv(this.uniLocation.ambientColor, this.scene.light.ambientColor);
   },
+
+  setUniformLocation: function(uniLocation,programObject,propertyArray){
+    for(var i = 0,l = propertyArray.length; i<l; i++){
+      uniLocation[propertyArray[i]] = this.gl.getUniformLocation(programObject, propertyArray[i]);
+    }
+  },
+
   createShaderProgram: function (vertexShaderSource, fragmentShaderSource) {
     //shaderオブジェクトを生成
     var vertexShader = this.gl.createShader(this.gl.VERTEX_SHADER);

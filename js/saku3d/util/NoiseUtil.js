@@ -22,14 +22,14 @@ NoiseUtil.prototype = {
     this.data = this.imgdata.data;
   },
   update: function () {
-    var t = this.CLOCK.getElapsedTime() * 0.02;
+    var t = this.CLOCK.getElapsedTime() * 0.002;
     for (var x = 0; x < 256; x++) {
       for (var y = 0; y < 256; y++) {
-        var r = this.simplex.noise3D(x / 60, y / 60, t / 100) * 0.5 + 0.5;
+        var r = this.simplex.noise3D(x / 50, y / 50, t / 100) * 0.5 + 0.5;
         var g = this.simplex.noise3D(x / 80, y / 80, t / 100) * 0.5 + 0.5;
         this.data[(x + y * 256) * 4 + 0] = r * 200;
-        this.data[(x + y * 256) * 4 + 1] = (g + r) * 140;
-        this.data[(x + y * 256) * 4 + 2] = (r * g) * 10;
+        this.data[(x + y * 256) * 4 + 1] = (g * r) * 140;
+        this.data[(x + y * 256) * 4 + 2] = (r - g) * 10;
         this.data[(x + y * 256) * 4 + 3] = 255;
       }
     }
