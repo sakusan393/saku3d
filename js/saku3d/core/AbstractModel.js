@@ -43,9 +43,9 @@ AbstractModel = function (gl, scene3D, initObject) {
   this.qMatrix = mat4.identity(mat4.create());
 
   if (initObject) {
-    this.lookTarget = initObject.lookTarget;
-    this.modelData = initObject.modelData;
-    this.programIndex = initObject.programIndex;
+    if(initObject.lookTarget) this.lookTarget = initObject.lookTarget;
+    if(initObject.modelData) this.modelData = initObject.modelData;
+    if(initObject.programIndex) this.programIndex = initObject.programIndex;
     if (this.lookTarget) this.isLookAt = true;
   }
 };

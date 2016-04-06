@@ -78,7 +78,6 @@ World.prototype.init = function () {
 }
 World.prototype.loadedHandler = function () {
   this.modelLoadCount++;
-  console.log(this.modelLoadCount)
 
   if(this.modelLoadCount >= this.modelLoadLength){
     this.camera.lookTarget =  this.vicviper;

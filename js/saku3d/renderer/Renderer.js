@@ -78,7 +78,6 @@ Renderer.prototype = {
         this.gl.uniform3fv(this.currentUniLocation.eyePosition, this.scene.camera.cameraPosition);
         this.gl.uniform1f(this.currentUniLocation.alpha, this.scene.meshList[i].mesh.alpha);
         this.gl.uniform1f(this.currentUniLocation.diffuseIntensity, this.scene.meshList[i].mesh.diffuseIntensity);
-        console.log(this.scene.meshList[i].mesh.programIndex, this.scene.meshList[i].mesh.time);
         this.gl.uniform1f(this.currentUniLocation.time, this.scene.meshList[i].mesh.time);
         this.gl.uniform1i(this.currentUniLocation.specularIndex, this.scene.meshList[i].mesh.specularIndex);
         this.gl.uniform1i(this.currentUniLocation.isLightEnable, this.scene.meshList[i].mesh.isLightEnable);
