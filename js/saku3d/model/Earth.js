@@ -11,6 +11,7 @@ Earth.prototype = {
     this.alpha = 1.0;
     this.diffuseIntensity = 5.0;
     this.specularIndex = 1;
+    this.programIndex = 2;
     this.isFlatShade = false;
     this.isTexture = true;
     if (initObject && initObject.specularIndex) this.specularIndex = initObject.specularIndex;

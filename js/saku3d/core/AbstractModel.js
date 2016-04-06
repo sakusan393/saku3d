@@ -15,9 +15,11 @@ AbstractModel = function (gl, scene3D, initObject) {
 
   //instance member
   this.cullingIndex = 0;//0:none, 1:back, 2:Front
+  this.programIndex = 0;//0:program, 1:program_points, 2:program_random
   this.isMoveForward = false;
   this.lookTarget = null;
   this.PI = Math.PI;
+  this.time = 0;
 
   this.x = 0;
   this.y = 0;
@@ -43,6 +45,7 @@ AbstractModel = function (gl, scene3D, initObject) {
   if (initObject) {
     this.lookTarget = initObject.lookTarget;
     this.modelData = initObject.modelData;
+    this.programIndex = initObject.programIndex;
     if (this.lookTarget) this.isLookAt = true;
   }
 };

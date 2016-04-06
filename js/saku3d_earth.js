@@ -14,15 +14,15 @@ World.prototype.init = function () {
   this.noizeUtil = new NoiseUtil(new SimplexNoise(), CLOCK);
   var canvas = this.noizeUtil.update();
   this.mesh = new Earth(this.gl,this.scene3D
-    , {modelData:  window.sphere(140, 140,8.0), specularIndex: 1, textureCanvas:canvas});
+    , {modelData:  window.sphere(140, 140,18.0), specularIndex: 1, textureCanvas:canvas});
 
   this.water = new WaterBall(this.gl,this.scene3D
-    , {modelData:  window.sphere(100, 100, 20, [0,0,1,0.5]), specularIndex: 1});
+    , {modelData:  window.sphere(100, 100, 15, [0,0,1,0.3]), specularIndex: 1, programIndex:0});
+
 
 
   this.mesh.z = -70;
   this.water.z = -70;
-  this.water.x = -2;
   // this.mesh.y = 10;
   this.scene3D.addChild(this.mesh);
   this.scene3D.addChild(this.water);
@@ -34,7 +34,7 @@ World.prototype.enterFrameHandler = function () {
 
 
   this.mesh.rotationY = 80;
-  this.mesh.rotationX += .2;
+  this.mesh.rotationX += .002;
   // this.mesh.rotationZ += .2;
   var canvas = this.noizeUtil.update();
   this.mesh.setTexture(canvas);
