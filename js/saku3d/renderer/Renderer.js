@@ -54,6 +54,7 @@ Renderer.prototype = {
         this.gl.uniform3fv(this.uniLocation.eyePosition, this.scene.camera.cameraPosition);
         this.gl.uniform1f(this.uniLocation.alpha, this.scene.meshList[i].mesh.alpha);
         this.gl.uniform1f(this.uniLocation.diffuseIntensity, this.scene.meshList[i].mesh.diffuseIntensity);
+        this.gl.uniform1f(this.uniLocation.time, this.scene.meshList[i].mesh.time);
         this.gl.uniform1i(this.uniLocation.specularIndex, this.scene.meshList[i].mesh.specularIndex);
         this.gl.uniform1i(this.uniLocation.isLightEnable, this.scene.meshList[i].mesh.isLightEnable);
         this.gl.uniform1i(this.uniLocation.isTexture, this.scene.meshList[i].mesh.isTexture);
@@ -141,6 +142,7 @@ Renderer.prototype = {
     this.uniLocation.isTexture = this.gl.getUniformLocation(this.programs, "isTexture");
     this.uniLocation.specularIndex = this.gl.getUniformLocation(this.programs, "specularIndex");
     this.uniLocation.diffuseIntensity = this.gl.getUniformLocation(this.programs, "diffuseIntensity");
+    this.uniLocation.time = this.gl.getUniformLocation(this.programs, "time");
 
     this.uniLocation_points.texture = this.gl.getUniformLocation(this.programs_points, "texture");
     this.uniLocation_points.mvpMatrix = this.gl.getUniformLocation(this.programs_points, "mvpMatrix");
