@@ -10,17 +10,13 @@ JetEngine.prototype = {
   initialize: function (initObject) {
     this.isLightEnable = true;
     this.isTexture = false;
-    this.isFlatShade = true;
+    this.isFlatShade = false;
     this.alpha = 1.0;
-    this.diffuseIntensity = 2.5;
+    this.diffuseIntensity = 2;
     if (initObject && initObject.specularIndex) this.specularIndex = initObject.specularIndex;
     this.textureObject = {};
     this.textureObject.diffuse = null;
     this.textureObject.bump = null;
-  },
-  renderBefore:function(){
-    // console.log(111)
-    // this.time = CLOCK.getElapsedTime() / 10000;
   }
 }
 

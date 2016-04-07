@@ -8,6 +8,7 @@ WaterBall = function (gl, scene3D, initObject) {
 WaterBall.prototype = {
   initialize: function (initObject) {
     this.isLightEnable = true;
+    this.isPoint = false;
     this.alpha = 1.0;
     this.diffuseIntensity = 1.0;
     this.specularIndex = 1;

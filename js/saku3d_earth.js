@@ -7,8 +7,9 @@ World.prototype.init = function () {
   console.log("World.init")
 
   this.camera = new Camera(this.canvas);
+  this.camera.lookPoint = [0,0,0];
   this.light = new DirectionLight();
-  this.light.lightDirection = [0,-1,3];
+  this.light.lightDirection = [0,1,3];
   this.scene3D = new Scene3D(this.gl, this.camera, this.light);
 
   this.noizeUtil = new NoiseUtil(new SimplexNoise(), CLOCK);
@@ -18,15 +19,9 @@ World.prototype.init = function () {
 
   this.water = new WaterBall(this.gl,this.scene3D
     , {modelData:  window.sphere(100, 100, 11.5, [0,0,1,0.3]), specularIndex: 1, programIndex:0});
-  this.water.z = -33;
-  this.water.y = 12;
-  this.scene3D.addChild(this.water);
 
   this.mesh = new Earth(this.gl,this.scene3D
     , {modelData:  window.sphere(100, 100,15), specularIndex: 1, textureCanvas:canvas});
-  this.mesh.z =  -33;
-  this.mesh.y =  12;
-  this.scene3D.addChild(this.mesh);
 
   var srcFiles1 = {
     obj: "models/jetengine.obj",
@@ -34,10 +29,11 @@ World.prototype.init = function () {
   };
   ObjLoader.load(srcFiles1, (function(modelData) {
     this.jetEngine = new JetEngine(this.gl, this.scene3D, {modelData: modelData, specularIndex: 1});
-    this.jetEngine.setScale(1);
-    this.jetEngine.z = -20;
+    this.jetEngine.setScale(2);
 
     this.scene3D.addChild(this.jetEngine);
+    this.scene3D.addChild(this.mesh);
+    this.scene3D.addChild(this.water);
     this.enterFrameHandler();
   }).bind(this));
 
@@ -50,13 +46,17 @@ World.prototype.enterFrameHandler = function () {
   var canvas = this.noizeUtil.update();
   this.mesh.setTexture(canvas);
 
-  var time = CLOCK.getElapsedTime() / 10000;
-  this.jetEngine.x = Math.sin(time + 8) * 10;
-  this.jetEngine.y = Math.cos(time + 8) * 20 + 12;
-  this.jetEngine.z = Math.sin(time + 8) * 20 - 33;
-  this.jetEngine.rotationX += 1
-  this.jetEngine.rotationY += 1
-  this.jetEngine.rotationZ += 1
+  var time = CLOCK.getElapsedTime() / 1000;
+  this.jetEngine.x = Math.sin(time + 18) * 20;
+  this.jetEngine.y = Math.cos(time + 18) * 20;
+  this.jetEngine.z = Math.sin(time + 18) * 20;
+  this.jetEngine.rotationX += 1;
+  this.jetEngine.rotationY += 1;
+  this.jetEngine.rotationZ += 1;
+
+  this.camera.x = Math.sin(time/2 + 8) * 100;
+  this.camera.z = Math.cos(time/2 + 8) * 100;
+  this.camera.y = Math.cos(time/4 + 8) * 10;
 
   this.scene3D.render();
 

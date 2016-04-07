@@ -8,24 +8,25 @@ Earth = function (gl, scene3D, initObject) {
 Earth.prototype = {
   initialize: function (initObject) {
     this.isLightEnable = true;
-    this.alpha = 1.0;
-    this.diffuseIntensity = 2.0;
+    this.alpha = 1;
+    this.diffuseIntensity = .5;
     this.specularIndex = 1;
     this.programIndex = 2;
     this.isFlatShade = false;
     this.isTexture = true;
+    this.cullingIndex = 1;
     if (initObject && initObject.specularIndex) this.specularIndex = initObject.specularIndex;
     this.textureObject = {};
     this.textureObject.diffuse = null;
     this.textureObject.bump = null;
     var diffuseMapSource = ImageLoader.images["images/explosion2.png"];
-    // this.initTexture(diffuseMapSource, "diffuse");
+    this.initTexture(diffuseMapSource, "diffuse");
 
     //
-    this.initTexture(initObject.textureCanvas, "diffuse");
+    // this.initTexture(initObject.textureCanvas, "diffuse");
   },
   setTexture: function(img){
-    this.initTexture(img, "diffuse");
+    // this.initTexture(img, "diffuse");
   },
 
   initTexture: function (img, type) {
@@ -42,7 +43,7 @@ Earth.prototype = {
     this.gl.bindTexture(this.gl.TEXTURE_2D, null);
   },
   renderBefore:function(){
-    this.time = CLOCK.getElapsedTime() / 800000;
+    this.time = CLOCK.getElapsedTime() / 160000;
   }
 };
 

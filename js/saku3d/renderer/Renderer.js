@@ -61,7 +61,6 @@ Renderer.prototype = {
       this.setProgramObject(this.scene.meshList[i].mesh.programIndex);
 
       if (this.scene.meshList[i].mesh.isPoint) {
-        // this.gl.useProgram(this.programs_points);
         this.setAttribute(this.scene.meshList[i].vertexBufferList, this.attLocation_points, this.attStride, null);
         this.scene.meshList[i].mesh.render();
         mat4.multiply(this.mvpMatrix, this.scene.camera.vpMatrix, this.scene.meshList[i].mesh.mMatrix);
@@ -136,6 +135,7 @@ Renderer.prototype = {
 
     //アルファブレンディングの有効化
     this.gl.enable(this.gl.BLEND);
+    this.gl.blendEquation(this.gl.FUNC_ADD,this.gl.ONE);
     this.gl.blendFuncSeparate(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA, this.gl.ONE, this.gl.ONE);
 
     //色と深度の初期化
