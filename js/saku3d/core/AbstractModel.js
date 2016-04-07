@@ -75,6 +75,7 @@ AbstractModel.prototype = {
   },
   render: function () {
     if(this.renderBefore && typeof this.renderBefore === "function") this.renderBefore();
+    
     var translatePosition = [this.x, this.y, this.z];
     mat4.identity(this.mMatrix);
     mat4.translate(this.mMatrix, this.mMatrix, translatePosition);
@@ -133,6 +134,7 @@ AbstractModel.prototype = {
     this.previousX = this.x;
     this.previousY = this.y;
     this.previousZ = this.z;
+
     if(this.renderAfter && typeof this.renderAfter === "function") this.renderAfter();
   }
 }

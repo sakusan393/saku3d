@@ -73,6 +73,7 @@ function sphere(row, column, rad, color) {
     return {p: pos, n: nor, c: col, t: st, i: idx, a: all};
 }
 
+
 function cube(side, color) {
     var tc, hs = side * 0.5;
     var pos = [

@@ -9,8 +9,9 @@ WaterBall.prototype = {
   initialize: function (initObject) {
     this.isLightEnable = true;
     this.alpha = 1.0;
-    this.diffuseIntensity = 2.0;
+    this.diffuseIntensity = 1.0;
     this.specularIndex = 1;
+    this.programIndex = 0;
     this.cullingIndex = 1;//0:none, 1:back, 2:Front
     this.isFlatShade = false;
     this.isTexture = false;
