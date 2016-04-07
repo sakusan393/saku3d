@@ -19,7 +19,6 @@ BevelCube.prototype = {
     this.textureObject.bump = null;
   },
   renderBefore:function(){
-    console.log(111)
     this.time = CLOCK.getElapsedTime() / 10000;
   }
 }
