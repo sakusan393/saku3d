@@ -37,12 +37,9 @@ World.prototype.init = function () {
     this.jetEngine.setScale(1);
     this.jetEngine.z = -20;
 
-    // this.scene3D.addChild(this.jetEngine);
+    this.scene3D.addChild(this.jetEngine);
     this.enterFrameHandler();
   }).bind(this));
-
-
-
 
 }
 World.prototype.enterFrameHandler = function () {
@@ -53,10 +50,10 @@ World.prototype.enterFrameHandler = function () {
   var canvas = this.noizeUtil.update();
   this.mesh.setTexture(canvas);
 
-  var time = CLOCK.getElapsedTime() / 1000;
-  this.jetEngine.x = Math.sin(time) * 10;
-  this.jetEngine.y = Math.cos(time) * 20 + 12;
-  this.jetEngine.z = Math.sin(time) * 20 - 33;
+  var time = CLOCK.getElapsedTime() / 10000;
+  this.jetEngine.x = Math.sin(time + 8) * 10;
+  this.jetEngine.y = Math.cos(time + 8) * 20 + 12;
+  this.jetEngine.z = Math.sin(time + 8) * 20 - 33;
   this.jetEngine.rotationX += 1
   this.jetEngine.rotationY += 1
   this.jetEngine.rotationZ += 1
