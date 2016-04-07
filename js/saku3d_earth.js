@@ -21,9 +21,8 @@ World.prototype.init = function () {
 
 
 
-  this.mesh.z = -70;
-  this.water.z = -70;
-  // this.mesh.y = 10;
+  this.mesh.z = this.water.z = -43;
+  this.mesh.y = this.water.y = 12;
   this.scene3D.addChild(this.mesh);
   this.scene3D.addChild(this.water);
 
