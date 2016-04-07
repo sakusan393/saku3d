@@ -94,9 +94,9 @@ World.prototype.enterFrameHandler = function () {
   this.vicviper.y = Math.cos(time*.6) * 10 * (Math.cos(time*.2)+1);
   this.vicviper.z = Math.cos(time*.3) * 20 * (Math.sin(time*.4)+1);
 
-  this.camera.x = Math.cos(time*.2) * 10 * (Math.cos(time*.003 * (this.camera.randmoSeed + 1)*.5));
-  this.camera.y = Math.sin(time*.1) * 10 * (Math.sin(time*.0010 * (this.camera.randmoSeed + 1)*.3)) + 10 * this.camera.randmoSeed;
-  this.camera.z = Math.sin(time*.1) * 10 * (Math.cos(time*.0023 * (this.camera.randmoSeed + 1)* .6));
+  this.camera.x = Math.cos(time*.2) * 23 * (Math.cos(time*.003 * (this.camera.randmoSeed + 1)*.5));
+  this.camera.y = Math.sin(time*.3) * 10 * (Math.sin(time*.0010 * (this.camera.randmoSeed + 1)*.3)) + 10 * this.camera.randmoSeed;
+  this.camera.z = Math.sin(time*.1) * 21 * (Math.cos(time*.0023 * (this.camera.randmoSeed + 1)* .6));
 
 
   for(var i= 0; i < this.optionLength; i++){
