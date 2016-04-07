@@ -15,7 +15,7 @@ World.prototype.init = function () {
   this.scene3D = new Scene3D(this.gl, this.camera, this.light);
 
   this.optionLength = 60;
-  this.cubeLength = 200;
+  this.cubeLength = 100;
 
   var srcVicviper = {
     obj: "models/vicviper_mirror_fix.obj",
@@ -57,13 +57,14 @@ World.prototype.init = function () {
         var cube;
         for(var i = 0; i <this.cubeLength; i++){
           cube = new BevelCube(this.gl, this.scene3D,{modelData: modelData, specularIndex: 1});
-          cube.setScale(1.0);
+          cube.setScale(1.5);
           cube.x = 100 * (Math.random() - 0.5);
           cube.y = 100 * (Math.random() - 0.5);
           cube.z = 100 * (Math.random() - 0.5);
           cube.rotationX = Math.random() * 100;
           cube.rotationY = Math.random() * 100;
           cube.rotationZ = Math.random() * 100;
+          // cube.programIndex = 2;
           this.cubes.push(cube);
           this.scene3D.addChild(cube);
         }

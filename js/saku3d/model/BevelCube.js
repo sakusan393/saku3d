@@ -1,5 +1,6 @@
 BevelCube = function (gl, scene3D, initObject) {
   //superクラスのコンストラクタを実行
+  // initObject.renderBefore = this.renderBefore;
   AbstractModel.call(this, gl, scene3D, initObject);
 
   this.initialize(initObject);
@@ -16,6 +17,10 @@ BevelCube.prototype = {
     this.textureObject = {};
     this.textureObject.diffuse = null;
     this.textureObject.bump = null;
+  },
+  renderBefore:function(){
+    console.log(111)
+    this.time = CLOCK.getElapsedTime() / 10000;
   }
 }
 

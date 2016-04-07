@@ -46,6 +46,8 @@ AbstractModel = function (gl, scene3D, initObject) {
     if(initObject.lookTarget) this.lookTarget = initObject.lookTarget;
     if(initObject.modelData) this.modelData = initObject.modelData;
     if(initObject.programIndex) this.programIndex = initObject.programIndex;
+    if(initObject.renderBefore) this.renderBefore = initObject.renderBefore;
+    if(initObject.renderAfter) this.renderAfter = initObject.renderAfter;
     if (this.lookTarget) this.isLookAt = true;
   }
 };
@@ -72,6 +74,7 @@ AbstractModel.prototype = {
     this.scaleX = this.scaleY = this.scaleZ = value;
   },
   render: function () {
+    if(this.renderBefore && typeof this.renderBefore === "function") this.renderBefore();
     var translatePosition = [this.x, this.y, this.z];
     mat4.identity(this.mMatrix);
     mat4.translate(this.mMatrix, this.mMatrix, translatePosition);
@@ -130,5 +133,6 @@ AbstractModel.prototype = {
     this.previousX = this.x;
     this.previousY = this.y;
     this.previousZ = this.z;
+    if(this.renderAfter && typeof this.renderAfter === "function") this.renderAfter();
   }
 }
