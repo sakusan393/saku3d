@@ -9,8 +9,8 @@ Earth.prototype = {
   initialize: function (initObject) {
     this.isLightEnable = true;
     this.alpha = 1;
-    this.diffuseIntensity = .5;
-    this.specularIndex = 1;
+    this.diffuseIntensity = 2;
+    this.specularIndex = 2;
     this.programIndex = 2;
     this.isFlatShade = false;
     this.isTexture = true;
