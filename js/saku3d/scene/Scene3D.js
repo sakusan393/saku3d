@@ -4,9 +4,6 @@ Scene3D = function (gl, camera, light) {
   this.light = light;
   this.meshList = [];
   this.count = 0;
-
-  this.renderer = new Renderer(gl, this);
-  this.renderer.render()
 }
 Scene3D.prototype = {
 
@@ -45,10 +42,6 @@ Scene3D.prototype = {
         }
       }
     }
-  },
-
-  render: function () {
-    this.renderer.render();
   },
 
   generateVBO: function (data) {

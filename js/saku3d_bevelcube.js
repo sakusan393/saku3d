@@ -9,6 +9,7 @@ World.prototype.init = function () {
   this.camera = new Camera(this.canvas);
   this.light = new DirectionLight();
   this.scene3D = new Scene3D(this.gl, this.camera, this.light);
+  this.renderer = new Renderer(this.gl, this.scene3D, SHADER_LOADER.loadedData);
 
   var srcFiles1 = {
     obj: "models/bebelcube.obj",
@@ -39,7 +40,7 @@ World.prototype.enterFrameHandler = function () {
   this.mesh2.rotationY += roll;
   this.mesh2.rotationZ += roll;
 
-  this.scene3D.render();
+  this.renderer.render();
   requestAnimationFrame(this.enterFrameHandler.bind(this))
 }
 
@@ -48,17 +49,23 @@ inherits(World, AbstractWorld);
 
 window.onload = function () {
 
-  //テクスチャ読み込み後の処理
-  var loadCompleteHandler = function () {
-    //ドキュメントクラス的なもの canvasのIDを渡す
-    var initialize = function (returnValue) {
-      for (var val in ImageLoader.images) {
-        console.log("loaded : ", ImageLoader.images[val]);
-      }
-    };
-  };
-  new World();
 
+
+  SHADER_LOADER.load(function(data){
+    SHADER_LOADER.loadedData = data;
+
+    new World();
+  });
+
+  //テクスチャ読み込み後の処理
+  // var loadCompleteHandler = function () {
+  //   //ドキュメントクラス的なもの canvasのIDを渡す
+  //   var initialize = function (returnValue) {
+  //     for (var val in ImageLoader.images) {
+  //       console.log("loaded : ", ImageLoader.images[val]);
+  //     }
+  //   };
+  // };
   // //テクスチャ画像リスト
   // var texturePashArray = ["images/texturengundam.png", "images/texturefunnel.png", "images/texturefunnel_n.png", "images/texturesazabycokpit.jpg", "images/texturestar.png", "images/space.jpg", "images/texturesazabycokpit_n.png"];
   // //テクスチャ画像をImage要素としての読み込み

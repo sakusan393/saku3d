@@ -1,7 +1,8 @@
-Renderer = function (gl, scene) {
+Renderer = function (gl, scene, shaderData) {
   //gl context
   this.gl = gl;
   this.scene = scene;
+  this.shaderData = shaderData;
 
   //program object
   this.programs = null;
@@ -23,6 +24,7 @@ Renderer = function (gl, scene) {
   this.mvpMatrix = mat4.identity(mat4.create());
 
   this.initWebgl();
+
 }
 Renderer.prototype = {
 
@@ -142,12 +144,12 @@ Renderer.prototype = {
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
     //シェーダーの生成
-    var vertexShaderSource = document.getElementById("vs").textContent;
-    var fragmentShaderSource = document.getElementById("fs").textContent;
-    var vertexShaderPointsSource = document.getElementById("vs_points").textContent;
-    var fragmentShaderPointsSource = document.getElementById("fs_points").textContent;
-    var vertexShaderRandomSource = document.getElementById("vs_random").textContent;
-    var fragmentShaderRandomSource = document.getElementById("fs_random").textContent;
+    var vertexShaderSource = this.shaderData.basic.vertex;
+    var fragmentShaderSource = this.shaderData.basic.fragment;
+    var vertexShaderPointsSource = this.shaderData.point.vertex;
+    var fragmentShaderPointsSource = this.shaderData.point.fragment;
+    var vertexShaderRandomSource = this.shaderData.random.vertex;
+    var fragmentShaderRandomSource = this.shaderData.random.fragment;
 
     //プログラムの生成
     this.programs = this.createShaderProgram(vertexShaderSource, fragmentShaderSource);

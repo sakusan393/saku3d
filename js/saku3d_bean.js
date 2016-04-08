@@ -9,6 +9,7 @@ World.prototype.init = function () {
   this.camera = new Camera(this.canvas);
   this.light = new DirectionLight();
   this.scene3D = new Scene3D(this.gl, this.camera, this.light);
+  this.renderer = new Renderer(this.gl, this.scene3D, SHADER_LOADER.loadedData);
 
   this.mesh = new Bean(this.gl,this.scene3D
     , {modelData:  window.sphere(20, 20, .3), specularIndex: 1});
@@ -20,8 +21,8 @@ World.prototype.enterFrameHandler = function () {
   this.mesh.rotationY += .3;
   this.mesh.rotationY += .3;
 
-  this.scene3D.render();
-  
+  this.renderer.render();
+
   requestAnimationFrame(this.enterFrameHandler.bind(this))
 }
 
@@ -40,10 +41,11 @@ window.onload = function () {
     };
     new World();
   };
-
-
-  //テクスチャ画像リスト
-  var texturePashArray = ["images/beans.jpg"];
-  //テクスチャ画像をImage要素としての読み込み
-  ImageLoader.load(texturePashArray, loadCompleteHandler);
+  SHADER_LOADER.load(function(data){
+    SHADER_LOADER.loadedData = data;
+    //テクスチャ画像リスト
+    var texturePashArray = ["images/beans.jpg"];
+    //テクスチャ画像をImage要素としての読み込み
+    ImageLoader.load(texturePashArray, loadCompleteHandler);
+  });
 };

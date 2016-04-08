@@ -11,11 +11,10 @@ World.prototype.init = function () {
   this.light = new DirectionLight();
   this.light.lightDirection = [0,1,3];
   this.scene3D = new Scene3D(this.gl, this.camera, this.light);
+  this.renderer = new Renderer(this.gl, this.scene3D, SHADER_LOADER.loadedData);
 
   this.noizeUtil = new NoiseUtil(new SimplexNoise(), CLOCK);
   var canvas = this.noizeUtil.update();
-
-
 
   this.water = new WaterBall(this.gl,this.scene3D
     , {modelData:  window.sphere(100, 100, 12.5, [0,0,1,0.6]), specularIndex: 1, programIndex:0});
@@ -58,7 +57,7 @@ World.prototype.enterFrameHandler = function () {
   this.camera.z = Math.cos(time/2 + 8) * 100;
   this.camera.y = Math.cos(time/4 + 8) * 10;
 
-  this.scene3D.render();
+  this.renderer.render();
 
   requestAnimationFrame(this.enterFrameHandler.bind(this))
 }
@@ -79,9 +78,13 @@ window.onload = function () {
     new World();
   };
 
+  SHADER_LOADER.load(function(data){
 
-  //テクスチャ画像リスト
-  var texturePashArray = ["images/explosion2.png"];
-  //テクスチャ画像をImage要素としての読み込み
-  ImageLoader.load(texturePashArray, loadCompleteHandler);
+    SHADER_LOADER.loadedData = data;
+    //テクスチャ画像リスト
+    var texturePashArray = ["images/explosion2.png"];
+    //テクスチャ画像をImage要素としての読み込み
+    ImageLoader.load(texturePashArray, loadCompleteHandler);
+  });
+
 };
