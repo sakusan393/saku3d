@@ -17,7 +17,7 @@ World.prototype.init = function () {
   var canvas = this.noizeUtil.update();
 
   this.water = new WaterBall(this.gl,this.scene3D
-    , {modelData:  window.sphere(50, 50, 12.5, [0,0,1,0.6]), specularIndex: 1, programIndex:0});
+    , {modelData:  window.sphere(60, 60, 12.5, [0,0,1,0.6]), specularIndex: 1, programIndex:0});
 
   this.mesh = new Earth(this.gl,this.scene3D
     , {modelData:  window.sphere(60, 60,15), specularIndex: 1, textureCanvas:canvas});
