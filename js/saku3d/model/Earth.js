@@ -23,10 +23,10 @@ Earth.prototype = {
     this.initTexture(diffuseMapSource, "diffuse");
 
     //
-    this.initTexture(initObject.textureCanvas, "diffuse");
+    // this.initTexture(initObject.textureCanvas, "diffuse");
   },
   setTexture: function(img){
-    this.initTexture(img, "diffuse");
+    // this.initTexture(img, "diffuse");
   },
 
   initTexture: function (img, type) {
