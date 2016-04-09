@@ -51,7 +51,7 @@ World.prototype.enterFrameHandler = function () {
   this.jetEngine.z = Math.cos(time / 1) * 20;
   // this.jetEngine.rotationX += 1;
   // this.jetEngine.rotationY += 10;
-  this.jetEngine.rotationZ += .01;
+  this.jetEngine.rotationZ += .1;
 
   this.camera.x = Math.sin(time/8 + 8) * 80;
   this.camera.z = Math.cos(time/8 + 8) * 80;
