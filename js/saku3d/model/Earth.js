@@ -9,8 +9,8 @@ Earth.prototype = {
   initialize: function (initObject) {
     this.isLightEnable = true;
     this.alpha = 1;
-    this.diffuseIntensity = 0.9;
-    this.specularIndex = 2;
+    this.diffuseIntensity = 1.5;
+    this.specularIndex = 1;
     this.programIndex = 2;
     this.isFlatShade = true;
     this.isTexture = true;
@@ -23,10 +23,10 @@ Earth.prototype = {
     this.initTexture(diffuseMapSource, "diffuse");
 
     //
-    // this.initTexture(initObject.textureCanvas, "diffuse");
+    this.initTexture(initObject.textureCanvas, "diffuse");
   },
   setTexture: function(img){
-    // this.initTexture(img, "diffuse");
+    this.initTexture(img, "diffuse");
   },
 
   initTexture: function (img, type) {

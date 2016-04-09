@@ -1,27 +1,23 @@
-Vicviper = function (gl, scene3D, initObject) {
+Satellite = function (gl, scene3D, initObject) {
   //superクラスのコンストラクタを実行
+  // initObject.renderBefore = this.renderBefore;
   AbstractModel.call(this, gl, scene3D, initObject);
 
   this.initialize(initObject);
-};
+}
 
-Vicviper.prototype = {
+Satellite.prototype = {
   initialize: function (initObject) {
     this.isLightEnable = true;
+    this.isTexture = false;
     this.isFlatShade = true;
-    this.isLookAt = false;
-    this.isTexture = true;
-    this.isMoveForward = false;
-    this.alpha = 1.0;
-    this.diffuseIntensity = 0.8;
-    this.specularIndex = 0;
+    this.alpha = 10;
+    this.diffuseIntensity = .8;
     if (initObject && initObject.specularIndex) this.specularIndex = initObject.specularIndex;
     this.textureObject = {};
     this.textureObject.diffuse = null;
     this.textureObject.bump = null;
-    var diffuseMapSource = ImageLoader.images["models/vicviper_mirror_fix.png"];
-    this.initTexture(diffuseMapSource, "diffuse");
   }
 }
 
-inherits(Vicviper,AbstractModel);
+inherits(Satellite,AbstractModel);

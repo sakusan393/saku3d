@@ -49,7 +49,7 @@ void main(){
     }else{
       n = vNormal;
     }
-    float diff = clamp(dot(n, invLight) ,1.0,3.0)* .3 * diffuseIntensity;
+    float diff = clamp(dot(n, invLight) ,.3,1.0)* 1. * diffuseIntensity;
     if(bool(isTexture)){
       vec4 col = texture2D(texture, vTexCoord);
       destColor = vec4(col.rgb*diff+specular + ambientColor.rgb  ,alpha * col.a);

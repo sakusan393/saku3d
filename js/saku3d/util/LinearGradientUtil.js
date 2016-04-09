@@ -1,4 +1,4 @@
-NoiseUtil = function (simplexNoise, clock) {
+LinearGradientUtil = function (clock) {
   //superクラスのコンストラクタを実行
 
   this.CLOCK = clock;
@@ -8,12 +8,11 @@ NoiseUtil = function (simplexNoise, clock) {
   this.imageElement.width = this.imageWidth;
   this.imageElement.height = this.imageHeight;
 
-  this.initialize(simplexNoise);
+  this.initialize();
 };
 
-NoiseUtil.prototype = {
-  initialize: function (simplexNoise) {
-    this.simplex = simplexNoise;
+LinearGradientUtil.prototype = {
+  initialize: function () {
     var canvas = document.createElement("canvas");
     canvas.width = this.imageWidth
     canvas.height = this.imageHeight

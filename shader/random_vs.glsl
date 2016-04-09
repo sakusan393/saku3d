@@ -206,10 +206,13 @@ float turbulence( vec3 p ) {
 
 
 void main(){
+    float spikeRatio = 0.5;
+    float hightGain = 2.0;
+    float lowGain = 10.0;
     vTexCoord = texCoord;
-    noise = 10.0 *  -.10 * turbulence( .5 * normal + time );
-    float b = 2.0 * pnoise( 0.05 * position + vec3( 20.0 * time ), vec3( 100.0 ) );
-    float displacement = - 10. * noise + b;
+    noise = 10.0 *  -.10 * turbulence( spikeRatio * normal + time );
+    float b = hightGain * pnoise( 0.05 * position + vec3( 20.0 * time ), vec3( 100.0 ) );
+    float displacement = - lowGain * noise + b;
 
     vec3 newPosition = position + normal * displacement;
 
