@@ -103,6 +103,8 @@ Renderer.prototype = {
         this.gl.uniformMatrix4fv(this.currentUniLocation.mvpMatrix, false, this.mvpMatrix);
         if (this.scene.meshList[i].mesh.isLightEnable) {
           this.gl.uniform3fv(this.currentUniLocation.lookPoint, this.scene.camera.lookPoint);
+          console.log(this.scene.meshList[i].mesh,this.scene.meshList[i].mesh.invMatrix);
+          
           this.gl.uniformMatrix4fv(this.currentUniLocation.invMatrix, false, this.scene.meshList[i].mesh.invMatrix);
           this.gl.uniform3fv(this.currentUniLocation.lightDirection, this.scene.light.lightDirection);
         }

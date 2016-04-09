@@ -9,7 +9,7 @@ World.prototype.init = function () {
   this.camera = new Camera(this.canvas);
   this.camera.lookPoint = [0,0,0];
   this.light = new DirectionLight();
-  this.light.lightDirection = [0,1,3];
+  this.light.lightDirection = [0,0,3];
   this.scene3D = new Scene3D(this.gl, this.camera, this.light);
   this.renderer = new Renderer(this.gl, this.scene3D, SHADER_LOADER.loadedData);
 
@@ -49,9 +49,9 @@ World.prototype.enterFrameHandler = function () {
   this.jetEngine.x = Math.sin(time / 1) * 20;
   // this.jetEngine.y = Math.cos(time / 2) * 20;
   this.jetEngine.z = Math.cos(time / 1) * 20;
-  this.jetEngine.rotationX += 1;
-  this.jetEngine.rotationY += 2;
-  this.jetEngine.rotationZ += .01;
+  // this.jetEngine.rotationX += 1;
+  this.jetEngine.rotationY += 10;
+  // this.jetEngine.rotationZ += .01;
 
   this.camera.x = Math.sin(time/8 + 8) * 80;
   this.camera.z = Math.cos(time/8 + 8) * 80;
