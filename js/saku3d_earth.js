@@ -8,6 +8,7 @@ World.prototype.init = function () {
 
   this.camera = new Camera(this.canvas);
   this.camera.lookPoint = [0,0,0];
+  this.camera.fov = Math.PI / 180 * 45;
   this.light = new DirectionLight();
   this.light.lightDirection = [0,0,3];
   this.scene3D = new Scene3D(this.gl, this.camera, this.light);
@@ -28,12 +29,25 @@ World.prototype.init = function () {
   };
   ObjLoader.load(srcFiles1, (function(modelData) {
     this.jetEngine = new Satellite(this.gl, this.scene3D, {modelData: modelData, specularIndex: 1});
-    this.jetEngine.setScale(4);
+    this.jetEngine.setScale(5);
 
     this.scene3D.addChild(this.jetEngine);
-    this.scene3D.addChild(this.mesh);
-    this.scene3D.addChild(this.water);
-    this.enterFrameHandler();
+
+    var srcFiles2 = {
+      obj: "models/soyuz2.obj",
+      mtl: "models/soyuz2.mtl"
+    };
+    ObjLoader.load(srcFiles2, (function(modelData) {
+      this.soyuz2 = new Satellite(this.gl, this.scene3D, {modelData: modelData, specularIndex: 1});
+      this.soyuz2.setScale(3);
+
+      this.scene3D.addChild(this.soyuz2);
+      this.scene3D.addChild(this.mesh);
+      this.scene3D.addChild(this.water);
+      this.enterFrameHandler();
+    }).bind(this));
+
+
   }).bind(this));
 
 }
@@ -46,16 +60,22 @@ World.prototype.enterFrameHandler = function () {
   this.mesh.setTexture(canvas);
 
   var time = CLOCK.getElapsedTime() / 1000;
-  this.jetEngine.x = Math.sin(time * 1) * 20;
-  this.jetEngine.y = Math.cos(time * 1) * 20;
+  this.jetEngine.x = Math.sin(time * 1) * 24;
+  this.jetEngine.z = Math.cos(time * 1) * 24;
+  this.soyuz2.x = Math.sin(time * 0.1) * 20;
+  this.soyuz2.z = Math.cos(time * 0.1) * 20;
   // this.jetEngine.z = 20;
   this.jetEngine.rotationX += 1;
   this.jetEngine.rotationY += .5;
   this.jetEngine.rotationZ += .02
 
-  this.camera.x = Math.sin(time/4) * 80;
-  this.camera.y = Math.cos(time* .0010) * 40;
-  this.camera.z = Math.cos(time/4) * 80;
+  this.soyuz2.rotationX += .4;
+  this.soyuz2.rotationY += .2;
+  this.soyuz2.rotationZ += .05
+
+  this.camera.x = Math.sin(time/4) * 50;
+  this.camera.y = Math.cos(time* .0010) * 10;
+  this.camera.z = Math.cos(time/4) * 50;
   // this.camera.z = 80;
 
   this.renderer.render();

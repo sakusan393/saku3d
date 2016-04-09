@@ -53,7 +53,7 @@ void main(){
         }else{
           n = vNormal;
         }
-        float diff = clamp(dot(n, invLight) ,1.0,3.0)* .3 * diffuseIntensity;
+        float diff = clamp(dot(n, lightDirection) ,1.0,3.0)* .3 * diffuseIntensity;
         vec4 col;
         if(bool(isTexture)){
             col = texture2D(texture, vTexCoord);
