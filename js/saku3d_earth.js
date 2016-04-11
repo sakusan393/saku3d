@@ -103,7 +103,7 @@ window.onload = function () {
 
     SHADER_LOADER.loadedData = data;
     //テクスチャ画像リスト
-    var texturePashArray = ["images/explosion2.png"];
+    var texturePashArray = ["images/explosion2.png","images/explosion3.png"];
     //テクスチャ画像をImage要素としての読み込み
     ImageLoader.load(texturePashArray, loadCompleteHandler);
   });
