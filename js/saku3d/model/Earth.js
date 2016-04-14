@@ -19,14 +19,14 @@ Earth.prototype = {
     this.textureObject = {};
     this.textureObject.diffuse = null;
     this.textureObject.bump = null;
-    var diffuseMapSource = ImageLoader.images["images/explosion2.png"];
-    this.initTexture(diffuseMapSource, "diffuse");
+    var diffuseMapSource = ImageLoader.images["images/dora.png"];
+    // this.initTexture(diffuseMapSource, "diffuse");
 
     //
-    // this.initTexture(initObject.textureCanvas, "diffuse");
+    this.initTexture(initObject.textureCanvas, "diffuse");
   },
   setTexture: function(img){
-    // this.initTexture(img, "diffuse");
+    this.initTexture(img, "diffuse");
   },
 
   initTexture: function (img, type) {

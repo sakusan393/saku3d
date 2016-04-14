@@ -14,8 +14,10 @@ World.prototype.init = function () {
   this.scene3D = new Scene3D(this.gl, this.camera, this.light);
   this.renderer = new Renderer(this.gl, this.scene3D, SHADER_LOADER.loadedData);
 
-  this.noizeUtil = new NoiseUtil(new SimplexNoise(), CLOCK);
-  var canvas = this.noizeUtil.update();
+  // this.canvasTextureUtil = new NoiseUtil(new SimplexNoise(), CLOCK);
+  // var canvas = this.canvasTextureUtil.update();
+  this.canvasTextureUtil = new ImageFadeUtil(CLOCK);
+  var canvas = this.canvasTextureUtil.update();
 
   this.water = new WaterBall(this.gl,this.scene3D
     , {modelData:  window.sphere(60, 60, 12.5, [0,0,1,1.0]), specularIndex: 1, programIndex:0});
@@ -56,7 +58,7 @@ World.prototype.enterFrameHandler = function () {
 
   this.mesh.rotationY = 80;
   this.mesh.rotationX += .002;
-  var canvas = this.noizeUtil.update();
+  var canvas = this.canvasTextureUtil.update();
   this.mesh.setTexture(canvas);
 
   var time = CLOCK.getElapsedTime() / 1000;
@@ -103,7 +105,7 @@ window.onload = function () {
 
     SHADER_LOADER.loadedData = data;
     //テクスチャ画像リスト
-    var texturePashArray = ["images/explosion2.png","images/explosion3.png"];
+    var texturePashArray = ["images/explosion2.png","images/explosion3.png","images/dora.png","images/dorami.png"];
     //テクスチャ画像をImage要素としての読み込み
     ImageLoader.load(texturePashArray, loadCompleteHandler);
   });
