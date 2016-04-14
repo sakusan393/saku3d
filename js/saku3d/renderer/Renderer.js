@@ -62,6 +62,7 @@ Renderer.prototype = {
       //programObjectの設定
       this.setProgramObject(this.scene.meshList[i].mesh.programIndex);
 
+      //POINTの描画
       if (this.scene.meshList[i].mesh.isPoint) {
         this.setAttribute(this.scene.meshList[i].vertexBufferList, this.attLocation_points, this.attStride, null);
         this.scene.meshList[i].mesh.render();
@@ -74,11 +75,14 @@ Renderer.prototype = {
         this.gl.drawArrays(this.gl.POINTS, 0, this.scene.meshList[i].mesh.modelData.p.length / 3);
         this.gl.bindTexture(this.gl.TEXTURE_2D, null);
       }
+      //MESHの描画
       else {
         // this.gl.useProgram(this.programs);
         this.gl.uniform3fv(this.currentUniLocation.eyePosition, this.scene.camera.cameraPosition);
         this.gl.uniform1f(this.currentUniLocation.alpha, this.scene.meshList[i].mesh.alpha);
         this.gl.uniform1f(this.currentUniLocation.diffuseIntensity, this.scene.meshList[i].mesh.diffuseIntensity);
+        console.log("aa;", this.scene.meshList[i].mesh.specularIntensity);
+        this.gl.uniform1f(this.currentUniLocation.specularIntensity, this.scene.meshList[i].mesh.specularIntensity);
         this.gl.uniform1f(this.currentUniLocation.time, this.scene.meshList[i].mesh.time);
         this.gl.uniform1i(this.currentUniLocation.specularIndex, this.scene.meshList[i].mesh.specularIndex);
         this.gl.uniform1i(this.currentUniLocation.isLightEnable, this.scene.meshList[i].mesh.isLightEnable);
@@ -174,6 +178,7 @@ Renderer.prototype = {
       "isTexture",
       "specularIndex",
       "diffuseIntensity",
+      "specularIntensity",
       "time"
     ];
     this.setUniformLocation(this.uniLocation, this.programs, uniformPropertyArray);

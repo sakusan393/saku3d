@@ -9,6 +9,7 @@ AbstractModel = function (gl, scene3D, initObject) {
   this.isLightEnable = false;
   this.isTexture = false;
   this.diffuseIntensity = 1.0;
+  this.specularIntensity = 1.0;
   this.alpha = 1.0;
   this.mMatrix = mat4.identity(mat4.create());
   this.invMatrix = mat4.identity(mat4.create());

@@ -11,6 +11,7 @@ WaterBall.prototype = {
     this.isPoint = false;
     this.alpha = 0.8;
     this.diffuseIntensity = 1.0;
+    this.specularIntensity = .2;
     this.specularIndex = 1;
     this.programIndex = 0;
     this.cullingIndex = 1;//0:none, 1:back, 2:Front

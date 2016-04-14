@@ -21,6 +21,7 @@ uniform bool isTexture;
 uniform sampler2D texture;
 uniform float alpha;
 uniform float diffuseIntensity;
+uniform float specularIntensity;
 uniform int specularIndex;
 
 float random( vec3 scale, float seed ){
@@ -39,10 +40,10 @@ void main(){
         float specular = 0.0;
         if(specularIndex==1){
             //half vector specular
-            specular = pow(clamp(dot(halfVector,vNormal),0.0,1.5),20.0);
+            specular = pow(clamp(dot(halfVector,vNormal),0.0,1.5),20.0) * specularIntensity;
         }else if(specularIndex==2){
             vec3 refVec = normalize(reflect((-invLight), vNormal));
-            specular = pow(max(dot(invEye, refVec), 0.0), 90.0); // 鏡面光は視線ベクトルと反射光ベクトルの内積
+            specular = pow(max(dot(invEye, refVec), 0.0), 90.0) * specularIntensity; // 鏡面光は視線ベクトルと反射光ベクトルの内積
         }
         //flat shading normalmap
         vec3 n;
@@ -62,7 +63,7 @@ void main(){
             float r = .01 * random( vec3( 12.9898, 78.233, 151.7182 ), 0.0 );
             vec2 tPos = vec2( 0, 1.0 - 1.8 * noise );
             col = texture2D( texture, tPos );
-            destColor = vec4(col.rgb*diff+specular * .2 + ambientColor.rgb  ,clamp(alpha * col.a,0.0,1.0));
+            destColor = vec4(col.rgb*diff+specular + ambientColor.rgb  ,clamp(alpha * col.a,0.0,1.0));
         }else{
             col = vColor;
             // get a random offset
