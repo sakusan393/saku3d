@@ -10,6 +10,7 @@ Earth.prototype = {
     this.isLightEnable = true;
     this.alpha = 1;
     this.diffuseIntensity = 1.5;
+    this.specularIntensity = .8;
     this.specularIndex = 1;
     this.programIndex = 2;
     this.isFlatShade = true;

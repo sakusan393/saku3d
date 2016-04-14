@@ -20,6 +20,7 @@ uniform bool isTexture;
 uniform sampler2D texture;
 uniform float alpha;
 uniform float diffuseIntensity;
+uniform float specularIntensity;
 uniform int specularIndex;
 
 
@@ -35,10 +36,10 @@ void main(){
     float specular = 0.0;
     if(specularIndex==1){
       //half vector specular
-      specular = pow(clamp(dot(halfVector,vNormal),0.0,1.5),40.0);
+      specular = pow(clamp(dot(halfVector,vNormal),0.0,1.5),40.0) * specularIntensity;
     }else if(specularIndex==2){
       vec3 refVec = normalize(reflect((-invLight), vNormal));
-      specular = pow(max(dot(invEye, refVec), 0.0), 90.0); // 鏡面光は視線ベクトルと反射光ベクトルの内積
+      specular = pow(max(dot(invEye, refVec), 0.0), 90.0) * specularIntensity; // 鏡面光は視線ベクトルと反射光ベクトルの内積
     }
     //flat shading normalmap
     vec3 n;
