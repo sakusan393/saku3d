@@ -38,7 +38,7 @@ void main(){
       //half vector specular
       specular = pow(clamp(dot(halfVector,vNormal),0.0,1.5),40.0) * specularIntensity;
     }else if(specularIndex==2){
-      vec3 refVec = normalize(reflect((-invLight), vNormal));
+      vec3 refVec = normalize(reflect((-lightDirection), vNormal));
       specular = pow(max(dot(invEye, refVec), 0.0), 90.0) * specularIntensity; // 鏡面光は視線ベクトルと反射光ベクトルの内積
     }
     //flat shading normalmap

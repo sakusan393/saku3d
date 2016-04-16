@@ -16,8 +16,8 @@ World.prototype.init = function () {
 
   // this.canvasTextureUtil = new NoiseUtil(new SimplexNoise(), CLOCK);
   // var canvas = this.canvasTextureUtil.update();
-  var imageDataArray = ["images/explosion.png","images/explosion2.png"];
-  this.canvasTextureUtil = new ImageFadeUtil(CLOCK,imageDataArray);
+  var imageArray = ["images/nobi.fw.png","images/gian.fw.png","images/suneo.fw.png","images/dora.fw.png","images/dorami.fw.png","images/sizu.fw.png"];
+  this.canvasTextureUtil = new ImageFadeUtil(CLOCK,imageArray);
   var canvas = this.canvasTextureUtil.update();
 
   this.water = new WaterBall(this.gl,this.scene3D
@@ -37,12 +37,12 @@ World.prototype.init = function () {
     this.scene3D.addChild(this.jetEngine);
 
     var srcFiles2 = {
-      obj: "models/soyuz2.obj",
-      mtl: "models/soyuz2.mtl"
+      obj: "models/spacesafeboat.obj",
+      mtl: "models/spacesafeboat.mtl"
     };
     ObjLoader.load(srcFiles2, (function(modelData) {
       this.soyuz2 = new Satellite(this.gl, this.scene3D, {modelData: modelData, specularIndex: 1});
-      this.soyuz2.setScale(3);
+      this.soyuz2.setScale(1);
 
       this.scene3D.addChild(this.soyuz2);
       this.scene3D.addChild(this.mesh);
@@ -106,7 +106,7 @@ window.onload = function () {
 
     SHADER_LOADER.loadedData = data;
     //テクスチャ画像リスト
-    var texturePashArray = ["images/explosion.png","images/explosion2.png"];
+    var texturePashArray = ["images/nobi.fw.png","images/gian.fw.png","images/suneo.fw.png","images/dora.fw.png","images/dorami.fw.png","images/sizu.fw.png"];
     //テクスチャ画像をImage要素としての読み込み
     ImageLoader.load(texturePashArray, loadCompleteHandler);
   });
