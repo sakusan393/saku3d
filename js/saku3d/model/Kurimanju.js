@@ -19,14 +19,14 @@ Kurimanju.prototype = {
     this.textureObject = {};
     this.textureObject.diffuse = null;
     this.textureObject.bump = null;
-    this.instanceLength = 2;
+    this.instanceLength = 1;
 
     this.createInstancedArray();
   },
   setDatguil: function(){
     var f = DatGuiUtil.gui.addFolder('Kurimanju');
     f.open();
-    var control = f.add(this,"instanceLength",2,1000000).listen();
+    var control = f.add(this,"instanceLength",1,1000000).listen();
     control.onChange( (function(value){
       this.stopAutoIncrement();
     }).bind(this));
