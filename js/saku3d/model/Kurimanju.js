@@ -19,16 +19,22 @@ Kurimanju.prototype = {
     this.textureObject = {};
     this.textureObject.diffuse = null;
     this.textureObject.bump = null;
-    this.instanceLength = 10000;
+    this.instanceLength = 2;
 
     this.createInstancedArray();
   },
   setDatguil: function(){
     var f = DatGuiUtil.gui.addFolder('Kurimanju');
     f.open();
-    f.add(this,"instanceLength",10,this.instanceLength * 100);
+    var control = f.add(this,"instanceLength",2,1000000).listen();
+    control.onChange( (function(value){
+      this.stopAutoIncrement();
+    }).bind(this));
+    f.add(this,"stopAutoIncrement");
   },
-
+  stopAutoIncrement:function(){
+    clearInterval(this.clearIndex)
+  },
   calcNormal: function calcNormal() {
     // 正規乱数
     var r1 = Math.random();
@@ -44,13 +50,18 @@ Kurimanju.prototype = {
     this.instancedArrayRandomSeed = [];
     this.offsetPosition = 3;
     console.log(this.modelData.p.length);
-    for(var i = 0; i < this.instanceLength * 100; i++){
+    for(var i = 0; i < 1000000; i++){
       this.instancedArrayPosition[i * this.offsetPosition] = (this.calcNormal()-.5) * 200;
       this.instancedArrayPosition[i * this.offsetPosition + 1] = (this.calcNormal()-.5) * 200;
       this.instancedArrayPosition[i * this.offsetPosition + 2] = (this.calcNormal()-.5) * 200;
       this.instancedArrayRandomSeed[i] = Math.random();
     }
     this.setDatguil();
+
+    this.clearIndex = setInterval((function(){
+      this.instanceLength *= 2;
+      if(this.instanceLength > 1000000) this.instanceLength = 2;
+    }).bind(this),1000);
   },
   renderBefore:function(){
     this.time = CLOCK.getElapsedTime() / 300;
