@@ -105,7 +105,7 @@ Renderer.prototype = {
         }
 
 
-        //裏面をカリング(描画しない)
+        //カリング(描画しない)
         if (this.scene.meshList[i].mesh.cullingIndex == 1){
           this.gl.enable(this.gl.CULL_FACE);
           this.gl.cullFace(this.gl.BACK);
@@ -132,7 +132,13 @@ Renderer.prototype = {
           this.gl.bindTexture(this.gl.TEXTURE_2D, this.scene.meshList[i].mesh.textureObject.diffuse);
         }
 
-        this.gl.drawElements(this.gl.TRIANGLES, this.scene.meshList[i].mesh.modelData.i.length, this.gl.UNSIGNED_SHORT, 0);
+        if(this.scene.meshList[i].mesh.useAngleInstancedArray){
+          this.extension.angleInstancedArrays.drawElementsInstancedANGLE(this.gl.TRIANGLES, this.scene.meshList[i].mesh.modelData.i.length
+            , this.gl.UNSIGNED_SHORT, 0, this.scene.meshList[i].mesh.instanceLength );
+        }
+        else{
+          this.gl.drawElements(this.gl.TRIANGLES, this.scene.meshList[i].mesh.modelData.i.length, this.gl.UNSIGNED_SHORT, 0);
+        }
         this.gl.bindTexture(this.gl.TEXTURE_2D, null);
 
         if (this.scene.meshList[i].mesh.cullingIndex != 0){
@@ -229,6 +235,7 @@ Renderer.prototype = {
     this.attLocation[1] = this.gl.getAttribLocation(this.programs, 'normal');
     this.attLocation[2] = this.gl.getAttribLocation(this.programs, 'texCoord');
     this.attLocation[3] = this.gl.getAttribLocation(this.programs, 'color');
+    this.attLocation[4] = this.gl.getAttribLocation(this.programs, 'instancedArrayPosition');
 
     this.attLocation_points[0] = this.gl.getAttribLocation(this.programs_points, 'position');
 
@@ -237,6 +244,7 @@ Renderer.prototype = {
     this.attStride[1] = 3;
     this.attStride[2] = 2;
     this.attStride[3] = 4;
+    this.attStride[4] = 3;
 
     //モデルに左右しない固定情報を先に転送する
     this.gl.useProgram(this.programs);
@@ -283,11 +291,14 @@ Renderer.prototype = {
       this.gl.disableVertexAttribArray(attL[j]);
     }
     for (var i in vbo) {
-
       if (vbo[i]) {
+        //instanced Array の場合
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vbo[i]);
         this.gl.enableVertexAttribArray(attL[i]);
         this.gl.vertexAttribPointer(attL[i], attS[i], this.gl.FLOAT, false, 0, 0);
+        if(i == 4){
+          this.extension.angleInstancedArrays.vertexAttribDivisorANGLE(attL[i], 1);
+        }
       }
     }
     if (ibo) {

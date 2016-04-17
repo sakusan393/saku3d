@@ -2,6 +2,7 @@ attribute vec3 position;
 attribute vec3 normal;
 attribute vec4 color;
 attribute vec2 texCoord;
+attribute vec3 instancedArrayPosition;
 varying vec2 vTexCoord;
 varying vec4 vColor;
 uniform mat4 mvpMatrix;
@@ -14,7 +15,7 @@ void main(){
     vNormal = normal;
     vTexCoord = texCoord;
     vColor = color;
-    vPosition = mMatrix * vec4(position, 1.0);
-    mvpPosition = mvpMatrix * vec4(position, 1.0);
+    vPosition = mMatrix * vec4(position + instancedArrayPosition, 1.0);
+    mvpPosition = mvpMatrix * vec4(position + instancedArrayPosition, 1.0);
     gl_Position = mvpPosition;
 }

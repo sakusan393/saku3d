@@ -22,6 +22,10 @@ Scene3D.prototype = {
     if (mesh.modelData.c) {
       meshVboList[3] = this.generateVBO(mesh.modelData.c);
     }
+    if (mesh.modelData.instancedArrayPosition) {
+      meshVboList[4] = this.generateVBO(mesh.modelData.instancedArrayPosition);
+      console.log("aa",meshVboList[4],mesh.modelData.instancedArrayPosition)
+    }
     if (mesh.modelData.i) {
       meshIndexBuffer = this.generateIBO(mesh.modelData.i);
     }

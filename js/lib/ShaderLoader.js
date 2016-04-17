@@ -74,7 +74,6 @@ SHADER_LOADER.load = function (onShadersLoaded)
 		 */
 		var onComplete = function onComplete(srcText)
 		{
-      console.log("hoge", name)
 			--unloadedRemaining;
 
 			if (!loadedShaders[name])
@@ -92,7 +91,6 @@ SHADER_LOADER.load = function (onShadersLoaded)
 		var element = (shaderElement);
 		var url = element.dataset["src"];
 		var name = element.dataset["name"];
-    console.log(url, name);
 
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
@@ -122,7 +120,6 @@ SHADER_LOADER.load = function (onShadersLoaded)
 	for (i = 0, shaderCount = vertexShaders.length; i < shaderCount; ++i)
 	{
 		shader = vertexShaders[i]
-    console.log(shader)
 		loadShaderFile(shader, "vertex");
 	}
 

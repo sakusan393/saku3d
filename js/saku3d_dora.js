@@ -22,20 +22,20 @@ World.prototype.init = function () {
     mtl: "models/kurimanju.mtl"
   };
   ObjLoader.load(srcFiles1, (function(modelData) {
-    this.jetEngine = new Kurimanju(this.gl, this.scene3D, {modelData: modelData, specularIndex: 1});
-    this.jetEngine.setScale(5);
+    this.kurimanju = new Kurimanju(this.gl, this.scene3D, {modelData: modelData, specularIndex: 1});
+    this.kurimanju.setScale(.12);
 
-    this.scene3D.addChild(this.jetEngine);
+    this.scene3D.addChild(this.kurimanju);
 
     var srcFiles2 = {
       obj: "models/spacesafeboat.obj",
       mtl: "models/spacesafeboat.mtl"
     };
     ObjLoader.load(srcFiles2, (function(modelData) {
-      this.soyuz2 = new Satellite(this.gl, this.scene3D, {modelData: modelData, specularIndex: 1});
-      this.soyuz2.setScale(1.5);
+      this.spacesafeboat = new Satellite(this.gl, this.scene3D, {modelData: modelData, specularIndex: 1});
+      this.spacesafeboat.setScale(1.5);
 
-      this.scene3D.addChild(this.soyuz2);
+      this.scene3D.addChild(this.spacesafeboat);
       this.mesh = new DoraStar(this.gl,this.scene3D
         , {modelData:  window.sphere(60, 60,15), specularIndex: 1});
       this.scene3D.addChild(this.mesh);
@@ -61,24 +61,24 @@ World.prototype.enterFrameHandler = function () {
   this.mesh.rotationY += .1;
 
   var time = CLOCK.getElapsedTime() / 1000;
-  this.jetEngine.x = Math.sin(time * 1) * 24;
-  this.jetEngine.z = Math.cos(time * 1) * 24;
+  this.kurimanju.x = Math.sin(time * .1 + 4) * 40;
+  this.kurimanju.z = Math.cos(time * .1 + 4) * 40;
 
-  this.soyuz2.x = Math.sin(time * 0.1 - .6) * 20;
-  this.soyuz2.z = Math.cos(time * 0.1 - .6) * 20;
-  // this.jetEngine.z = 20;
+  this.spacesafeboat.x = Math.sin(time * 0.1 - .6) * 20;
+  this.spacesafeboat.z = Math.cos(time * 0.1 - .6) * 20;
+  // this.kurimanju.z = 20;
 
-  // this.jetEngine.rotationX += 1;
-  this.jetEngine.rotationY += 5;
-  // this.jetEngine.rotationZ += .02
+  // this.kurimanju.rotationX += .03;
+  this.kurimanju.rotationY += .1;
+  // this.kurimanju.rotationZ += .02
 
-  // this.soyuz2.rotationX += 1
-  this.soyuz2.rotationY += 5
-  // this.soyuz2.rotationZ += .02
+  this.spacesafeboat.rotationX += .1
+  this.spacesafeboat.rotationY += .5
+  this.spacesafeboat.rotationZ += .02
 
   // this.camera.x = Math.sin(time/4) * 50;
   this.camera.y = Math.cos(time / 4) * 10;
-  // this.camera.z = Math.sin(time/4) * 50;
+  //
   this.camera.z = 50;
 
   this.renderer.render();

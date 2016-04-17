@@ -19,7 +19,7 @@ World.prototype.init = function () {
   ObjLoader.load(srcFiles1, (function(modelData){
     console.log(this)
     this.mesh = new Kurimanju(this.gl, this.scene3D, {modelData: modelData, specularIndex: 2});
-    this.mesh.setScale(.5);
+    this.mesh.setScale(.02);
     this.scene3D.addChild(this.mesh);
     this.enterFrameHandler();
   }).bind(this));
@@ -27,6 +27,9 @@ World.prototype.init = function () {
 World.prototype.enterFrameHandler = function () {
   this.mesh.rotationY += .3;
   this.mesh.rotationZ = 20;
+  var time = CLOCK.getElapsedTime() / 1000;
+  this.camera.z = (Math.sin(time/2) + 1) * 4;
+  // this.camera.x = Math.sin(time/3) * 4;
 
   this.renderer.render();
   requestAnimationFrame(this.enterFrameHandler.bind(this))

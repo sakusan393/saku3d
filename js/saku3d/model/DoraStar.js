@@ -39,12 +39,6 @@ DoraStar.prototype = {
 
     this.setDatguil();
   },
-  startTween:function(paramName, value){
-    clearInterval(this.tweenClearInterval);
-    this.tweenClearInterval = setInterval((function(){
-      this[paramName] += (value - this[paramName]) * 0.05;
-    }).bind(this), 1000/60)
-  },
   changeTextureHandler:function(value){
     console.log('changeTextureHandler:value : ', value%6, this.spikeRatio);
     var spikeRatio = 1.0;
@@ -95,15 +89,16 @@ DoraStar.prototype = {
         break;
       }
     }
-    console.log(TweenLite);
     TweenLite.to(this,.5,{spikeRatio:spikeRatio,detailRatio:detailRatio,gainRatio:gainRatio,timeRatio:timeRatio});
   },
   setDatguil: function(){
-    DatGuiUtil.gui.add(this,"spikeRatio",-2.0,2.0).listen();
-    DatGuiUtil.gui.add(this,"detailRatio",0.0,6.0).listen();
-    DatGuiUtil.gui.add(this,"gainRatio",-100.0,100.0).listen();
-    DatGuiUtil.gui.add(this,"timeRatio",0.0,10.0).listen();
-    var controller = DatGuiUtil.gui.add(this,"charactors",{Doraemon:0,Nobita:1,Shizuka:2,Gian:3,Suneo:4,Dorami:5});
+    var f = DatGuiUtil.gui.addFolder('Star');
+    f.open();
+    var controller = f.add(this,"charactors",{Doraemon:0,Nobita:1,Shizuka:2,Gian:3,Suneo:4,Dorami:5});
+    f.add(this,"spikeRatio",-2.0,2.0).listen();
+    f.add(this,"detailRatio",0.0,6.0).listen();
+    f.add(this,"gainRatio",-100.0,100.0).listen();
+    f.add(this,"timeRatio",0.0,10.0).listen();
     controller.onChange( (function(value){
       console.log(this.canvasTextureUtil, +value);
       this.charactors = +value;
