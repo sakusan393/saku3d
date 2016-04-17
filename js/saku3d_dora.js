@@ -10,21 +10,12 @@ World.prototype.init = function () {
   this.camera.lookPoint = [0,0,0];
   this.camera.fov = Math.PI / 180 * 45;
   this.light = new DirectionLight();
-  this.light.lightDirection = [0,0,3];
+  this.light.lightDirection = [3,2,4];
   this.scene3D = new Scene3D(this.gl, this.camera, this.light);
   this.renderer = new Renderer(this.gl, this.scene3D, SHADER_LOADER.loadedData);
 
   // this.canvasTextureUtil = new NoiseUtil(new SimplexNoise(), CLOCK);
   // var canvas = this.canvasTextureUtil.update();
-  var imageArray = ["images/nobi.fw.png","images/gian.fw.png","images/suneo.fw.png","images/dora.fw.png","images/dorami.fw.png","images/sizu.fw.png"];
-  this.canvasTextureUtil = new ImageFadeUtil(CLOCK,imageArray);
-  var canvas = this.canvasTextureUtil.update();
-
-  this.water = new WaterBall(this.gl,this.scene3D
-    , {modelData:  window.sphere(60, 60, 12.5, [0,0,1,1.0]), specularIndex: 1, programIndex:0});
-
-  this.mesh = new Earth(this.gl,this.scene3D
-    , {modelData:  window.sphere(60, 60,15), specularIndex: 1, textureCanvas:canvas});
 
   var srcFiles1 = {
     obj: "models/soyuz.obj",
@@ -45,22 +36,29 @@ World.prototype.init = function () {
       this.soyuz2.setScale(1);
 
       this.scene3D.addChild(this.soyuz2);
+      this.mesh = new DoraStar(this.gl,this.scene3D
+        , {modelData:  window.sphere(60, 60,15), specularIndex: 1});
       this.scene3D.addChild(this.mesh);
+      this.water = new WaterBall(this.gl,this.scene3D
+        , {modelData:  window.sphere(60, 60, 12.5, [0,0,1,1.0]), specularIndex: 1, programIndex:0});
       this.scene3D.addChild(this.water);
-      this.enterFrameHandler();
+      this.loadCompleted();
     }).bind(this));
 
 
   }).bind(this));
 
 }
+World.prototype.loadCompleted = function () {
+
+  this.enterFrameHandler();
+
+}
 World.prototype.enterFrameHandler = function () {
 
 
-  this.mesh.rotationY = 80;
-  this.mesh.rotationX += .002;
-  var canvas = this.canvasTextureUtil.update();
-  this.mesh.setTexture(canvas);
+  this.mesh.rotationX = 0;
+  this.mesh.rotationY += .1;
 
   var time = CLOCK.getElapsedTime() / 1000;
   this.jetEngine.x = Math.sin(time * 1) * 24;
@@ -74,12 +72,12 @@ World.prototype.enterFrameHandler = function () {
 
   this.soyuz2.rotationX += .4;
   this.soyuz2.rotationY += .2;
-  this.soyuz2.rotationZ += .05
+  this.soyuz2.rotationZ += .01;
 
-  this.camera.x = Math.sin(time/4) * 50;
-  this.camera.y = Math.cos(time* .0010) * 10;
-  this.camera.z = Math.cos(time/4) * 50;
-  // this.camera.z = 80;
+  // this.camera.x = Math.sin(time/4) * 50;
+  this.camera.y = Math.cos(time / 4) * 10;
+  // this.camera.z = Math.sin(time/4) * 50;
+  this.camera.z = 50;
 
   this.renderer.render();
 
@@ -90,6 +88,7 @@ inherits(World, AbstractWorld);
 
 
 window.onload = function () {
+  DatGuiUtil.initialize();
 
   //テクスチャ読み込み後の処理
   var loadCompleteHandler = function () {

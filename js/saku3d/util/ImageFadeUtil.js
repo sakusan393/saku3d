@@ -31,40 +31,57 @@ ImageFadeUtil.prototype = {
     for(var i = 0,l = imageDataArray.length; i < l; i++){
       this.imageArray.push(ImageLoader.images[imageDataArray[i]])
     }
-    this.currentImage = ImageLoader.images[imageDataArray[0]];
-    this.prevImage = ImageLoader.images[imageDataArray[0]];
-    setInterval((function(){
-      this.counter++;
-    }).bind(this),5000)
+    this.currentImage = this.imageArray[0];
+    this.prevImage = this.imageArray[0];
+    this.clearIntervalIndex = 0;
+    this.startAutoTextureChange();
+    this.currentTime = this.CLOCK.getElapsedTime();
     this.update();
   },
+  getDeltaTime:function(){
+    var nowTime = this.CLOCK.getElapsedTime();
+    var deltaTime = nowTime - this.currentTime;
+    return deltaTime * 0.001;
+  },
+  startAutoTextureChange:function(){
+    clearInterval(this.clearIntervalIndex);
+    this.clearIntervalIndex = setInterval((function(){
+      this.counter++;
+    }).bind(this),5000)
+  },
+  changeTexture:function(textureIndex){
+
+  },
+
   fadeIn:function(){
-    if(this.alpha >= 1) return;
-    this.alpha += this.CLOCK.getDelta() * 0.001;
+    if(this.alpha == 1) return;
+    this.alpha += this.getDeltaTime();
     if(this.alpha > 1){
       this.alpha = 1;
       this.prevImage = this.currentImage;
     }
   },
   fadeOut:function(){
-    if(this.alpha <= 0) return;
-    this.alpha -= this.CLOCK.getDelta() * 0.003;
+    console.log(this.getDeltaTime());
+    if(this.alpha == 0) return;
+    this.alpha -= this.getDeltaTime();
     if(this.alpha < 0){
       this.alpha = 0;
       this.counter++;
       this.imageCounter++;
       var length = this.imageArray.length;
-      console.log(length)
-
+      console.log(this.imageCounter%length)
       this.currentImage = this.imageArray[this.imageCounter%length];
     }
   },
   update: function () {
+
     if(this.counter%2==0){
       this.fadeIn()
     }else{
       this.fadeOut()
     }
+    // console.log(this.currentImage)
     this.ctx.globalAlpha = 1;
     this.ctx.fillStyle = "rgb(255, 255, 255)";
     // this.ctx.fillStyle = "rgb(50, 50, 200)";
@@ -72,6 +89,7 @@ ImageFadeUtil.prototype = {
     // this.ctx.drawImage(this.prevImage,0,0);
     this.ctx.globalAlpha = this.alpha;
     this.ctx.drawImage(this.currentImage,0,0);
+    this.currentTime = this.CLOCK.getElapsedTime();
     return this.ctx.canvas;
   }
 };

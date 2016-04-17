@@ -20,6 +20,12 @@ Renderer = function (gl, scene, shaderData) {
   //attribute stride
   this.attStride = [];
 
+  this.PROGRAM_INDEX = {
+    BASIC: 0,
+    POINT: 1,
+    RANDOM: 2,
+  }
+
   this.mMatrix = mat4.identity(mat4.create());
   this.mvpMatrix = mat4.identity(mat4.create());
 
@@ -30,17 +36,17 @@ Renderer.prototype = {
 
   setProgramObject:function(programIndex){
     switch(programIndex){
-      case 0:{
+      case this.PROGRAM_INDEX.BASIC:{
         this.gl.useProgram(this.programs);
         this.currentUniLocation = this.uniLocation;
         break;
       }
-      case 1:{
+      case this.PROGRAM_INDEX.POINT:{
         this.gl.useProgram(this.programs_points);
         this.currentUniLocation = this.uniLocation_points;
         break;
       }
-      case 2:{
+      case this.PROGRAM_INDEX.RANDOM:{
         this.gl.useProgram(this.programs_random);
         this.currentUniLocation = this.uniLocation_random;
         break;
@@ -79,11 +85,25 @@ Renderer.prototype = {
         this.gl.uniform3fv(this.currentUniLocation.eyePosition, this.scene.camera.cameraPosition);
         this.gl.uniform1f(this.currentUniLocation.alpha, this.scene.meshList[i].mesh.alpha);
         this.gl.uniform1f(this.currentUniLocation.diffuseIntensity, this.scene.meshList[i].mesh.diffuseIntensity);
+        this.gl.uniform1f(this.currentUniLocation.specularIntensity, this.scene.meshList[i].mesh.specularIntensity);
         this.gl.uniform1f(this.currentUniLocation.time, this.scene.meshList[i].mesh.time);
         this.gl.uniform1i(this.currentUniLocation.specularIndex, this.scene.meshList[i].mesh.specularIndex);
         this.gl.uniform1i(this.currentUniLocation.isLightEnable, this.scene.meshList[i].mesh.isLightEnable);
         this.gl.uniform1i(this.currentUniLocation.isTexture, this.scene.meshList[i].mesh.isTexture);
         this.gl.uniform1i(this.currentUniLocation.isFlatShade, this.scene.meshList[i].mesh.isFlatShade);
+
+        //RANDOM専用のuniform
+        if(this.scene.meshList[i].mesh.programIndex == this.PROGRAM_INDEX.RANDOM){
+          var spikeRatio = this.scene.meshList[i].mesh.spikeRatio || 1;
+          this.gl.uniform1f(this.currentUniLocation.spikeRatio, spikeRatio);
+          var detailRatio = this.scene.meshList[i].mesh.detailRatio || 1;
+          this.gl.uniform1f(this.currentUniLocation.detailRatio, detailRatio);
+          var gainRatio = this.scene.meshList[i].mesh.gainRatio || 1;
+          this.gl.uniform1f(this.currentUniLocation.gainRatio, gainRatio);
+          var timeRatio = this.scene.meshList[i].mesh.timeRatio || 1;
+          this.gl.uniform1f(this.currentUniLocation.timeRatio, timeRatio);
+        }
+
 
         //裏面をカリング(描画しない)
         if (this.scene.meshList[i].mesh.cullingIndex == 1){
@@ -123,12 +143,24 @@ Renderer.prototype = {
     this.gl.flush();
   },
 
-  initWebgl: function () {
-
+  initExtension:function(){
+    this.extension = {};
+    //Flat shading
     if (!this.gl.getExtension('OES_standard_derivatives')) {
       console.log('OES_standard_derivatives is not supported');
       return;
     }
+    this.extension.angleInstancedArrays = this.gl.getExtension('ANGLE_instanced_arrays');
+    if (!this.extension.angleInstancedArrays) {
+      console.log('ANGLE_instanced_arrays is no supported');
+      return;
+    }
+  },
+
+  initWebgl: function () {
+
+    this.initExtension();
+
     //基本背景色の定義
     this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
     //深度テストの定義
@@ -174,10 +206,17 @@ Renderer.prototype = {
       "isTexture",
       "specularIndex",
       "diffuseIntensity",
+      "specularIntensity",
       "time"
     ];
+    var uniformPropertyForRandomArray = [
+      "spikeRatio",
+      "detailRatio",
+      "gainRatio",
+      "timeRatio",
+    ];
     this.setUniformLocation(this.uniLocation, this.programs, uniformPropertyArray);
-    this.setUniformLocation(this.uniLocation_random, this.programs_random, uniformPropertyArray);
+    this.setUniformLocation(this.uniLocation_random, this.programs_random, uniformPropertyArray.concat(uniformPropertyForRandomArray));
 
     var uniformPointsPropertyArray = [
       "texture",

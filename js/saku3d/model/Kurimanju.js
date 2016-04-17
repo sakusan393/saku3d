@@ -1,25 +1,25 @@
-Satellite = function (gl, scene3D, initObject) {
+Kurimanju = function (gl, scene3D, initObject) {
   //superクラスのコンストラクタを実行
-  // initObject.renderBefore = this.renderBefore;
   AbstractModel.call(this, gl, scene3D, initObject);
 
   this.initialize(initObject);
+  console.log(this.modelData)
 }
 
-Satellite.prototype = {
+Kurimanju.prototype = {
   initialize: function (initObject) {
     this.isLightEnable = true;
     this.isTexture = false;
-    this.isFlatShade = true;
-    this.alpha = 1;
-    this.diffuseIntensity = 1;
-    this.specularIntensity = .5;
-    if (initObject && initObject.specularIndex) this.specularIndex = initObject.specularIndex;
+    this.isFlatShade = false;
+    this.alpha = 2.0;
+    this.diffuseIntensity = 1.0;
+    this.specularIntensity = 1.0;
     this.specularIndex = 2;
+    if (initObject && initObject.specularIndex) this.specularIndex = initObject.specularIndex;
     this.textureObject = {};
     this.textureObject.diffuse = null;
     this.textureObject.bump = null;
   }
 }
 
-inherits(Satellite,AbstractModel);
+inherits(Kurimanju,AbstractModel);

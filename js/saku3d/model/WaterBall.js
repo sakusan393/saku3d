@@ -9,7 +9,7 @@ WaterBall.prototype = {
   initialize: function (initObject) {
     this.isLightEnable = true;
     this.isPoint = false;
-    this.alpha = 0.8;
+    this.alpha = 0.6;
     this.diffuseIntensity = 1.0;
     this.specularIntensity = .2;
     this.specularIndex = 1;
@@ -23,7 +23,22 @@ WaterBall.prototype = {
     this.textureObject.bump = null;
     // var diffuseMapSource = ImageLoader.images["images/beans.jpg"];
     // this.initTexture(diffuseMapSource, "diffuse");
-  }
+
+    // this.setDatguil();
+  },
+  setDatguil: function(){
+    this.programIndex = 2;
+    this.spikeRatio = 1.0;
+    this.gainRatio = 1.0;
+    this.timeRatio = 1.0;
+    var folder = DatGuiUtil.gui.addFolder('Sea');
+    folder.add(this,"spikeRatio",-100.0,100.0);
+    folder.add(this,"gainRatio",-100.0,100.0);
+    folder.add(this,"timeRatio",0.0,10.0);
+  },
+  renderBefore:function(){
+    this.time = CLOCK.getElapsedTime() / 160000;
+  },
 };
 
 inherits(WaterBall,AbstractModel);

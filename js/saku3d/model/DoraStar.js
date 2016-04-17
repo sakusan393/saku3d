@@ -1,21 +1,27 @@
-Earth = function (gl, scene3D, initObject) {
+DoraStar = function (gl, scene3D, initObject) {
   //superクラスのコンストラクタを実行
   AbstractModel.call(this, gl, scene3D, initObject);
 
   this.initialize(initObject);
 };
 
-Earth.prototype = {
+DoraStar.prototype = {
   initialize: function (initObject) {
     this.isLightEnable = true;
     this.alpha = 1;
-    this.diffuseIntensity = 2.5;
-    this.specularIntensity = .2;
+    this.diffuseIntensity = 3;
+    this.specularIntensity = .8;
     this.specularIndex = 1;
     this.programIndex = 2;
     this.isFlatShade = true;
     this.isTexture = true;
     this.cullingIndex = 1;
+    this.spikeRatio = 1;
+    this.detailRatio = 1;
+    this.gainRatio = 1;
+    this.timeRatio = 1;
+    this.charactors = 0;
+
     if (initObject && initObject.specularIndex) this.specularIndex = initObject.specularIndex;
     this.textureObject = {};
     this.textureObject.diffuse = null;
@@ -23,8 +29,24 @@ Earth.prototype = {
     var diffuseMapSource = ImageLoader.images["images/dora.png"];
     // this.initTexture(diffuseMapSource, "diffuse");
 
-    //
-    this.initTexture(initObject.textureCanvas, "diffuse");
+
+    var imageArray = ["images/dora.fw.png","images/nobi.fw.png","images/sizu.fw.png","images/gian.fw.png","images/suneo.fw.png","images/dorami.fw.png"];
+    this.canvasTextureUtil = new ImageFadeUtil(CLOCK,imageArray);
+    var canvas = this.canvasTextureUtil.update();
+    this.initTexture(canvas, "diffuse");
+    this.setTexture(canvas);
+
+    this.setDatguil();
+  },
+  setDatguil: function(){
+    DatGuiUtil.gui.add(this,"spikeRatio",-2.0,2.0);
+    DatGuiUtil.gui.add(this,"detailRatio",0.0,6.0);
+    DatGuiUtil.gui.add(this,"gainRatio",-100.0,100.0);
+    DatGuiUtil.gui.add(this,"timeRatio",0.0,10.0);
+    var controller = DatGuiUtil.gui.add(this,"charactors",{Doraemon:0,Nobita:1,Shizuka:2,Gian:3,Suneo:4,Dorami:5})
+    controller.onChange( (function(value){
+      console.log(this.canvasTextureUtil, +value);
+    }).bind(this));
   },
   setTexture: function(img){
     this.initTexture(img, "diffuse");
@@ -44,9 +66,10 @@ Earth.prototype = {
     this.gl.bindTexture(this.gl.TEXTURE_2D, null);
   },
   renderBefore:function(){
+    this.setTexture(this.canvasTextureUtil.update());
     this.time = CLOCK.getElapsedTime() / 160000;
   }
 };
 
-inherits(Earth,AbstractModel);
+inherits(DoraStar,AbstractModel);
 

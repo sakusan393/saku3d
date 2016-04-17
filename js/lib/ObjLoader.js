@@ -270,7 +270,7 @@ var ObjParser = {};
         indexes[indexCounter] = indexCounter;
         indexCounter++;
 
-        var c = vec4.fromValues(mtl[currentMtlName].kd[0], mtl[currentMtlName].kd[1], mtl[currentMtlName].kd[2],0.5);
+        var c = vec4.fromValues(mtl[currentMtlName].kd[0], mtl[currentMtlName].kd[1], mtl[currentMtlName].kd[2],mtl[currentMtlName].d);
         colors.set(c, triangleCount * 12);
         colors.set(c, triangleCount * 12 + 4);
         colors.set(c, triangleCount * 12 + 8);

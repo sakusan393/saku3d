@@ -204,14 +204,19 @@ float turbulence( vec3 p ) {
   return t;
 }
 
+uniform float spikeRatio;
+uniform float detailRatio;
+uniform float gainRatio;
+uniform float timeRatio;
+
+float detail = 0.5;
+float gain = 2.0;
 
 void main(){
-    float spikeRatio = 0.5;
-    float hightGain = 2.0;
     float lowGain = 10.0;
     vTexCoord = texCoord;
-    noise = 10.0 *  -.10 * turbulence( spikeRatio * normal + time );
-    float b = hightGain * pnoise( 0.05 * position + vec3( 20.0 * time ), vec3( 100.0 ) );
+    noise = 10.0 * spikeRatio  *  -.10 * turbulence( detail * normal * detailRatio + time * timeRatio );
+    float b = gain * gainRatio * pnoise( 0.05 * position + vec3( 20.0 * time  * timeRatio), vec3( 100.0 ) );
     float displacement = - lowGain * noise + b;
 
     vec3 newPosition = position + normal * displacement;
