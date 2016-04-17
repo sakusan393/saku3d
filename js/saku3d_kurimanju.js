@@ -17,7 +17,7 @@ World.prototype.init = function () {
     mtl: "models/kurimanju.mtl"
   };
   ObjLoader.load(srcFiles1, (function(modelData){
-    this.mesh = new Kurimanju(this.gl, this.scene3D, {modelData: modelData, specularIndex: 2});
+    this.mesh = new Kurimanju(this.gl, this.scene3D, {modelData: modelData, specularIndex: 2,isAutoIncrement:true});
     this.mesh.setScale(.02);
     this.scene3D.addChild(this.mesh);
     this.enterFrameHandler();

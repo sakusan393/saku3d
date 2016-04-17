@@ -20,13 +20,18 @@ Kurimanju.prototype = {
     this.textureObject.diffuse = null;
     this.textureObject.bump = null;
     this.instanceLength = 1;
+    this.maxInstanceLength = 1000000;
+    this.isAutoIncrement = false;
+    if (initObject && initObject.maxInstanceLength) this.maxInstanceLength = initObject.maxInstanceLength;
+    if (initObject && initObject.instanceLength) this.instanceLength = initObject.instanceLength;
+    if (initObject && initObject.isAutoIncrement) this.isAutoIncrement = initObject.isAutoIncrement;
 
     this.createInstancedArray();
   },
   setDatguil: function(){
     var f = DatGuiUtil.gui.addFolder('Kurimanju');
     f.open();
-    var control = f.add(this,"instanceLength",1,1000000).listen();
+    var control = f.add(this,"instanceLength",1,this.maxInstanceLength).listen();
     control.onChange( (function(value){
       this.stopAutoIncrement();
     }).bind(this));
@@ -50,7 +55,7 @@ Kurimanju.prototype = {
     this.instancedArrayRandomSeed = [];
     this.offsetPosition = 3;
     console.log(this.modelData.p.length);
-    for(var i = 0; i < 1000000; i++){
+    for(var i = 0; i < this.maxInstanceLength; i++){
       this.instancedArrayPosition[i * this.offsetPosition] = (this.calcNormal()-.5) * 200;
       this.instancedArrayPosition[i * this.offsetPosition + 1] = (this.calcNormal()-.5) * 200;
       this.instancedArrayPosition[i * this.offsetPosition + 2] = (this.calcNormal()-.5) * 200;
@@ -58,10 +63,12 @@ Kurimanju.prototype = {
     }
     this.setDatguil();
 
-    this.clearIndex = setInterval((function(){
-      this.instanceLength *= 2;
-      if(this.instanceLength > 1000000) this.instanceLength = 2;
-    }).bind(this),1000);
+    if(this.isAutoIncrement){
+      this.clearIndex = setInterval((function(){
+        this.instanceLength *= 2;
+        if(this.instanceLength > this.maxInstanceLength) this.instanceLength = 2;
+      }).bind(this),1000);
+    }
   },
   renderBefore:function(){
     this.time = CLOCK.getElapsedTime() / 300;

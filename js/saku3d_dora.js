@@ -22,7 +22,14 @@ World.prototype.init = function () {
     mtl: "models/kurimanju.mtl"
   };
   ObjLoader.load(srcFiles1, (function(modelData) {
-    this.kurimanju = new Kurimanju(this.gl, this.scene3D, {modelData: modelData, specularIndex: 1});
+    this.kurimanju = new Kurimanju(this.gl, this.scene3D
+      , {
+        modelData: modelData,
+        specularIndex: 1,
+        maxInstanceLength:100000,
+        instanceLength:10000,
+        isAutoIncrement:false
+      });
     this.kurimanju.setScale(.12);
 
     this.scene3D.addChild(this.kurimanju);
@@ -61,8 +68,8 @@ World.prototype.enterFrameHandler = function () {
   this.mesh.rotationY += .1;
 
   var time = CLOCK.getElapsedTime() / 1000;
-  this.kurimanju.x = Math.sin(time * .1 + 4) * 40;
-  this.kurimanju.z = Math.cos(time * .1 + 4) * 40;
+  this.kurimanju.x = Math.sin(time * .1 + 3) * 40;
+  this.kurimanju.z = Math.cos(time * .1 + 3) * 40;
 
   this.spacesafeboat.x = Math.sin(time * 0.1 - .6) * 20;
   this.spacesafeboat.z = Math.cos(time * 0.1 - .6) * 20;
