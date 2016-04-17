@@ -31,6 +31,7 @@ void main(){
     vec3 eyeDirection = normalize(eyePosition - lookPoint);
     vec3 invEye = normalize(normalize(invMatrix * vec4(eyeDirection, 1.0)).xyz);
     vec3 invLight = (invMatrix * vec4(lightDirection,0.0)).xyz;
+    vec3 light;
     vec3 halfVector = normalize(invLight + invEye);
 
     float specular = 0.0;
@@ -47,11 +48,13 @@ void main(){
       vec3 dx = dFdx(vPosition.xyz);
       vec3 dy = dFdy(vPosition.xyz);
       n = normalize(cross(normalize(dx), normalize(dy)));
+      light =  normalize(lightDirection);
     }else{
       n = vNormal;
+      light =  normalize(invLight);
     }
 
-    float diff = clamp(dot(n, normalize(lightDirection)) ,0.3,1.0)* 1. * diffuseIntensity;
+    float diff = clamp(dot(n, light) ,0.3,1.0)* 1. * diffuseIntensity;
 
     if(bool(isTexture)){
       vec4 col = texture2D(texture, vTexCoord);

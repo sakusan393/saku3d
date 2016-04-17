@@ -18,11 +18,11 @@ World.prototype.init = function () {
   // var canvas = this.canvasTextureUtil.update();
 
   var srcFiles1 = {
-    obj: "models/soyuz.obj",
-    mtl: "models/soyuz.mtl"
+    obj: "models/kurimanju.obj",
+    mtl: "models/kurimanju.mtl"
   };
   ObjLoader.load(srcFiles1, (function(modelData) {
-    this.jetEngine = new Satellite(this.gl, this.scene3D, {modelData: modelData, specularIndex: 1});
+    this.jetEngine = new Kurimanju(this.gl, this.scene3D, {modelData: modelData, specularIndex: 1});
     this.jetEngine.setScale(5);
 
     this.scene3D.addChild(this.jetEngine);
@@ -33,7 +33,7 @@ World.prototype.init = function () {
     };
     ObjLoader.load(srcFiles2, (function(modelData) {
       this.soyuz2 = new Satellite(this.gl, this.scene3D, {modelData: modelData, specularIndex: 1});
-      this.soyuz2.setScale(1);
+      this.soyuz2.setScale(1.5);
 
       this.scene3D.addChild(this.soyuz2);
       this.mesh = new DoraStar(this.gl,this.scene3D
@@ -63,16 +63,18 @@ World.prototype.enterFrameHandler = function () {
   var time = CLOCK.getElapsedTime() / 1000;
   this.jetEngine.x = Math.sin(time * 1) * 24;
   this.jetEngine.z = Math.cos(time * 1) * 24;
-  this.soyuz2.x = Math.sin(time * 0.1) * 20;
-  this.soyuz2.z = Math.cos(time * 0.1) * 20;
-  // this.jetEngine.z = 20;
-  this.jetEngine.rotationX += 1;
-  this.jetEngine.rotationY += .5;
-  this.jetEngine.rotationZ += .02
 
-  this.soyuz2.rotationX += .4;
-  this.soyuz2.rotationY += .2;
-  this.soyuz2.rotationZ += .01;
+  this.soyuz2.x = Math.sin(time * 0.1 - .6) * 20;
+  this.soyuz2.z = Math.cos(time * 0.1 - .6) * 20;
+  // this.jetEngine.z = 20;
+
+  // this.jetEngine.rotationX += 1;
+  this.jetEngine.rotationY += 5;
+  // this.jetEngine.rotationZ += .02
+
+  // this.soyuz2.rotationX += 1
+  this.soyuz2.rotationY += 5
+  // this.soyuz2.rotationZ += .02
 
   // this.camera.x = Math.sin(time/4) * 50;
   this.camera.y = Math.cos(time / 4) * 10;
