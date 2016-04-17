@@ -17,7 +17,6 @@ World.prototype.init = function () {
     mtl: "models/kurimanju.mtl"
   };
   ObjLoader.load(srcFiles1, (function(modelData){
-    console.log(this)
     this.mesh = new Kurimanju(this.gl, this.scene3D, {modelData: modelData, specularIndex: 2});
     this.mesh.setScale(.02);
     this.scene3D.addChild(this.mesh);
@@ -39,7 +38,7 @@ inherits(World, AbstractWorld);
 
 
 window.onload = function () {
-
+  DatGuiUtil.initialize();
 
   SHADER_LOADER.load(function(data){
     SHADER_LOADER.loadedData = data;
