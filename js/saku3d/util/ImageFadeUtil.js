@@ -14,6 +14,7 @@ ImageFadeUtil = function (clock,imageDataArray) {
   this.imageElement = new Image();
   this.imageElement.width = this.imageWidth;
   this.imageElement.height = this.imageHeight;
+  this.callback = null;
 
   this.initialize(imageDataArray);
 };
@@ -34,23 +35,29 @@ ImageFadeUtil.prototype = {
     this.currentImage = this.imageArray[0];
     this.prevImage = this.imageArray[0];
     this.clearIntervalIndex = 0;
-    this.startAutoTextureChange();
+    this.startAutoTextureChange(3000);
     this.currentTime = this.CLOCK.getElapsedTime();
     this.update();
+  },
+  setCallback:function(callback){
+    this.callback = callback;
   },
   getDeltaTime:function(){
     var nowTime = this.CLOCK.getElapsedTime();
     var deltaTime = nowTime - this.currentTime;
-    return deltaTime * 0.001;
+    return deltaTime * 0.002;
   },
-  startAutoTextureChange:function(){
+  startAutoTextureChange:function(diffTime){
     clearInterval(this.clearIntervalIndex);
     this.clearIntervalIndex = setInterval((function(){
       this.counter++;
-    }).bind(this),5000)
+    }).bind(this),diffTime)
   },
-  changeTexture:function(textureIndex){
-
+  setTextureIndex:function(textureIndex){
+    clearInterval(this.clearIntervalIndex);
+    this.counter = 1;
+    this.imageCounter = textureIndex;
+    // this.startAutoTextureChange(10000);
   },
 
   fadeIn:function(){
@@ -62,7 +69,6 @@ ImageFadeUtil.prototype = {
     }
   },
   fadeOut:function(){
-    console.log(this.getDeltaTime());
     if(this.alpha == 0) return;
     this.alpha -= this.getDeltaTime();
     if(this.alpha < 0){
@@ -72,6 +78,7 @@ ImageFadeUtil.prototype = {
       var length = this.imageArray.length;
       console.log(this.imageCounter%length)
       this.currentImage = this.imageArray[this.imageCounter%length];
+      if(this.callback) this.callback(this.imageCounter);
     }
   },
   update: function () {

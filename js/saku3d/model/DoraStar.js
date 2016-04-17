@@ -10,8 +10,8 @@ DoraStar.prototype = {
     this.isLightEnable = true;
     this.alpha = 1;
     this.diffuseIntensity = 3;
-    this.specularIntensity = .8;
-    this.specularIndex = 1;
+    this.specularIntensity = .2;
+    this.specularIndex = 2;
     this.programIndex = 2;
     this.isFlatShade = true;
     this.isTexture = true;
@@ -35,17 +35,79 @@ DoraStar.prototype = {
     var canvas = this.canvasTextureUtil.update();
     this.initTexture(canvas, "diffuse");
     this.setTexture(canvas);
+    this.canvasTextureUtil.setCallback(this.changeTextureHandler.bind(this))
 
     this.setDatguil();
   },
+  startTween:function(paramName, value){
+    clearInterval(this.tweenClearInterval);
+    this.tweenClearInterval = setInterval((function(){
+      this[paramName] += (value - this[paramName]) * 0.05;
+    }).bind(this), 1000/60)
+  },
+  changeTextureHandler:function(value){
+    console.log('changeTextureHandler:value : ', value%6, this.spikeRatio);
+    var spikeRatio = 1.0;
+    var detailRatio = 1.0;
+    var gainRatio = 1.0;
+    var timeRatio = 1.0;
+    switch (value%6){
+      case 0:{
+        spikeRatio = 1.0;
+        detailRatio = 1.0;
+        gainRatio = 1.0;
+        timeRatio = 1.0;
+        break;
+      }
+      case 1:{
+        spikeRatio = 1.3;
+        detailRatio = 1.2;
+        gainRatio = 1.0;
+        timeRatio = 0.5;
+        break;
+      }
+      case 2:{
+        spikeRatio = 1.2;
+        detailRatio = 1.1;
+        gainRatio = 1.0;
+        timeRatio = 1.0;
+        break;
+      }
+      case 3:{
+        spikeRatio = .9;
+        detailRatio = 0.7;
+        gainRatio = 1.0;
+        timeRatio = 2.0;
+        break;
+      }
+      case 4:{
+        spikeRatio = 1.5;
+        detailRatio = 1.8;
+        gainRatio = 1.0;
+        timeRatio = 1.5;
+        break;
+      }
+      case 5:{
+        spikeRatio = 1.0;
+        detailRatio = 1.1;
+        gainRatio = 1.0;
+        timeRatio = 1.0;
+        break;
+      }
+    }
+    console.log(TweenLite);
+    TweenLite.to(this,.5,{spikeRatio:spikeRatio,detailRatio:detailRatio,gainRatio:gainRatio,timeRatio:timeRatio});
+  },
   setDatguil: function(){
-    DatGuiUtil.gui.add(this,"spikeRatio",-2.0,2.0);
-    DatGuiUtil.gui.add(this,"detailRatio",0.0,6.0);
-    DatGuiUtil.gui.add(this,"gainRatio",-100.0,100.0);
-    DatGuiUtil.gui.add(this,"timeRatio",0.0,10.0);
-    var controller = DatGuiUtil.gui.add(this,"charactors",{Doraemon:0,Nobita:1,Shizuka:2,Gian:3,Suneo:4,Dorami:5})
+    DatGuiUtil.gui.add(this,"spikeRatio",-2.0,2.0).listen();
+    DatGuiUtil.gui.add(this,"detailRatio",0.0,6.0).listen();
+    DatGuiUtil.gui.add(this,"gainRatio",-100.0,100.0).listen();
+    DatGuiUtil.gui.add(this,"timeRatio",0.0,10.0).listen();
+    var controller = DatGuiUtil.gui.add(this,"charactors",{Doraemon:0,Nobita:1,Shizuka:2,Gian:3,Suneo:4,Dorami:5});
     controller.onChange( (function(value){
       console.log(this.canvasTextureUtil, +value);
+      this.charactors = +value;
+      this.canvasTextureUtil.setTextureIndex(value - 1)
     }).bind(this));
   },
   setTexture: function(img){
