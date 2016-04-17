@@ -10,6 +10,7 @@ Scene3D.prototype = {
   addChild: function (mesh) {
     var meshIndexBuffer;
     var meshVboList = [];
+    var meshVboList_InstancedArray = [];
     if (mesh.modelData.p) {
       meshVboList[0] = this.generateVBO(mesh.modelData.p);
     }
@@ -22,14 +23,19 @@ Scene3D.prototype = {
     if (mesh.modelData.c) {
       meshVboList[3] = this.generateVBO(mesh.modelData.c);
     }
-    if (mesh.modelData.instancedArrayPosition) {
-      meshVboList[4] = this.generateVBO(mesh.modelData.instancedArrayPosition);
-      console.log("aa",meshVboList[4],mesh.modelData.instancedArrayPosition)
-    }
     if (mesh.modelData.i) {
       meshIndexBuffer = this.generateIBO(mesh.modelData.i);
     }
-    var obj = {"vertexBufferList": meshVboList, "indexBuffer": meshIndexBuffer, "mesh": mesh};
+    //Angle instanced Array
+    if (mesh.isInstancedArray) {
+      if(mesh.instancedArrayPosition){
+        meshVboList_InstancedArray[0] = this.generateVBO(mesh.instancedArrayPosition);
+      }
+      if(mesh.instancedArrayRandomSeed){
+        meshVboList_InstancedArray[1] = this.generateVBO(mesh.instancedArrayRandomSeed);
+      }
+    }
+    var obj = {"vertexBufferList": meshVboList,"meshVboList_InstancedArray": meshVboList_InstancedArray, "indexBuffer": meshIndexBuffer, "mesh": mesh};
     mesh.index = this.meshList.length;
     this.meshList.push(obj);
   },

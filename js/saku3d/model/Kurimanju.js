@@ -14,11 +14,11 @@ Kurimanju.prototype = {
     this.diffuseIntensity = 1.0;
     this.specularIntensity = 1.0;
     this.specularIndex = 2;
+    this.isInstancedArray = true;
     if (initObject && initObject.specularIndex) this.specularIndex = initObject.specularIndex;
     this.textureObject = {};
     this.textureObject.diffuse = null;
     this.textureObject.bump = null;
-    this.useAngleInstancedArray = true;
     this.instanceLength = 10000;
 
     this.createInstancedArray();
@@ -26,7 +26,7 @@ Kurimanju.prototype = {
   setDatguil: function(){
     var f = DatGuiUtil.gui.addFolder('Kurimanju');
     f.open();
-    f.add(this,"instanceLength",10,100000);
+    f.add(this,"instanceLength",10,this.instanceLength * 100);
   },
 
   calcNormal: function calcNormal() {
@@ -40,16 +40,21 @@ Kurimanju.prototype = {
   },
 
   createInstancedArray: function(){
-    this.modelData.instancedArrayPosition = [];
+    this.instancedArrayPosition = [];
+    this.instancedArrayRandomSeed = [];
     this.offsetPosition = 3;
     console.log(this.modelData.p.length);
-    for(var i = 0; i < this.instanceLength*100; i++){
-      this.modelData.instancedArrayPosition[i * this.offsetPosition] = (this.calcNormal()-.5) * 200;
-      this.modelData.instancedArrayPosition[i * this.offsetPosition + 1] = (this.calcNormal()-.5) * 200;
-      this.modelData.instancedArrayPosition[i * this.offsetPosition + 2] = (this.calcNormal()-.5) * 200;
+    for(var i = 0; i < this.instanceLength * 100; i++){
+      this.instancedArrayPosition[i * this.offsetPosition] = (this.calcNormal()-.5) * 200;
+      this.instancedArrayPosition[i * this.offsetPosition + 1] = (this.calcNormal()-.5) * 200;
+      this.instancedArrayPosition[i * this.offsetPosition + 2] = (this.calcNormal()-.5) * 200;
+      this.instancedArrayRandomSeed[i] = Math.random();
     }
     this.setDatguil();
   },
+  renderBefore:function(){
+    this.time = CLOCK.getElapsedTime() / 300;
+  }
 }
 
 inherits(Kurimanju,AbstractModel);

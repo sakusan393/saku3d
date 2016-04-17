@@ -57,7 +57,7 @@ DoraStar.prototype = {
         spikeRatio = 1.3;
         detailRatio = 1.2;
         gainRatio = 1.0;
-        timeRatio = 0.5;
+        timeRatio = 1.0;
         break;
       }
       case 2:{
@@ -71,14 +71,14 @@ DoraStar.prototype = {
         spikeRatio = .9;
         detailRatio = 0.7;
         gainRatio = 1.0;
-        timeRatio = 2.0;
+        timeRatio = 1.0;
         break;
       }
       case 4:{
         spikeRatio = 1.5;
         detailRatio = 1.8;
         gainRatio = 1.0;
-        timeRatio = 1.5;
+        timeRatio = 1.0;
         break;
       }
       case 5:{

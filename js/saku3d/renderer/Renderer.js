@@ -15,10 +15,12 @@ Renderer = function (gl, scene, shaderData) {
 
   //attribute location
   this.attLocation = [];
+  this.attLocation_instancedArray = [];
   this.attLocation_points = [];
 
   //attribute stride
   this.attStride = [];
+  this.attStride_instancedArray = [];
 
   this.PROGRAM_INDEX = {
     BASIC: 0,
@@ -87,10 +89,12 @@ Renderer.prototype = {
         this.gl.uniform1f(this.currentUniLocation.diffuseIntensity, this.scene.meshList[i].mesh.diffuseIntensity);
         this.gl.uniform1f(this.currentUniLocation.specularIntensity, this.scene.meshList[i].mesh.specularIntensity);
         this.gl.uniform1f(this.currentUniLocation.time, this.scene.meshList[i].mesh.time);
+        this.gl.uniform1f(this.currentUniLocation.randomSeeed, this.scene.meshList[i].mesh.randomSeeed);
         this.gl.uniform1i(this.currentUniLocation.specularIndex, this.scene.meshList[i].mesh.specularIndex);
         this.gl.uniform1i(this.currentUniLocation.isLightEnable, this.scene.meshList[i].mesh.isLightEnable);
         this.gl.uniform1i(this.currentUniLocation.isTexture, this.scene.meshList[i].mesh.isTexture);
         this.gl.uniform1i(this.currentUniLocation.isFlatShade, this.scene.meshList[i].mesh.isFlatShade);
+        this.gl.uniform1i(this.currentUniLocation.isInstancedArray, this.scene.meshList[i].mesh.isInstancedArray);
 
         //RANDOM専用のuniform
         if(this.scene.meshList[i].mesh.programIndex == this.PROGRAM_INDEX.RANDOM){
@@ -115,6 +119,9 @@ Renderer.prototype = {
         }
 
         this.setAttribute(this.scene.meshList[i].vertexBufferList, this.attLocation, this.attStride, this.scene.meshList[i].indexBuffer);
+        if(this.scene.meshList[i].mesh.isInstancedArray){
+          this.setAttribute_instancedArray(this.scene.meshList[i].meshVboList_InstancedArray, this.attLocation_instancedArray, this.attStride_instancedArray)
+        }
         this.scene.meshList[i].mesh.render();
 
         mat4.multiply(this.mvpMatrix, this.scene.camera.vpMatrix, this.scene.meshList[i].mesh.mMatrix);
@@ -132,7 +139,8 @@ Renderer.prototype = {
           this.gl.bindTexture(this.gl.TEXTURE_2D, this.scene.meshList[i].mesh.textureObject.diffuse);
         }
 
-        if(this.scene.meshList[i].mesh.useAngleInstancedArray){
+        // Angle Instanced Array
+        if(this.scene.meshList[i].mesh.isInstancedArray){
           this.extension.angleInstancedArrays.drawElementsInstancedANGLE(this.gl.TRIANGLES, this.scene.meshList[i].mesh.modelData.i.length
             , this.gl.UNSIGNED_SHORT, 0, this.scene.meshList[i].mesh.instanceLength );
         }
@@ -210,10 +218,12 @@ Renderer.prototype = {
       "isLightEnable",
       "isFlatShade",
       "isTexture",
+      "isInstancedArray",
       "specularIndex",
       "diffuseIntensity",
       "specularIntensity",
-      "time"
+      "time",
+      "randomSeed",
     ];
     var uniformPropertyForRandomArray = [
       "spikeRatio",
@@ -235,16 +245,21 @@ Renderer.prototype = {
     this.attLocation[1] = this.gl.getAttribLocation(this.programs, 'normal');
     this.attLocation[2] = this.gl.getAttribLocation(this.programs, 'texCoord');
     this.attLocation[3] = this.gl.getAttribLocation(this.programs, 'color');
-    this.attLocation[4] = this.gl.getAttribLocation(this.programs, 'instancedArrayPosition');
 
     this.attLocation_points[0] = this.gl.getAttribLocation(this.programs_points, 'position');
+
 
     // attributeのストライドを配列に格納しておく
     this.attStride[0] = 3;
     this.attStride[1] = 3;
     this.attStride[2] = 2;
     this.attStride[3] = 4;
-    this.attStride[4] = 3;
+
+    //Angle instanced Array用
+    this.attLocation_instancedArray[0] = this.gl.getAttribLocation(this.programs, 'instancedArrayPosition');
+    this.attLocation_instancedArray[1] = this.gl.getAttribLocation(this.programs, 'instancedArrayRandomSeed');
+    this.attStride_instancedArray[0] = 3;
+    this.attStride_instancedArray[1] = 1;
 
     //モデルに左右しない固定情報を先に転送する
     this.gl.useProgram(this.programs);
@@ -296,13 +311,24 @@ Renderer.prototype = {
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vbo[i]);
         this.gl.enableVertexAttribArray(attL[i]);
         this.gl.vertexAttribPointer(attL[i], attS[i], this.gl.FLOAT, false, 0, 0);
-        if(i == 4){
-          this.extension.angleInstancedArrays.vertexAttribDivisorANGLE(attL[i], 1);
-        }
       }
     }
     if (ibo) {
       this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, ibo);
+    }
+  },
+  setAttribute_instancedArray: function (vbo, attL, attS) {
+    var l = attL.length
+    for (var j = 0; j < l; j++) {
+      this.gl.disableVertexAttribArray(attL[j]);
+    }
+    for (var i in vbo) {
+      if (vbo[i]) {
+        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vbo[i]);
+        this.gl.enableVertexAttribArray(attL[i]);
+        this.gl.vertexAttribPointer(attL[i], attS[i], this.gl.FLOAT, false, 0, 0);
+        this.extension.angleInstancedArrays.vertexAttribDivisorANGLE(attL[i], 1);
+      }
     }
   },
 

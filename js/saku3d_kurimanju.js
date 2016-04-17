@@ -24,12 +24,12 @@ World.prototype.init = function () {
   }).bind(this));
 }
 World.prototype.enterFrameHandler = function () {
-  this.mesh.rotationY += .1;
-  this.mesh.rotationZ += .01;
-  this.mesh.rotationX += .02;
   var time = CLOCK.getElapsedTime() / 1000;
+  this.mesh.rotationY += .1;
+  this.mesh.rotationZ = (Math.sin(time/2) + 1) * 4;
+  // this.mesh.rotationX += .02;
   this.camera.z = (Math.sin(time/2) + 1) * 4;
-  // this.camera.x = Math.sin(time/3) * 4;
+  // this.camera.z = 20;
 
   this.renderer.render();
   requestAnimationFrame(this.enterFrameHandler.bind(this))

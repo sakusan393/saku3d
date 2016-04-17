@@ -10,9 +10,14 @@ AbstractModel = function (gl, scene3D, initObject) {
   this.isTexture = false;
   this.diffuseIntensity = 1.0;
   this.specularIntensity = 1.0;
+  this.isInstancedArray = false;
   this.alpha = 1.0;
   this.mMatrix = mat4.identity(mat4.create());
   this.invMatrix = mat4.identity(mat4.create());
+
+  // Angle instanced Array
+  this.instancedArrayPosition = null;
+  this.instancedArrayRandomSeed = null;
 
   //instance member
   this.cullingIndex = 0;//0:none, 1:back, 2:Front
@@ -21,6 +26,7 @@ AbstractModel = function (gl, scene3D, initObject) {
   this.lookTarget = null;
   this.PI = Math.PI;
   this.time = 0;
+  this.randomSeeed = Math.random();
 
   this.x = 0;
   this.y = 0;
