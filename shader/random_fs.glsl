@@ -13,7 +13,7 @@ varying vec4 mvpPosition;
 uniform vec3 ambientColor;
 uniform mat4 invMatrix;
 uniform vec3 lightDirection;
-uniform vec3 eyePosition;
+uniform vec3 cameraPosition;
 uniform vec3 lookPoint;
 uniform bool isLightEnable;
 uniform bool isFlatShade;
@@ -32,7 +32,7 @@ void main(){
 
     vec4 destColor = vec4(1.0);
     if(isLightEnable){
-        vec3 eyeDirection = normalize(eyePosition - lookPoint);
+        vec3 eyeDirection = normalize(cameraPosition - lookPoint);
         vec3 invEye = normalize(normalize(invMatrix * vec4(eyeDirection, 1.0)).xyz);
         vec3 invLight = (invMatrix * vec4(lightDirection,0.0)).xyz;
         vec3 halfVector = normalize(invLight + invEye);

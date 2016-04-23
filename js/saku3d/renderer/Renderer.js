@@ -56,6 +56,89 @@ Renderer.prototype = {
     }
   },
 
+  renderPoint: function(mesh){
+    mesh.mesh.render();
+    mat4.multiply(this.mvpMatrix, this.scene.camera.vpMatrix, mesh.mesh.mMatrix);
+    this.setAttribute(mesh.vertexBufferList, this.attLocation_points, this.attStride, null);
+
+    this.gl.uniformMatrix4fv(this.currentUniLocation.mvpMatrix, false, this.mvpMatrix);
+    //明示的に0番目を指定
+    this.gl.uniform1i(this.currentUniLocation.texture, 0);
+    if (mesh.mesh.texture) this.gl.bindTexture(this.gl.TEXTURE_2D, mesh.mesh.texture);
+    this.gl.drawArrays(this.gl.POINTS, 0, mesh.mesh.modelData.p.length / 3);
+    this.gl.bindTexture(this.gl.TEXTURE_2D, null);
+  },
+
+  renderMesh: function(mesh){
+    mesh.mesh.render();
+    mat4.multiply(this.mvpMatrix, this.scene.camera.vpMatrix, mesh.mesh.mMatrix);
+
+    this.setAttribute(mesh.vertexBufferList, this.attLocation, this.attStride, mesh.indexBuffer);
+    if(mesh.mesh.isInstancedArray){
+      this.setAttribute_instancedArray(mesh.meshVboList_InstancedArray, this.attLocation_instancedArray, this.attStride_instancedArray)
+    }
+
+    //明示的に0番目を指定
+    if (mesh.mesh.textureObject.diffuse) {
+      this.gl.bindTexture(this.gl.TEXTURE_2D, mesh.mesh.textureObject.diffuse);
+    }
+
+    this.gl.uniform3fv(this.currentUniLocation.cameraPosition, this.scene.camera.cameraPosition);
+    this.gl.uniform1f(this.currentUniLocation.alpha, mesh.mesh.alpha);
+    this.gl.uniform1f(this.currentUniLocation.diffuseIntensity, mesh.mesh.diffuseIntensity);
+    this.gl.uniform1f(this.currentUniLocation.specularIntensity, mesh.mesh.specularIntensity);
+    this.gl.uniform1f(this.currentUniLocation.time, mesh.mesh.time);
+    this.gl.uniform1f(this.currentUniLocation.randomSeeed, mesh.mesh.randomSeeed);
+    this.gl.uniform1i(this.currentUniLocation.specularIndex, mesh.mesh.specularIndex);
+    this.gl.uniform1i(this.currentUniLocation.isLightEnable, mesh.mesh.isLightEnable);
+    this.gl.uniform1i(this.currentUniLocation.isTexture, mesh.mesh.isTexture);
+    this.gl.uniform1i(this.currentUniLocation.isFlatShade, mesh.mesh.isFlatShade);
+    this.gl.uniform1i(this.currentUniLocation.isInstancedArray, mesh.mesh.isInstancedArray);
+
+    //RANDOM専用のuniform
+    if(mesh.mesh.programIndex == this.PROGRAM_INDEX.RANDOM){
+      var spikeRatio = mesh.mesh.spikeRatio || 1;
+      this.gl.uniform1f(this.currentUniLocation.spikeRatio, spikeRatio);
+      var detailRatio = mesh.mesh.detailRatio || 1;
+      this.gl.uniform1f(this.currentUniLocation.detailRatio, detailRatio);
+      var gainRatio = mesh.mesh.gainRatio || 1;
+      this.gl.uniform1f(this.currentUniLocation.gainRatio, gainRatio);
+      var timeRatio = mesh.mesh.timeRatio || 1;
+      this.gl.uniform1f(this.currentUniLocation.timeRatio, timeRatio);
+    }
+
+    this.gl.uniformMatrix4fv(this.currentUniLocation.mMatrix, false, mesh.mesh.mMatrix);
+    this.gl.uniformMatrix4fv(this.currentUniLocation.mvpMatrix, false, this.mvpMatrix);
+    if (mesh.mesh.isLightEnable) {
+      this.gl.uniform3fv(this.currentUniLocation.lookPoint, this.scene.camera.lookPoint);
+      this.gl.uniformMatrix4fv(this.currentUniLocation.invMatrix, false, mesh.mesh.invMatrix);
+      this.gl.uniform3fv(this.currentUniLocation.lightDirection, this.scene.light.lightDirection);
+    }
+
+    //カリング(描画しない)
+    if (mesh.mesh.cullingIndex == 1){
+      this.gl.enable(this.gl.CULL_FACE);
+      this.gl.cullFace(this.gl.BACK);
+    }else if(mesh.mesh.cullingIndex == 2){
+      this.gl.enable(this.gl.CULL_FACE);
+      this.gl.cullFace(this.gl.FRONT);
+    }
+
+    // Angle Instanced Array
+    if(mesh.mesh.isInstancedArray){
+      this.extension.angleInstancedArrays.drawElementsInstancedANGLE(this.gl.TRIANGLES, mesh.mesh.modelData.i.length
+        , this.gl.UNSIGNED_SHORT, 0, mesh.mesh.instanceLength );
+    }
+    else{
+      this.gl.drawElements(this.gl.TRIANGLES, mesh.mesh.modelData.i.length, this.gl.UNSIGNED_SHORT, 0);
+    }
+    this.gl.bindTexture(this.gl.TEXTURE_2D, null);
+
+    if (mesh.mesh.cullingIndex != 0){
+      this.gl.disable(this.gl.CULL_FACE);
+    }
+  },
+
   render: function () {
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
@@ -71,87 +154,10 @@ Renderer.prototype = {
       this.setProgramObject(this.scene.meshList[i].mesh.programIndex);
 
       if (this.scene.meshList[i].mesh.isPoint) {
-        this.setAttribute(this.scene.meshList[i].vertexBufferList, this.attLocation_points, this.attStride, null);
-        this.scene.meshList[i].mesh.render();
-        mat4.multiply(this.mvpMatrix, this.scene.camera.vpMatrix, this.scene.meshList[i].mesh.mMatrix);
-
-        this.gl.uniformMatrix4fv(this.currentUniLocation.mvpMatrix, false, this.mvpMatrix);
-        //明示的に0番目を指定
-        //this.gl.uniform1i(this.currentUniLocation.texture, 0);
-        if (this.scene.meshList[i].mesh.texture) this.gl.bindTexture(this.gl.TEXTURE_2D, this.scene.meshList[i].mesh.texture);
-        this.gl.drawArrays(this.gl.POINTS, 0, this.scene.meshList[i].mesh.modelData.p.length / 3);
-        this.gl.bindTexture(this.gl.TEXTURE_2D, null);
+        this.renderPoint(this.scene.meshList[i]);
       }
       else {
-        // this.gl.useProgram(this.programs);
-        this.gl.uniform3fv(this.currentUniLocation.eyePosition, this.scene.camera.cameraPosition);
-        this.gl.uniform1f(this.currentUniLocation.alpha, this.scene.meshList[i].mesh.alpha);
-        this.gl.uniform1f(this.currentUniLocation.diffuseIntensity, this.scene.meshList[i].mesh.diffuseIntensity);
-        this.gl.uniform1f(this.currentUniLocation.specularIntensity, this.scene.meshList[i].mesh.specularIntensity);
-        this.gl.uniform1f(this.currentUniLocation.time, this.scene.meshList[i].mesh.time);
-        this.gl.uniform1f(this.currentUniLocation.randomSeeed, this.scene.meshList[i].mesh.randomSeeed);
-        this.gl.uniform1i(this.currentUniLocation.specularIndex, this.scene.meshList[i].mesh.specularIndex);
-        this.gl.uniform1i(this.currentUniLocation.isLightEnable, this.scene.meshList[i].mesh.isLightEnable);
-        this.gl.uniform1i(this.currentUniLocation.isTexture, this.scene.meshList[i].mesh.isTexture);
-        this.gl.uniform1i(this.currentUniLocation.isFlatShade, this.scene.meshList[i].mesh.isFlatShade);
-        this.gl.uniform1i(this.currentUniLocation.isInstancedArray, this.scene.meshList[i].mesh.isInstancedArray);
-
-        //RANDOM専用のuniform
-        if(this.scene.meshList[i].mesh.programIndex == this.PROGRAM_INDEX.RANDOM){
-          var spikeRatio = this.scene.meshList[i].mesh.spikeRatio || 1;
-          this.gl.uniform1f(this.currentUniLocation.spikeRatio, spikeRatio);
-          var detailRatio = this.scene.meshList[i].mesh.detailRatio || 1;
-          this.gl.uniform1f(this.currentUniLocation.detailRatio, detailRatio);
-          var gainRatio = this.scene.meshList[i].mesh.gainRatio || 1;
-          this.gl.uniform1f(this.currentUniLocation.gainRatio, gainRatio);
-          var timeRatio = this.scene.meshList[i].mesh.timeRatio || 1;
-          this.gl.uniform1f(this.currentUniLocation.timeRatio, timeRatio);
-        }
-
-
-        //カリング(描画しない)
-        if (this.scene.meshList[i].mesh.cullingIndex == 1){
-          this.gl.enable(this.gl.CULL_FACE);
-          this.gl.cullFace(this.gl.BACK);
-        }else if(this.scene.meshList[i].mesh.cullingIndex == 2){
-          this.gl.enable(this.gl.CULL_FACE);
-          this.gl.cullFace(this.gl.FRONT);
-        }
-
-        this.setAttribute(this.scene.meshList[i].vertexBufferList, this.attLocation, this.attStride, this.scene.meshList[i].indexBuffer);
-        if(this.scene.meshList[i].mesh.isInstancedArray){
-          this.setAttribute_instancedArray(this.scene.meshList[i].meshVboList_InstancedArray, this.attLocation_instancedArray, this.attStride_instancedArray)
-        }
-        this.scene.meshList[i].mesh.render();
-
-        mat4.multiply(this.mvpMatrix, this.scene.camera.vpMatrix, this.scene.meshList[i].mesh.mMatrix);
-
-        this.gl.uniformMatrix4fv(this.currentUniLocation.mMatrix, false, this.scene.meshList[i].mesh.mMatrix);
-        this.gl.uniformMatrix4fv(this.currentUniLocation.mvpMatrix, false, this.mvpMatrix);
-        if (this.scene.meshList[i].mesh.isLightEnable) {
-          this.gl.uniform3fv(this.currentUniLocation.lookPoint, this.scene.camera.lookPoint);
-
-          this.gl.uniformMatrix4fv(this.currentUniLocation.invMatrix, false, this.scene.meshList[i].mesh.invMatrix);
-          this.gl.uniform3fv(this.currentUniLocation.lightDirection, this.scene.light.lightDirection);
-        }
-        //明示的に0番目を指定
-        if (this.scene.meshList[i].mesh.textureObject.diffuse) {
-          this.gl.bindTexture(this.gl.TEXTURE_2D, this.scene.meshList[i].mesh.textureObject.diffuse);
-        }
-
-        // Angle Instanced Array
-        if(this.scene.meshList[i].mesh.isInstancedArray){
-          this.extension.angleInstancedArrays.drawElementsInstancedANGLE(this.gl.TRIANGLES, this.scene.meshList[i].mesh.modelData.i.length
-            , this.gl.UNSIGNED_SHORT, 0, this.scene.meshList[i].mesh.instanceLength );
-        }
-        else{
-          this.gl.drawElements(this.gl.TRIANGLES, this.scene.meshList[i].mesh.modelData.i.length, this.gl.UNSIGNED_SHORT, 0);
-        }
-        this.gl.bindTexture(this.gl.TEXTURE_2D, null);
-
-        if (this.scene.meshList[i].mesh.cullingIndex != 0){
-          this.gl.disable(this.gl.CULL_FACE);
-        }
+        this.renderMesh(this.scene.meshList[i]);
       }
     }
     this.gl.flush();
@@ -210,7 +216,7 @@ Renderer.prototype = {
       "mvpMatrix",
       "invMatrix",
       "lightDirection",
-      "eyePosition",
+      "cameraPosition",
       "lookPoint",
       "ambientColor",
       "alpha",
@@ -236,7 +242,8 @@ Renderer.prototype = {
 
     var uniformPointsPropertyArray = [
       "texture",
-      "mvpMatrix"
+      "isTexture",
+      "mvpMatrix",
     ]
     this.setUniformLocation(this.uniLocation_points, this.programs_points, uniformPointsPropertyArray);
 
@@ -247,6 +254,7 @@ Renderer.prototype = {
     this.attLocation[3] = this.gl.getAttribLocation(this.programs, 'color');
 
     this.attLocation_points[0] = this.gl.getAttribLocation(this.programs_points, 'position');
+    console.log(this.attLocation_points[0]);
 
 
     // attributeのストライドを配列に格納しておく
@@ -306,7 +314,7 @@ Renderer.prototype = {
       this.gl.disableVertexAttribArray(attL[j]);
     }
     for (var i in vbo) {
-      if (vbo[i]) {
+      if (vbo[i] && attL[i] != undefined) {
         //instanced Array の場合
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vbo[i]);
         this.gl.enableVertexAttribArray(attL[i]);

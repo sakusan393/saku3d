@@ -8,7 +8,7 @@ uniform mat4 mMatrix;
 uniform mat4 mvpMatrix;
 uniform mat4 invMatrix;
 uniform vec3 lightDirection;
-uniform vec3 eyePosition;
+uniform vec3 cameraPosition;
 
 varying vec4 vColor;
 varying vec2 vTexCoord;
@@ -18,7 +18,7 @@ varying vec3 vLightDirection;
 void main(){
     vec3 lightPosition = vec3(-10.0, 10.0, 10.0);
     vec3 pos = (mMatrix * vec4(position, 0.0)).xyz;
-    vec3 invEye = (invMatrix * vec4(eyePosition, 1.0)).xyz;
+    vec3 invEye = (invMatrix * vec4(cameraPosition, 1.0)).xyz;
     vec3 invLight = (invMatrix * vec4(lightDirection,0.0)).xyz;
     vec3 eye = invEye - pos;
     vec3 light = invLight - pos;

@@ -26,19 +26,10 @@ AbstractWorld.prototype = {
   },
 
   init: function () {
-
-    console.log("AbstractWorld.init")
-
-    this.camera = new Camera(this.canvas);
-    this.light = new DirectionLight();
-    this.scene3D = new Scene3D(this.gl, this.camera, this.light);
-
     this.enterFrameHandler()
   },
 
   enterFrameHandler: function () {
-
-    this.scene3D.render();
     requestAnimationFrame(this.enterFrameHandler.bind(this))
   }
 };
