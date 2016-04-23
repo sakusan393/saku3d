@@ -33,7 +33,13 @@ World.prototype.enterFrameHandler = function () {
 
   this.renderer.render();
   requestAnimationFrame(this.enterFrameHandler.bind(this))
-}
+};
+World.prototype.onResizeCanvas = function () {
+  this.canvas.width = document.documentElement.clientWidth;
+  this.canvas.height = document.documentElement.clientHeight;
+  this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+  this.camera.aspect = this.canvas.width / this.canvas.height;
+};
 
 inherits(World, AbstractWorld);
 

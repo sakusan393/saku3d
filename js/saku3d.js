@@ -14,7 +14,7 @@ World.prototype.init = function () {
   this.scene3D = new Scene3D(this.gl, this.camera, this.light);
   this.renderer = new Renderer(this.gl, this.scene3D, SHADER_LOADER.loadedData);
 
-  this.optionLength = 60;
+  this.optionLength = 100;
   this.cubeLength = 100;
 
   var srcVicviper = {
@@ -125,7 +125,14 @@ World.prototype.enterFrameHandler = function () {
 
   this.renderer.render();
   requestAnimationFrame(this.enterFrameHandler.bind(this))
-}
+};
+World.prototype.onResizeCanvas = function () {
+  this.canvas.width = document.documentElement.clientWidth;
+  this.canvas.height = document.documentElement.clientHeight;
+  this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+  this.camera.aspect = this.canvas.width / this.canvas.height;
+};
+
 
 inherits(World, AbstractWorld);
 

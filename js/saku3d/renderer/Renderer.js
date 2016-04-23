@@ -26,7 +26,9 @@ Renderer = function (gl, scene, shaderData) {
     BASIC: 0,
     POINT: 1,
     RANDOM: 2,
-  }
+  };
+
+  this.prevAttribLocationLength = 0;
 
   this.mMatrix = mat4.identity(mat4.create());
   this.mvpMatrix = mat4.identity(mat4.create());
@@ -61,12 +63,16 @@ Renderer.prototype = {
     mat4.multiply(this.mvpMatrix, this.scene.camera.vpMatrix, mesh.mesh.mMatrix);
     this.setAttribute(mesh.vertexBufferList, this.attLocation_points, this.attStride, null);
 
+    if (mesh.mesh.textureObject.diffuse){
+      this.gl.bindTexture(this.gl.TEXTURE_2D, mesh.mesh.texture);
+      this.gl.uniform1i(this.currentUniLocation.texture, 0);
+    }
     this.gl.uniformMatrix4fv(this.currentUniLocation.mvpMatrix, false, this.mvpMatrix);
-    //明示的に0番目を指定
-    this.gl.uniform1i(this.currentUniLocation.texture, 0);
-    if (mesh.mesh.texture) this.gl.bindTexture(this.gl.TEXTURE_2D, mesh.mesh.texture);
+
     this.gl.drawArrays(this.gl.POINTS, 0, mesh.mesh.modelData.p.length / 3);
     this.gl.bindTexture(this.gl.TEXTURE_2D, null);
+    
+    this.removeAttribute(this.attLocation_points);
   },
 
   renderMesh: function(mesh){
@@ -78,7 +84,6 @@ Renderer.prototype = {
       this.setAttribute_instancedArray(mesh.meshVboList_InstancedArray, this.attLocation_instancedArray, this.attStride_instancedArray)
     }
 
-    //明示的に0番目を指定
     if (mesh.mesh.textureObject.diffuse) {
       this.gl.bindTexture(this.gl.TEXTURE_2D, mesh.mesh.textureObject.diffuse);
     }
@@ -137,6 +142,7 @@ Renderer.prototype = {
     if (mesh.mesh.cullingIndex != 0){
       this.gl.disable(this.gl.CULL_FACE);
     }
+    this.removeAttribute(this.attLocation);
   },
 
   render: function () {
@@ -155,6 +161,7 @@ Renderer.prototype = {
 
       if (this.scene.meshList[i].mesh.isPoint) {
         this.renderPoint(this.scene.meshList[i]);
+
       }
       else {
         this.renderMesh(this.scene.meshList[i]);
@@ -254,8 +261,6 @@ Renderer.prototype = {
     this.attLocation[3] = this.gl.getAttribLocation(this.programs, 'color');
 
     this.attLocation_points[0] = this.gl.getAttribLocation(this.programs_points, 'position');
-    console.log(this.attLocation_points[0]);
-
 
     // attributeのストライドを配列に格納しておく
     this.attStride[0] = 3;
@@ -309,10 +314,6 @@ Renderer.prototype = {
   },
 
   setAttribute: function (vbo, attL, attS, ibo) {
-    var l = attL.length
-    for (var j = 0; j < l; j++) {
-      this.gl.disableVertexAttribArray(attL[j]);
-    }
     for (var i in vbo) {
       if (vbo[i] && attL[i] != undefined) {
         //instanced Array の場合
@@ -324,9 +325,17 @@ Renderer.prototype = {
     if (ibo) {
       this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, ibo);
     }
+    this.prevAttribLocationLength = attL.length;
+  },
+  removeAttribute: function(attL){
+    var l = attL.length;;
+    for (var j = 0; j < l; j++) {
+      this.gl.disableVertexAttribArray(attL[j]);
+    }
   },
   setAttribute_instancedArray: function (vbo, attL, attS) {
-    var l = attL.length
+
+    var l = this.prevAttribLocationLength;
     for (var j = 0; j < l; j++) {
       this.gl.disableVertexAttribArray(attL[j]);
     }
@@ -338,6 +347,7 @@ Renderer.prototype = {
         this.extension.angleInstancedArrays.vertexAttribDivisorANGLE(attL[i], 1);
       }
     }
+    this.prevAttribLocationLength = attL.length;
   },
 
   checkShaderCompile: function (shader) {

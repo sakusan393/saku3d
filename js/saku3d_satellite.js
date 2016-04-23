@@ -30,7 +30,14 @@ World.prototype.init = function () {
     this.scene3D.addChild(this.mesh2);
     this.enterFrameHandler();
   }).bind(this));
-}
+};
+World.prototype.onResizeCanvas = function () {
+  this.canvas.width = document.documentElement.clientWidth;
+  this.canvas.height = document.documentElement.clientHeight;
+  this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+  this.camera.aspect = this.canvas.width / this.canvas.height;
+};
+
 World.prototype.enterFrameHandler = function () {
   var roll = 0.3;
   this.mesh.rotationX += roll;

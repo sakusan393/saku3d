@@ -20,11 +20,9 @@ World.prototype.init = function () {
     this.mesh = new BevelCube(this.gl, this.scene3D, {modelData: modelData, specularIndex: 1});
     this.mesh.setScale(0.3);
     this.mesh.x = -1;
-    // this.vicviper.rotationX = 10;
     this.mesh2 = new BevelCube(this.gl, this.scene3D, {modelData: modelData, specularIndex: 2});
     this.mesh2.setScale(0.3);
     this.mesh2.x = 1;
-    // this.vicviper2.rotationX = 10;
 
     this.scene3D.addChild(this.mesh);
     this.scene3D.addChild(this.mesh2);
@@ -42,7 +40,14 @@ World.prototype.enterFrameHandler = function () {
 
   this.renderer.render();
   requestAnimationFrame(this.enterFrameHandler.bind(this))
-}
+};
+World.prototype.onResizeCanvas = function () {
+  this.canvas.width = document.documentElement.clientWidth;
+  this.canvas.height = document.documentElement.clientHeight;
+  this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
+  this.camera.aspect = this.canvas.width / this.canvas.height;
+};
+
 
 inherits(World, AbstractWorld);
 
