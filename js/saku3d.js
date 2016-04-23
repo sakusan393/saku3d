@@ -14,7 +14,7 @@ World.prototype.init = function () {
   this.scene3D = new Scene3D(this.gl, this.camera, this.light);
   this.renderer = new Renderer(this.gl, this.scene3D, SHADER_LOADER.loadedData);
 
-  this.optionLength = 100;
+  this.optionLength = 50;
   this.cubeLength = 100;
 
   var srcVicviper = {
