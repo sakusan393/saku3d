@@ -11,12 +11,17 @@ World.prototype.init = function () {
   this.scene3D = new Scene3D(this.gl, this.camera, this.light);
   this.renderer = new Renderer(this.gl, this.scene3D, SHADER_LOADER.loadedData);
 
+  this.postProcessEffect = new PostProcessEffect(this.gl);
+  this.postProcessEffect.init(this.canvas.width, this.canvas.height);
+  this.scene3D.addPostProcess(this.postProcessEffect);
+  this.renderer.setPostProcess(this.postProcessEffect);
+
   this.mesh = new Bean(this.gl,this.scene3D
     , {modelData:  window.sphere(20, 20, .3), specularIndex: 1});
 
   this.scene3D.addChild(this.mesh);
   this.enterFrameHandler();
-}
+};
 World.prototype.enterFrameHandler = function () {
   this.mesh.rotationY += .3;
   this.mesh.rotationY += .3;

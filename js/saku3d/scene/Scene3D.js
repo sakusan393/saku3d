@@ -3,6 +3,7 @@ Scene3D = function (gl, camera, light) {
   this.camera = camera;
   this.light = light;
   this.meshList = [];
+  this.postProcessObj = null;
   this.count = 0;
 }
 Scene3D.prototype = {
@@ -39,6 +40,22 @@ Scene3D.prototype = {
     mesh.index = this.meshList.length;
     this.meshList.push(obj);
   },
+
+  addPostProcess: function (postProcess) {
+    var postProcessIndexBuffer;
+    var postProcessVboList = [];
+    if (postProcess.effect.position) {
+      postProcessVboList[0] = this.generateVBO(postProcess.effect.position);
+    }
+    if (postProcess.effect.texCoord) {
+      postProcessVboList[1] = this.generateVBO(postProcess.effect.texCoord);
+    }
+    if (postProcess.effect.index) {
+      postProcessIndexBuffer = this.generateIBO(postProcess.effect.index);
+    }
+    this.postProcessObj = {"vertexBufferList": postProcessVboList, "indexBuffer": postProcessIndexBuffer, "postProcess": postProcess};
+  },
+
   removeChild: function (mesh) {
     var length = this.meshList.length;
     for (var i = 0; i < length; i++) {

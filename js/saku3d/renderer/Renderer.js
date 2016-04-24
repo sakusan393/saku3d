@@ -7,6 +7,8 @@ Renderer = function (gl, scene, shaderData) {
   //program object
   this.programs = null;
   this.programs_points = null;
+  this.programs_random = null;
+  this.programs_blur = null;
 
   //uniform location
   this.uniLocation = {};
@@ -22,13 +24,13 @@ Renderer = function (gl, scene, shaderData) {
   this.attStride = [];
   this.attStride_instancedArray = [];
 
+  this.postProcess = null;
+
   this.PROGRAM_INDEX = {
     BASIC: 0,
     POINT: 1,
     RANDOM: 2,
   };
-
-  this.prevAttribLocationLength = 0;
 
   this.mMatrix = mat4.identity(mat4.create());
   this.mvpMatrix = mat4.identity(mat4.create());
@@ -38,7 +40,12 @@ Renderer = function (gl, scene, shaderData) {
 }
 Renderer.prototype = {
 
-  setProgramObject:function(programIndex){
+  setPostProcess: function(postProcess){
+    this.postProcess = postProcess;
+    this.postProcess.setProgram(this.programs_gray)
+  },
+
+  setCurrentProgramObject:function(programIndex){
     switch(programIndex){
       case this.PROGRAM_INDEX.BASIC:{
         this.gl.useProgram(this.programs);
@@ -71,7 +78,7 @@ Renderer.prototype = {
 
     this.gl.drawArrays(this.gl.POINTS, 0, mesh.mesh.modelData.p.length / 3);
     this.gl.bindTexture(this.gl.TEXTURE_2D, null);
-    
+
     this.removeAttribute(this.attLocation_points);
   },
 
@@ -157,7 +164,12 @@ Renderer.prototype = {
       if (!this.scene.meshList[i]) return;
 
       //programObjectの設定
-      this.setProgramObject(this.scene.meshList[i].mesh.programIndex);
+      this.setCurrentProgramObject(this.scene.meshList[i].mesh.programIndex);
+
+      //postProcess判定
+      if(this.scene.postProcessObj){
+        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.scene.postProcessObj.postProcess.frameBuffer.f);
+      }
 
       if (this.scene.meshList[i].mesh.isPoint) {
         this.renderPoint(this.scene.meshList[i]);
@@ -165,6 +177,27 @@ Renderer.prototype = {
       }
       else {
         this.renderMesh(this.scene.meshList[i]);
+      }
+
+      //postProcess判定
+      if(this.scene.postProcessObj){
+        this.gl.useProgram(this.scene.postProcessObj.postProcess.program);
+        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
+        this.gl.clearColor(0.0, 0.7, 0.7, 1.0);
+        this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+        // this.gl.activeTexture(this.gl.TEXTURE0);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, this.scene.postProcessObj.postProcess.frameBuffer.t);
+
+        this.gl.uniformMatrix4fv(this.scene.postProcessObj.postProcess.uniLocation.mvpMatrix, false, this.scene.postProcessObj.postProcess.vpMatrix);
+        this.gl.uniform1i(this.scene.postProcessObj.postProcess.uniLocation.texture, 0);
+        this.setAttribute(this.scene.postProcessObj.vertexBufferList,
+          this.scene.postProcessObj.postProcess.attLocation,
+          this.scene.postProcessObj.postProcess.attStride,
+          this.scene.postProcessObj.postProcess.frameBuffer.i
+        );
+        // this.gl.drawElements(this.gl.TRIANGLES, this.scene.postProcessObj.postProcess.effect.index.length, this.gl.UNSIGNED_SHORT, 0);
+        //
+        this.removeAttribute(this.scene.postProcessObj.postProcess.attLocation);
       }
     }
     this.gl.flush();
@@ -203,18 +236,33 @@ Renderer.prototype = {
     //色と深度の初期化
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
-    //シェーダーの生成
-    var vertexShaderSource = this.shaderData.basic.vertex;
-    var fragmentShaderSource = this.shaderData.basic.fragment;
-    var vertexShaderPointsSource = this.shaderData.point.vertex;
-    var fragmentShaderPointsSource = this.shaderData.point.fragment;
-    var vertexShaderRandomSource = this.shaderData.random.vertex;
-    var fragmentShaderRandomSource = this.shaderData.random.fragment;
-
-    //プログラムの生成
-    this.programs = this.createShaderProgram(vertexShaderSource, fragmentShaderSource);
-    this.programs_points = this.createShaderProgram(vertexShaderPointsSource, fragmentShaderPointsSource);
-    this.programs_random = this.createShaderProgram(vertexShaderRandomSource, fragmentShaderRandomSource);
+    //シェーダー/プログラムの生成
+    if(this.shaderData.basic) {
+      var vertexShaderSource = this.shaderData.basic.vertex;
+      var fragmentShaderSource = this.shaderData.basic.fragment;
+      this.programs = this.createShaderProgram(vertexShaderSource, fragmentShaderSource);
+    }
+    if(this.shaderData.point) {
+      var vertexShaderPointsSource = this.shaderData.point.vertex;
+      var fragmentShaderPointsSource = this.shaderData.point.fragment;
+      this.programs_points = this.createShaderProgram(vertexShaderPointsSource, fragmentShaderPointsSource);
+    }
+    if(this.shaderData.random){
+      var vertexShaderRandomSource = this.shaderData.random.vertex;
+      var fragmentShaderRandomSource = this.shaderData.random.fragment;
+      this.programs_random = this.createShaderProgram(vertexShaderRandomSource, fragmentShaderRandomSource);
+    }
+    if(this.shaderData.blur){
+      var vertexBlurSource = this.shaderData.blur.vertex;
+      var fragmentBlurSource = this.shaderData.blur.fragment;
+      this.programs_blur = this.createShaderProgram(vertexBlurSource, fragmentBlurSource);
+    }
+    if(this.shaderData.gray){
+      var vertexGraySource = this.shaderData.gray.vertex;
+      var fragmentGraySource = this.shaderData.gray.fragment;
+      this.programs_gray = this.createShaderProgram(vertexGraySource, fragmentGraySource);
+      console.log(this.programs_gray)
+    }
 
     //uniformのindexの取得
     var uniformPropertyArray = [
@@ -325,29 +373,22 @@ Renderer.prototype = {
     if (ibo) {
       this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, ibo);
     }
-    this.prevAttribLocationLength = attL.length;
-  },
-  removeAttribute: function(attL){
-    var l = attL.length;;
-    for (var j = 0; j < l; j++) {
-      this.gl.disableVertexAttribArray(attL[j]);
-    }
   },
   setAttribute_instancedArray: function (vbo, attL, attS) {
-
-    var l = this.prevAttribLocationLength;
-    for (var j = 0; j < l; j++) {
-      this.gl.disableVertexAttribArray(attL[j]);
-    }
     for (var i in vbo) {
-      if (vbo[i]) {
+      if (vbo[i] && attL[i] != undefined) {
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vbo[i]);
         this.gl.enableVertexAttribArray(attL[i]);
         this.gl.vertexAttribPointer(attL[i], attS[i], this.gl.FLOAT, false, 0, 0);
         this.extension.angleInstancedArrays.vertexAttribDivisorANGLE(attL[i], 1);
       }
     }
-    this.prevAttribLocationLength = attL.length;
+  },
+  removeAttribute: function(attL){
+    var l = attL.length;;
+    for (var j = 0; j < l; j++) {
+      this.gl.disableVertexAttribArray(attL[j]);
+    }
   },
 
   checkShaderCompile: function (shader) {
