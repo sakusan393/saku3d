@@ -57,7 +57,7 @@ World.prototype.init = function () {
         var cube;
         for(var i = 0; i <this.cubeLength; i++){
           cube = new BevelCube(this.gl, this.scene3D,{modelData: modelData, specularIndex: 1});
-          cube.setScale(1.5);
+          cube.setScale(2);
           cube.x = 100 * (Math.random() - 0.5);
           cube.y = 100 * (Math.random() - 0.5);
           cube.z = 100 * (Math.random() - 0.5);
