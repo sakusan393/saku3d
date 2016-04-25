@@ -163,6 +163,7 @@ Renderer.prototype = {
 
       if (!this.scene.meshList[i]) return;
 
+
       //programObjectの設定
       this.setCurrentProgramObject(this.scene.meshList[i].mesh.programIndex);
 
@@ -181,21 +182,22 @@ Renderer.prototype = {
 
       //postProcess判定
       if(this.scene.postProcessObj){
+
         this.gl.useProgram(this.scene.postProcessObj.postProcess.program);
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
         this.gl.clearColor(0.0, 0.7, 0.7, 1.0);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
-        // this.gl.activeTexture(this.gl.TEXTURE0);
-        this.gl.bindTexture(this.gl.TEXTURE_2D, this.scene.postProcessObj.postProcess.frameBuffer.t);
 
         this.gl.uniformMatrix4fv(this.scene.postProcessObj.postProcess.uniLocation.mvpMatrix, false, this.scene.postProcessObj.postProcess.vpMatrix);
         this.gl.uniform1i(this.scene.postProcessObj.postProcess.uniLocation.texture, 0);
         this.setAttribute(this.scene.postProcessObj.vertexBufferList,
           this.scene.postProcessObj.postProcess.attLocation,
           this.scene.postProcessObj.postProcess.attStride,
-          this.scene.postProcessObj.postProcess.frameBuffer.i
+          this.scene.postProcessObj.indexBuffer
         );
-        // this.gl.drawElements(this.gl.TRIANGLES, this.scene.postProcessObj.postProcess.effect.index.length, this.gl.UNSIGNED_SHORT, 0);
+        this.gl.activeTexture(this.gl.TEXTURE0);
+        this.gl.bindTexture(this.gl.TEXTURE_2D, this.scene.postProcessObj.postProcess.frameBuffer.t);
+        this.gl.drawElements(this.gl.TRIANGLES, this.scene.postProcessObj.postProcess.effect.index.length, this.gl.UNSIGNED_SHORT, 0);
         //
         this.removeAttribute(this.scene.postProcessObj.postProcess.attLocation);
       }
@@ -261,7 +263,6 @@ Renderer.prototype = {
       var vertexGraySource = this.shaderData.gray.vertex;
       var fragmentGraySource = this.shaderData.gray.fragment;
       this.programs_gray = this.createShaderProgram(vertexGraySource, fragmentGraySource);
-      console.log(this.programs_gray)
     }
 
     //uniformのindexの取得

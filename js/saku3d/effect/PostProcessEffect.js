@@ -21,8 +21,8 @@ PostProcessEffect = function (gl) {
 PostProcessEffect.prototype = {
 
   init: function (width, height) {
-    width = 512;
-    height = 512;
+    width = 256;
+    height = 256;
     this.frameBuffer = this.createFrameBuffer(width, height);
     this.effect.position = [
       -1.0, 1.0, 0.0,
@@ -41,25 +41,6 @@ PostProcessEffect.prototype = {
       2, 3, 1
     ];
   },
-  setAttribute: function (vbo, attL, attS, ibo) {
-    for (var i in vbo) {
-      if (vbo[i] && attL[i] != undefined) {
-        //instanced Array の場合
-        this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vbo[i]);
-        this.gl.enableVertexAttribArray(attL[i]);
-        this.gl.vertexAttribPointer(attL[i], attS[i], this.gl.FLOAT, false, 0, 0);
-      }
-    }
-    if (ibo) {
-      this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, ibo);
-    }
-  },
-  removeAttribute: function(attL){
-    var l = attL.length;;
-    for (var j = 0; j < l; j++) {
-      this.gl.disableVertexAttribArray(attL[j]);
-    }
-  },
 
   setUniformLocation: function(uniLocation,programObject,propertyArray){
     for(var i = 0,l = propertyArray.length; i<l; i++){
@@ -74,6 +55,7 @@ PostProcessEffect.prototype = {
     this.attStride[0] = 3;
     this.attStride[1] = 2;
     this.setUniformLocation(this.uniLocation, program, ['mvpMatrix','texture']);
+    console.log(this.uniLocation)
   },
 
   createFrameBuffer: function (width, height) {
@@ -87,8 +69,8 @@ PostProcessEffect.prototype = {
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MAG_FILTER, this.gl.LINEAR);
     this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_MIN_FILTER, this.gl.LINEAR);
     this.gl.texImage2D(this.gl.TEXTURE_2D, 0, this.gl.RGBA, width, height, 0, this.gl.RGBA, this.gl.UNSIGNED_BYTE, null);
-    // this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
-    // this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_S, this.gl.CLAMP_TO_EDGE);
+    this.gl.texParameteri(this.gl.TEXTURE_2D, this.gl.TEXTURE_WRAP_T, this.gl.CLAMP_TO_EDGE);
 
     // 深度バッファ用レンダーバッファの生成とバインド
     var depthRenderBuffer = this.gl.createRenderbuffer();
