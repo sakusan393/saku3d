@@ -28,8 +28,6 @@ Renderer = function (gl, scene, shaderData) {
     RANDOM: 2,
   };
 
-  this.prevAttribLocationLength = 0;
-
   this.mMatrix = mat4.identity(mat4.create());
   this.mvpMatrix = mat4.identity(mat4.create());
 
@@ -71,7 +69,7 @@ Renderer.prototype = {
 
     this.gl.drawArrays(this.gl.POINTS, 0, mesh.mesh.modelData.p.length / 3);
     this.gl.bindTexture(this.gl.TEXTURE_2D, null);
-    
+
     this.removeAttribute(this.attLocation_points);
   },
 
@@ -325,7 +323,6 @@ Renderer.prototype = {
     if (ibo) {
       this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, ibo);
     }
-    this.prevAttribLocationLength = attL.length;
   },
   removeAttribute: function(attL){
     var l = attL.length;;
@@ -334,11 +331,6 @@ Renderer.prototype = {
     }
   },
   setAttribute_instancedArray: function (vbo, attL, attS) {
-
-    var l = this.prevAttribLocationLength;
-    for (var j = 0; j < l; j++) {
-      this.gl.disableVertexAttribArray(attL[j]);
-    }
     for (var i in vbo) {
       if (vbo[i]) {
         this.gl.bindBuffer(this.gl.ARRAY_BUFFER, vbo[i]);
@@ -347,7 +339,6 @@ Renderer.prototype = {
         this.extension.angleInstancedArrays.vertexAttribDivisorANGLE(attL[i], 1);
       }
     }
-    this.prevAttribLocationLength = attL.length;
   },
 
   checkShaderCompile: function (shader) {
