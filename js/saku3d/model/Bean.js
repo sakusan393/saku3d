@@ -15,10 +15,10 @@ Bean.prototype = {
     this.isTexture = false;
     if (initObject && initObject.specularIndex) this.specularIndex = initObject.specularIndex;
     this.textureObject = {};
-    this.textureObject.diffuse = null;
-    this.textureObject.bump = null;
-    // var diffuseMapSource = ImageLoader.images["images/beans.jpg"];
-    // this.initTexture(diffuseMapSource, "diffuse");
+    // this.textureObject.diffuse = null;
+    // this.textureObject.bump = null;
+    var diffuseMapSource = ImageLoader.images["images/beans.jpg"];
+    this.initTexture(diffuseMapSource, "diffuse");
   }
 };
 

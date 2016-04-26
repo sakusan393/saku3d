@@ -27,7 +27,7 @@ World.prototype.enterFrameHandler = function () {
   this.mesh.rotationY += .3;
 
   this.renderer.render();
-
+  
   requestAnimationFrame(this.enterFrameHandler.bind(this))
 };
 World.prototype.onResizeCanvas = function () {

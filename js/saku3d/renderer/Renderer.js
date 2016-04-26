@@ -189,6 +189,7 @@ Renderer.prototype = {
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
         this.gl.uniformMatrix4fv(this.scene.postProcessObj.postProcess.uniLocation.mvpMatrix, false, this.scene.postProcessObj.postProcess.vpMatrix);
+        this.gl.activeTexture(this.gl.TEXTURE0);
         this.gl.uniform1i(this.scene.postProcessObj.postProcess.uniLocation.texture, 0);
         this.setAttribute(this.scene.postProcessObj.vertexBufferList,
           this.scene.postProcessObj.postProcess.attLocation,
