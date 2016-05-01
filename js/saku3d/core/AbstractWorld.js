@@ -28,8 +28,9 @@ AbstractWorld.prototype = {
   },
 
   setCanvasSize: function () {
-    this.canvas.width = document.documentElement.clientWidth;
-    this.canvas.height = document.documentElement.clientHeight;
+    console.log("set")
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
     // this.canvas.width = 300
     // this.canvas.height = 200
   },

@@ -1,8 +1,9 @@
 precision mediump float;
 
 uniform sampler2D texture;
-uniform bool      gaussian;
 uniform float     weight[10];
+uniform float     horizonRatio;
+uniform float     verticalRatio;
 uniform bool      horizontal;
 varying vec2      vTexCoord;
 
@@ -11,9 +12,10 @@ void main(void){
 	vec2  fc;
 	vec3  destColor = vec3(0.0);
 
-	if(gaussian){
-		if(horizontal){
-			fc = vec2(gl_FragCoord.s, 512.0 - gl_FragCoord.t);
+	if(true){
+		if(false){
+		  tFrag = 1.0 / horizonRatio;
+			fc = vec2(gl_FragCoord.s, horizonRatio - gl_FragCoord.t);
 			destColor += texture2D(texture, (fc + vec2(-9.0, 0.0)) * tFrag).rgb * weight[9];
 			destColor += texture2D(texture, (fc + vec2(-8.0, 0.0)) * tFrag).rgb * weight[8];
 			destColor += texture2D(texture, (fc + vec2(-7.0, 0.0)) * tFrag).rgb * weight[7];
@@ -34,6 +36,7 @@ void main(void){
 			destColor += texture2D(texture, (fc + vec2( 8.0, 0.0)) * tFrag).rgb * weight[8];
 			destColor += texture2D(texture, (fc + vec2( 9.0, 0.0)) * tFrag).rgb * weight[9];
 		}else{
+		  tFrag = (1.0 / horizonRatio);
 			fc = gl_FragCoord.st;
 			destColor += texture2D(texture, (fc + vec2(0.0, -9.0)) * tFrag).rgb * weight[9];
 			destColor += texture2D(texture, (fc + vec2(0.0, -8.0)) * tFrag).rgb * weight[8];
