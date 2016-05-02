@@ -8,12 +8,12 @@ uniform bool      horizontal;
 varying vec2      vTexCoord;
 
 void main(void){
-	float tFrag = 1.0 / 512.0;
+	float tFrag = 1.0 / verticalRatio;
 	vec2  fc;
 	vec3  destColor = vec3(0.0);
 
 	if(true){
-		if(false){
+		if(true){
 		  tFrag = 1.0 / horizonRatio;
 			fc = vec2(gl_FragCoord.s, horizonRatio - gl_FragCoord.t);
 			destColor += texture2D(texture, (fc + vec2(-9.0, 0.0)) * tFrag).rgb * weight[9];
