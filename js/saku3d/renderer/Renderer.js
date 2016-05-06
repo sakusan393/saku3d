@@ -155,7 +155,7 @@ Renderer.prototype = {
   renderEffect: function() {
     this.gl.useProgram(this.scene.postProcessObj.postProcess.program.current);
     this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
-    this.gl.clearColor(0.0, 0.7, 0.7, 1.0);
+    this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
     this.gl.uniformMatrix4fv(this.scene.postProcessObj.postProcess.uniLocation.mvpMatrix, false, this.scene.postProcessObj.postProcess.vpMatrix);
@@ -207,10 +207,10 @@ Renderer.prototype = {
         this.renderMesh(this.scene.meshList[i]);
       }
 
-      //postProcess判定
-      if(this.scene.postProcessObj){
-        this.renderEffect();
-      }
+    }
+    //postProcess判定
+    if(this.scene.postProcessObj){
+      this.renderEffect();
     }
     this.gl.flush();
   },

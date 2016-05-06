@@ -12,6 +12,10 @@ World.prototype = {
     this.scene3D = new Scene3D(this.gl, this.camera, this.light);
     this.renderer = new Renderer(this.gl, this.scene3D, SHADER_LOADER.loadedData);
 
+    this.postProcessEffect = new PostProcessEffect(this.gl, SHADER_LOADER.loadedData, this.canvas.width, this.canvas.height);
+    this.scene3D.addPostProcess(this.postProcessEffect);
+
+
     var srcFiles1 = {
       obj: "models/vicviper_mirror_fix.obj",
       mtl: "models/vicviper_mirror_fix.mtl"
@@ -35,10 +39,13 @@ World.prototype = {
     }).bind(this));
   },
   onResizeCanvas: function (gl) {
-    this.canvas.width = document.documentElement.clientWidth;
-    this.canvas.height = document.documentElement.clientHeight;
-    this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
-    this.camera.aspect = this.canvas.width / this.canvas.height;
+    var screenWidth = window.innerWidth;
+    var screenHeight = window.innerHeight;
+    this.canvas.width = screenWidth;
+    this.canvas.height = screenHeight;
+    this.gl.viewport(0, 0, screenWidth, screenHeight);
+    this.camera.aspect = screenWidth / screenHeight;
+    this.postProcessEffect.updateTextureSize(screenWidth, screenHeight);
   },
 
   enterFrameHandler: function () {
