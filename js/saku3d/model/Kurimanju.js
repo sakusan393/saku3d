@@ -25,8 +25,12 @@ Kurimanju.prototype = {
     if (initObject && initObject.maxInstanceLength) this.maxInstanceLength = initObject.maxInstanceLength;
     if (initObject && initObject.instanceLength) this.instanceLength = initObject.instanceLength;
     if (initObject && initObject.isAutoIncrement) this.isAutoIncrement = initObject.isAutoIncrement;
+    if (initObject && initObject.isInstancedArray) {
+      this.isInstancedArray = initObject.isInstancedArray;
+      this.createInstancedArray();
+    }
 
-    this.createInstancedArray();
+
   },
   setDatguil: function(){
     var f = DatGuiUtil.gui.addFolder('Kurimanju');
@@ -41,11 +45,9 @@ Kurimanju.prototype = {
     clearInterval(this.clearIndex)
   },
   calcNormal: function calcNormal() {
-    // 正規乱数
     var r1 = Math.random();
     var r2 = Math.random();
     var value = Math.sqrt(-2.0 * Math.log(r1)) * Math.sin(2.0 * Math.PI * r2);
-    // 値を0以上1未満になるよう正規化する
     value = (value + 3) / 6;
     return value;
   },
@@ -66,7 +68,7 @@ Kurimanju.prototype = {
     if(this.isAutoIncrement){
       this.clearIndex = setInterval((function(){
         this.instanceLength *= 2;
-        if(this.instanceLength > this.maxInstanceLength) this.instanceLength = 2;
+        if(this.instanceLength > this.maxInstanceLength) this.instanceLength = 1;
       }).bind(this),1000);
     }
   },
