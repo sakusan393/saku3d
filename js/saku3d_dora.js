@@ -7,10 +7,10 @@ World.prototype.init = function () {
   console.log("World.init")
 
   this.camera = new Camera(this.canvas);
-  this.camera.lookPoint = [0,0,0];
+  this.camera.lookPoint = [0, 0, 0];
   this.camera.fov = Math.PI / 180 * 45;
   this.light = new DirectionLight();
-  this.light.lightDirection = [3,2,4];
+  this.light.lightDirection = [3, 2, 4];
   this.scene3D = new Scene3D(this.gl, this.camera, this.light);
   this.renderer = new Renderer(this.gl, this.scene3D, SHADER_LOADER.loadedData);
 
@@ -21,14 +21,15 @@ World.prototype.init = function () {
     obj: "models/kurimanju.obj",
     mtl: "models/kurimanju.mtl"
   };
-  ObjLoader.load(srcFiles1, (function(modelData) {
+  ObjLoader.load(srcFiles1, (function (modelData) {
     this.kurimanju = new Kurimanju(this.gl, this.scene3D
       , {
         modelData: modelData,
         specularIndex: 1,
-        maxInstanceLength:100000,
-        instanceLength:10000,
-        isAutoIncrement:false
+        maxInstanceLength: 100000,
+        instanceLength: 10000,
+        isAutoIncrement: false,
+        isInstancedArray: true
       });
     this.kurimanju.setScale(.12);
 
@@ -38,16 +39,16 @@ World.prototype.init = function () {
       obj: "models/spacesafeboat.obj",
       mtl: "models/spacesafeboat.mtl"
     };
-    ObjLoader.load(srcFiles2, (function(modelData) {
+    ObjLoader.load(srcFiles2, (function (modelData) {
       this.spacesafeboat = new Satellite(this.gl, this.scene3D, {modelData: modelData, specularIndex: 1});
       this.spacesafeboat.setScale(1.5);
 
       this.scene3D.addChild(this.spacesafeboat);
-      this.mesh = new DoraStar(this.gl,this.scene3D
-        , {modelData:  window.sphere(60, 60,15), specularIndex: 1});
+      this.mesh = new DoraStar(this.gl, this.scene3D
+        , {modelData: window.sphere(60, 60, 15), specularIndex: 1});
       this.scene3D.addChild(this.mesh);
-      this.water = new WaterBall(this.gl,this.scene3D
-        , {modelData:  window.sphere(60, 60, 12.5, [0,0,1,1.0]), specularIndex: 1, programIndex:0});
+      this.water = new WaterBall(this.gl, this.scene3D
+        , {modelData: window.sphere(60, 60, 12.5, [0, 0, 1, 1.0]), specularIndex: 1, programIndex: 0});
       this.scene3D.addChild(this.water);
       this.loadCompleted();
     }).bind(this));
@@ -117,11 +118,11 @@ window.onload = function () {
     new World();
   };
 
-  SHADER_LOADER.load(function(data){
+  SHADER_LOADER.load(function (data) {
 
     SHADER_LOADER.loadedData = data;
     //テクスチャ画像リスト
-    var texturePashArray = ["images/nobi.fw.png","images/gian.fw.png","images/suneo.fw.png","images/dora.fw.png","images/dorami.fw.png","images/sizu.fw.png"];
+    var texturePashArray = ["images/nobi.fw.png", "images/gian.fw.png", "images/suneo.fw.png", "images/dora.fw.png", "images/dorami.fw.png", "images/sizu.fw.png"];
     //テクスチャ画像をImage要素としての読み込み
     ImageLoader.load(texturePashArray, loadCompleteHandler);
   });
