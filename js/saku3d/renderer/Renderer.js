@@ -219,12 +219,12 @@ Renderer.prototype = {
     this.extension = {};
     //Flat shading
     if (!this.gl.getExtension('OES_standard_derivatives')) {
-      console.log('OES_standard_derivatives is not supported');
+      alert('OES_standard_derivatives is not supported');
       return;
     }
     this.extension.angleInstancedArrays = this.gl.getExtension('ANGLE_instanced_arrays');
     if (!this.extension.angleInstancedArrays) {
-      console.log('ANGLE_instanced_arrays is no supported');
+      alert('ANGLE_instanced_arrays is no supported');
       return;
     }
   },

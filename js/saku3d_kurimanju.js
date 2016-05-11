@@ -32,11 +32,8 @@ World.prototype = {
 
   enterFrameHandler: function () {
     var time = CLOCK.getElapsedTime() / 1000;
-    this.mesh.rotationY += .1;
-    this.mesh.rotationZ = (Math.sin(time / 2) + 1) * 4;
     // this.mesh.rotationX += .02;
     this.camera.z = (Math.sin(time / 3) + 1) * 4;
-    // this.camera.z = 20;
 
     this.renderer.render();
     requestAnimationFrame(this.enterFrameHandler.bind(this))

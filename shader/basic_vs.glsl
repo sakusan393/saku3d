@@ -24,9 +24,9 @@ void main(){
     vPosition = mMatrix * vec4(position + instancedArrayPosition, 1.0);
     if(isInstancedArray){
       vec3 hoge;
-      hoge.x = instancedArrayPosition.x + sin(time * instancedArrayRandomSeed * 0.1 + instancedArrayRandomSeed * 3.0) * 3.5;
-      hoge.y = instancedArrayPosition.y + sin(time * instancedArrayRandomSeed * 0.2 + instancedArrayRandomSeed * 3.0) * 3.5;
-      hoge.z = instancedArrayPosition.z + sin(time * instancedArrayRandomSeed * 0.3 + instancedArrayRandomSeed * 3.0) * 3.5;
+      hoge.x = instancedArrayPosition.x + sin(time * instancedArrayRandomSeed * 0.1 + instancedArrayRandomSeed * 3.0) * 10.0;
+      hoge.y = instancedArrayPosition.y + sin(time * instancedArrayRandomSeed * 0.2 + instancedArrayRandomSeed * 3.0) * 10.0;
+      hoge.z = instancedArrayPosition.z + sin(time * instancedArrayRandomSeed * 0.3 + instancedArrayRandomSeed * 3.0) * 10.0;
       mvpPosition = mvpMatrix * vec4(position + hoge, 1.0);
     }else{
       mvpPosition = mvpMatrix * vec4(position, 1.0);

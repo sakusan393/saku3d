@@ -70,6 +70,15 @@ Scene3D.prototype = {
       }
     }
   },
+  removeAllChildren: function () {
+    var length = this.meshList.length;
+    for (var i = 0; i < length; i++) {
+      this.meshList[i].vertexBufferList = null;
+      this.meshList[i].indexBuffer = null;
+      this.meshList[i].mesh = null;
+    }
+    this.meshList = [];
+  },
 
   generateVBO: function (data) {
     var vertexBuffer = this.gl.createBuffer();

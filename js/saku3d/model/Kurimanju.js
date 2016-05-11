@@ -33,13 +33,13 @@ Kurimanju.prototype = {
 
   },
   setDatguil: function(){
-    var f = DatGuiUtil.gui.addFolder('Kurimanju');
-    f.open();
-    var control = f.add(this,"instanceLength",1,this.maxInstanceLength).listen();
+    DatGuiUtil.f = DatGuiUtil.gui.addFolder('Kurimanju');
+    DatGuiUtil.f.open();
+    var control = DatGuiUtil.f.add(this,"instanceLength",1,this.maxInstanceLength)
     control.onChange( (function(value){
       this.stopAutoIncrement();
     }).bind(this));
-    f.add(this,"stopAutoIncrement");
+    DatGuiUtil.f.add(this,"stopAutoIncrement");
   },
   stopAutoIncrement:function(){
     clearInterval(this.clearIndex)
@@ -69,6 +69,10 @@ Kurimanju.prototype = {
       this.clearIndex = setInterval((function(){
         this.instanceLength *= 2;
         if(this.instanceLength > this.maxInstanceLength) this.instanceLength = 1;
+        console.log(DatGuiUtil.f.__controllers);
+        for (var i in DatGuiUtil.f.__controllers) {
+          DatGuiUtil.f.__controllers[i].updateDisplay();
+        }
       }).bind(this),1000);
     }
   },
