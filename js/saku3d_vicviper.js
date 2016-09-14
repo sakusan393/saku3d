@@ -12,8 +12,8 @@ World.prototype = {
     this.scene3D = new Scene3D(this.gl, this.camera, this.light);
     this.renderer = new Renderer(this.gl, this.scene3D, SHADER_LOADER.loadedData);
 
-    this.postProcessEffect = new PostProcessEffect(this.gl, SHADER_LOADER.loadedData, this.canvas.width, this.canvas.height);
-    this.scene3D.addPostProcess(this.postProcessEffect);
+    // this.postProcessEffect = new PostProcessEffect(this.gl, SHADER_LOADER.loadedData, this.canvas.width, this.canvas.height);
+    // this.scene3D.addPostProcess(this.postProcessEffect);
 
 
     var srcFiles1 = {
@@ -43,6 +43,7 @@ World.prototype = {
     var screenHeight = window.innerHeight;
     this.canvas.width = screenWidth;
     this.canvas.height = screenHeight;
+    this.renderer.setSize()
     this.gl.viewport(0, 0, screenWidth, screenHeight);
     this.camera.aspect = screenWidth / screenHeight;
     this.postProcessEffect.updateTextureSize(screenWidth, screenHeight);

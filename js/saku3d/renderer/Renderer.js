@@ -45,6 +45,10 @@ Renderer.prototype = {
     this.postProcess.setProgram(this.programs_gray)
   },
 
+  setSize: function(width, height){
+
+  },
+
   setCurrentProgramObject:function(programIndex){
     switch(programIndex){
       case this.PROGRAM_INDEX.BASIC:{

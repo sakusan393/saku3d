@@ -40,7 +40,7 @@ PostProcessEffect = function (gl, shaderData, canvasWidth, canvasHeight) {
 
   this.frameBuffer = this.createFrameBuffer(canvasWidth, canvasHeight);
   this.createProgram();
-  this.setCurrentProgram('blur');
+  this.setCurrentProgram('gray');
 }
 PostProcessEffect.prototype = {
 
@@ -74,7 +74,7 @@ PostProcessEffect.prototype = {
   getWeight: function(){
     var weight = new Array(10);
     var t = 0.0;
-    var eRange = 1000.0;
+    var eRange = 5
     var d = eRange * eRange / 1;
     for(var i = 0; i < weight.length; i++){
       var r = 1.0 + 2.0 * i;
@@ -86,6 +86,7 @@ PostProcessEffect.prototype = {
     for(i = 0; i < weight.length; i++){
       weight[i] /= t;
     }
+    console.log(weight);
     return weight;
   },
 
