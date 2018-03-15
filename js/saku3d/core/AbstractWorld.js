@@ -8,22 +8,26 @@ AbstractWorld.prototype = {
 
   initWebglContext: function (canvasId) {
 
-    this.canvas = document.createElement("canvas");
-    this.canvas.setAttribute("id", canvasId);
+    if (document.getElementById('canvas')) {
+      this.canvas = document.getElementById('canvas');
+    } else {
+      this.canvas = document.createElement("canvas");
+      this.canvas.setAttribute("id", canvasId);
+    }
     document.body.appendChild(this.canvas);
 
     this.setCanvasSize();
     this.gl = this.canvas.getContext("webgl") || this.canvas.getContext("experimental-webgl");
-    if (!this.gl) {
+    if (! this.gl) {
       alert("no support webgl");
       return null
     }
     return this.gl
   },
-  addEvent: function(){
+  addEvent: function () {
     window.addEventListener('resize', this.onResizeCanvas.bind(this));
   },
-  removeEvent: function(){
+  removeEvent: function () {
     window.removeEventListener('resize', this.onResizeCanvas.bind(this));
   },
 
@@ -35,7 +39,7 @@ AbstractWorld.prototype = {
     // this.canvas.height = 200
   },
 
-  onResizeCanvas: function(){
+  onResizeCanvas: function () {
     this.setCanvasSize();
   },
 
