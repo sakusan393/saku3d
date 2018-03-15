@@ -12,8 +12,8 @@ AbstractWorld.prototype = {
       this.canvas = document.getElementById('canvas');
     } else {
       this.canvas = document.createElement("canvas");
-      this.canvas.setAttribute("id", canvasId);
     }
+    this.canvas.setAttribute("id", canvasId);
     document.body.appendChild(this.canvas);
 
     this.setCanvasSize();
