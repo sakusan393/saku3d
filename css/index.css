@@ -21,10 +21,9 @@ canvas {
 #ui{
   position: absolute;
   padding: 5px;
-  top: 60px;
+  top: 50px;
   left: 0px;
   color: #FFF;
-  transform: scale(2);
   transform-origin: 0% 0%;
   background-color: rgba(0,0,0,0.2)
 }
@@ -34,17 +33,22 @@ canvas {
 
 h1{
   font-size: 20px;
-  margin-bottom: 12px;
+  margin-bottom: 20px;
   text-decoration: underline;
 }
 h3{
   font-size: 16px;
-  margin-bottom: 10px
+  margin-bottom: 10px;
+  color: #666;
 }
 
+ul{
+  margin-top: 24px
+}
 li{
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 a {
   color: #33F;
+  font-size: 16px
 }
