@@ -121,13 +121,13 @@ void main(){
 //      col.r = float(int(col.r));
 //      col.g = float(int(col.g));
 //      col.b = float(int(col.b));
-      col.r = float(and(int(col.r * 256.0), (0x200/8)));
-      col.g = float(and(int(col.g * 256.0), (0x100/8)));
-      col.b = float(and(int(col.b * 256.0), (0x50/4)));
+      col.r = float(and(int(col.r * 256.0), 180))/120.0;
+      col.g = float(and(int(col.g * 256.0), 100))/120.0;
+      col.b = float(and(int(col.b * 256.0), 100))/120.0;
       destColor = vec4(col.rgb*diff+specular, col.a * alpha);
     }
   }else{
-    destColor = vec4(vec3(1.0),0.2);
+    destColor = vColor;
   }
   gl_FragColor = destColor;
 }

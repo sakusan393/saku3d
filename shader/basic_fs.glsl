@@ -64,7 +64,7 @@ void main(){
       destColor = vec4(col.rgb*diff+specular, col.a * alpha);
     }
   }else{
-    destColor = vec4(vec3(1.0),0.2);
+    destColor = vColor;
   }
   gl_FragColor = destColor;
 }

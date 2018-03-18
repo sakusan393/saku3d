@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <title>index</title>
+  <link rel="stylesheet" type="text/css" media="screen,print" href="./css/index.css?100">
 
-  <script data-src="shader/basic_8bit_fs.glsl" data-name="basic" type="x-shader/x-fragment"></script>
+  <script data-src="shader/basic_fs.glsl" data-name="basic" type="x-shader/x-fragment"></script>
   <script data-src="shader/basic_vs.glsl" data-name="basic" type="x-shader/x-vertex"></script>
   <script data-src="shader/bump_fs.glsl" data-name="bump" type="x-shader/x-fragment"></script>
   <script data-src="shader/bump_vs.glsl" data-name="bump" type="x-shader/x-vertex"></script>
@@ -18,33 +19,49 @@
   <script data-src="shader/gray_fs.glsl" data-name="gray" type="x-shader/x-fragment"></script>
   <script data-src="shader/gray_vs.glsl" data-name="gray" type="x-shader/x-vertex"></script>
 
-  <link rel="stylesheet" type="text/css" media="screen,print" href="./css/index.css">
+  <script data-src="shader/mosaic_fs.glsl" data-name="mosaic" type="x-shader/x-fragment"></script>
+  <script data-src="shader/mosaic_vs.glsl" data-name="mosaic" type="x-shader/x-vertex"></script>
+
 </head>
 <body>
-<canvas id="canvas" style="image-rendering: -webkit-optimize-contrast;image-rendering:pixelated;image-rendering:-moz-crisp-edges;"></canvas>
-<script>
-
-
-</script>
+<div id="ui">
+  <p>
+    <input type="radio" id="radio-pc" class="radio-button" name="pixel" value="PC"><label
+    for="radio-pc">PC</label>
+  </p>
+  <p>
+    <input type="radio" id="radio-fc" class="radio-button" name="pixel" value="FC" checked="checked"><label
+    for="radio-fc">FC(W256)</label>
+  </p>
+  <p>
+    <input type="radio" id="radio-gb" class="radio-button" name="pixel" value="GB"><label
+    for="radio-gb">GB(W160)</label>
+  </p>
+</div>
+<div id="youtube-container">
+  <iframe width="240" height="auto"
+          src="https://www.youtube.com/embed/SvxWaMAwS00?autoplay=1&controls=0&loop=1&playlist=SvxWaMAwS00&playsinline=1"
+          frameborder="0" allowfullscreen></iframe>
+</div>
 <script src="js/lib/stats.min.js"></script>
 <script src="js/lib/gl-matrix.js"></script>
 <script src="js/lib/ImageLoader.js"></script>
 <script src="js/lib/ObjLoader.js"></script>
 <script src="js/lib/ShaderLoader.js"></script>
-
 <script src="js/saku3d/util/utils.js"></script>
 <script src="js/saku3d/model/models.js"></script>
 <script src="js/saku3d/camera/Camera.js"></script>
-<script src="js/saku3d/renderer/Renderer.js"></script>
 <script src="js/saku3d/light/Light.js"></script>
+<script src="js/saku3d/renderer/Renderer.js"></script>
 <script src="js/saku3d/scene/Scene3D.js"></script>
-<script src="js/saku3d/effect/PostProcessEffect.js"></script>
-
 <script src="js/saku3d/core/AbstractWorld.js"></script>
 <script src="js/saku3d/core/AbstractModel.js"></script>
 <script src="js/saku3d/model/Face393.js"></script>
+<script src="js/saku3d/effect/PostProcessEffect.js"></script>
 <script src="js/saku3d/model/Vicviper.js"></script>
 <script src="js/saku3d/model/Option.js"></script>
-<script src="js/saku3d_option_8bit.js"></script>
+<script src="js/saku3d/model/BevelCube.js"></script>
+<script src="js/saku3d/model/Moai.js"></script>
+<script src="js/saku3d_gradius3_stage5.js"></script>
 </body>
 </html>

@@ -11,23 +11,20 @@ World.prototype.init = function () {
   this.scene3D = new Scene3D(this.gl, this.camera, this.light);
   this.renderer = new Renderer(this.gl, this.scene3D, SHADER_LOADER.loadedData);
 
-  this.postProcessEffect = new PostProcessEffect(this.gl, SHADER_LOADER.loadedData, this.canvas.width, this.canvas.height);
-  this.postProcessEffect.setCurrentProgram('gray');
-  this.scene3D.addPostProcess(this.postProcessEffect);
-
   var srcFiles1 = {
-    obj: "models/option.obj",
-    mtl: "models/option.mtl"
+    obj: "models/moai.obj",
+    mtl: "models/moai.mtl"
   };
   ObjLoader.load(srcFiles1, (function(modelData){
     console.log(this)
     this.vicviper = new Option(this.gl, this.scene3D, {modelData: modelData, specularIndex: 1});
-    this.vicviper.setScale(0.3);
-    this.vicviper.x = -1;
+    this.vicviper.setScale(1);
+    this.vicviper.x = 1;
     // this.vicviper.rotationX = 10;
     this.vicviper2 = new Option(this.gl, this.scene3D, {modelData: modelData, specularIndex: 2});
-    this.vicviper2.setScale(0.3);
-    this.vicviper2.x = 1;
+    this.vicviper2.setScale(1);
+    this.vicviper2.x = -1;
+    this.vicviper2.z = 1
     // this.vicviper2.rotationX = 10;
 
     this.scene3D.addChild(this.vicviper);
@@ -42,22 +39,23 @@ World.prototype.enterFrameHandler = function () {
 
 
 
-  var scale = Math.sin(CLOCK.getElapsedTime()*.6) * 0.03 + 0.2;
-  this.vicviper.setScale(scale);
-  this.vicviper2.setScale(scale);
+  var scale = Math.sin(CLOCK.getElapsedTime()/1000) * 0.03 + 0.2;
+  // this.vicviper.setScale(scale);
+  // this.vicviper2.setScale(scale);
 
   this.renderer.render();
   requestAnimationFrame(this.enterFrameHandler.bind(this))
 };
 World.prototype.onResizeCanvas = function () {
-  var screenWidth = window.innerWidth
-  var screenHeight = window.innerHeight
+  var screenWidth = window.innerWidth;
+  var screenHeight = window.innerHeight;
+  screenWidth = 256
+  screenHeight = 256
   this.canvas.width = screenWidth;
   this.canvas.height = screenHeight;
   this.renderer.setSize()
   this.gl.viewport(0, 0, screenWidth, screenHeight);
   this.camera.aspect = screenWidth / screenHeight;
-  this.postProcessEffect.updateTextureSize(screenWidth, screenHeight);
 };
 
 inherits(World, AbstractWorld);

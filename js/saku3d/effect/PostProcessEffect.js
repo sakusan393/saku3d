@@ -10,6 +10,7 @@ PostProcessEffect = function (gl, shaderData, canvasWidth, canvasHeight) {
   this.attLocation = [];
   this.attStride = [];
   this.uniLocation = {};
+  this.key = 'gray';
 
   this.effect.position = [
     -1.0, 1.0, 0.0,
@@ -37,19 +38,22 @@ PostProcessEffect = function (gl, shaderData, canvasWidth, canvasHeight) {
 
   this.canvasWidth = canvasWidth;
   this.canvasHeight = canvasHeight;
+  this.isOneTone = false;
+  this.isEffectEnabled = true;
+  this.pixelCount = 256;
 
   this.frameBuffer = this.createFrameBuffer(canvasWidth, canvasHeight);
   this.createProgram();
-  this.setCurrentProgram('gray');
+  this.setCurrentProgram(this.key);
 }
 PostProcessEffect.prototype = {
 
   setCurrentProgram: function (key) {
-    if(! this.program[key]) alert('undefined program key')
+    this.key = key;
+    if (!this.program[key]) alert('undefined program key')
     var program = this.program[key];
-    switch(key){
-      case 'gray':
-      {
+    switch (key) {
+      case 'gray': {
         this.attLocation[0] = this.gl.getAttribLocation(program, 'position');
         this.attLocation[1] = this.gl.getAttribLocation(program, 'texCoord');
         this.attStride[0] = 3;
@@ -57,33 +61,55 @@ PostProcessEffect.prototype = {
         this.setUniformLocation(program, ['mvpMatrix', 'texture']);
         break
       }
-      case 'blur':
-      {
+      case 'blur': {
         this.attLocation[0] = this.gl.getAttribLocation(program, 'position');
         this.attLocation[1] = this.gl.getAttribLocation(program, 'texCoord');
         this.attStride[0] = 3;
         this.attStride[1] = 2;
         this.weight = this.getWeight();
-        this.setUniformLocation(program, ['mvpMatrix', 'texture','weight','horizonRatio','verticalRatio']);
+        this.horizontal = true;
+        this.setUniformLocation(program, ['mvpMatrix', 'texture', 'weight', 'horizonRatio', 'verticalRatio', 'horizontal']);
+        break
+      }
+      case 'mosaic': {
+        this.attLocation[0] = this.gl.getAttribLocation(program, 'position');
+        this.attLocation[1] = this.gl.getAttribLocation(program, 'texCoord');
+        this.attStride[0] = 3;
+        this.attStride[1] = 2;
+        this.setUniformLocation(program, ['mvpMatrix', 'texture', 'horizonRatio', 'verticalRatio', 'pixelCount', 'isOneTone', 'isEffectEnabled']);
         break
       }
     }
     this.program.current = program;
   },
 
-  getWeight: function(){
+  setPixelCount: function (value) {
+    this.pixelCount = value;
+  },
+  setIsOneTone: function (value) {
+    this.isOneTone = value;
+    console.log('isOneTone : ', this.isOneTone)
+  },
+  setIsEffectEnabled: function (value) {
+    this.isEffectEnabled = value;
+    console.log('isEffectEnabled : ', this.isEffectEnabled)
+  },
+
+  getWeight: function () {
     var weight = new Array(10);
     var t = 0.0;
-    var eRange = 5
-    var d = eRange * eRange / 1;
-    for(var i = 0; i < weight.length; i++){
+    var eRange = 100
+    var d = eRange * eRange / 100;
+    for (var i = 0; i < weight.length; i++) {
       var r = 1.0 + 2.0 * i;
       var w = Math.exp(-0.5 * (r * r) / d);
       weight[i] = w;
-      if(i > 0){w *= 2.0;}
+      if (i > 0) {
+        w *= 2.0;
+      }
       t += w;
     }
-    for(i = 0; i < weight.length; i++){
+    for (i = 0; i < weight.length; i++) {
       weight[i] /= t;
     }
     console.log(weight);
@@ -113,6 +139,11 @@ PostProcessEffect.prototype = {
       var vertexGraySource = this.shaderData.gray.vertex;
       var fragmentGraySource = this.shaderData.gray.fragment;
       this.program.gray = ShaderUtil.createShaderProgram(this.gl, vertexGraySource, fragmentGraySource);
+    }
+    if (this.shaderData.mosaic) {
+      var vertexMosaicSource = this.shaderData.mosaic.vertex;
+      var fragmentMosaicSource = this.shaderData.mosaic.fragment;
+      this.program.mosaic = ShaderUtil.createShaderProgram(this.gl, vertexMosaicSource, fragmentMosaicSource);
     }
   },
 

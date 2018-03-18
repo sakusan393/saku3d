@@ -1,8 +1,14 @@
-Renderer = function (gl, scene, shaderData) {
+Renderer = function (gl, scene, shaderData, clearColorList) {
   //gl context
   this.gl = gl;
   this.scene = scene;
   this.shaderData = shaderData;
+
+  if (!clearColorList) {
+    this.clearColorList = [0.0, 0.0, 0.0, 1.0];
+  } else {
+    this.clearColorList = clearColorList;
+  }
 
   //program object
   this.programs = null;
@@ -40,28 +46,32 @@ Renderer = function (gl, scene, shaderData) {
 }
 Renderer.prototype = {
 
-  setPostProcess: function(postProcess){
+  setPostProcess: function (postProcess) {
     this.postProcess = postProcess;
     this.postProcess.setProgram(this.programs_gray)
   },
 
-  setSize: function(width, height){
+  setSize: function (width, height) {
 
   },
+  setClearColor: function (clearColorList) {
+    this.clearColorList = clearColorList;
+    this.gl.clearColor(this.clearColorList[0], this.clearColorList[1], this.clearColorList[2], this.clearColorList[3]);
+  },
 
-  setCurrentProgramObject:function(programIndex){
-    switch(programIndex){
-      case this.PROGRAM_INDEX.BASIC:{
+  setCurrentProgramObject: function (programIndex) {
+    switch (programIndex) {
+      case this.PROGRAM_INDEX.BASIC: {
         this.gl.useProgram(this.programs);
         this.currentUniLocation = this.uniLocation;
         break;
       }
-      case this.PROGRAM_INDEX.POINT:{
+      case this.PROGRAM_INDEX.POINT: {
         this.gl.useProgram(this.programs_points);
         this.currentUniLocation = this.uniLocation_points;
         break;
       }
-      case this.PROGRAM_INDEX.RANDOM:{
+      case this.PROGRAM_INDEX.RANDOM: {
         this.gl.useProgram(this.programs_random);
         this.currentUniLocation = this.uniLocation_random;
         break;
@@ -69,12 +79,12 @@ Renderer.prototype = {
     }
   },
 
-  renderPoint: function(mesh){
+  renderPoint: function (mesh) {
     mesh.mesh.render();
     mat4.multiply(this.mvpMatrix, this.scene.camera.vpMatrix, mesh.mesh.mMatrix);
     this.setAttribute(mesh.vertexBufferList, this.attLocation_points, this.attStride, null);
 
-    if (mesh.mesh.textureObject.diffuse){
+    if (mesh.mesh.textureObject.diffuse) {
       this.gl.bindTexture(this.gl.TEXTURE_2D, mesh.mesh.texture);
       this.gl.uniform1i(this.currentUniLocation.texture, 0);
     }
@@ -86,12 +96,12 @@ Renderer.prototype = {
     this.removeAttribute(this.attLocation_points);
   },
 
-  renderMesh: function(mesh){
+  renderMesh: function (mesh) {
     mesh.mesh.render();
     mat4.multiply(this.mvpMatrix, this.scene.camera.vpMatrix, mesh.mesh.mMatrix);
 
     this.setAttribute(mesh.vertexBufferList, this.attLocation, this.attStride, mesh.indexBuffer);
-    if(mesh.mesh.isInstancedArray){
+    if (mesh.mesh.isInstancedArray) {
       this.setAttribute_instancedArray(mesh.meshVboList_InstancedArray, this.attLocation_instancedArray, this.attStride_instancedArray)
     }
 
@@ -112,7 +122,7 @@ Renderer.prototype = {
     this.gl.uniform1i(this.currentUniLocation.isInstancedArray, mesh.mesh.isInstancedArray);
 
     //RANDOM専用のuniform
-    if(mesh.mesh.programIndex == this.PROGRAM_INDEX.RANDOM){
+    if (mesh.mesh.programIndex == this.PROGRAM_INDEX.RANDOM) {
       var spikeRatio = mesh.mesh.spikeRatio || 1;
       this.gl.uniform1f(this.currentUniLocation.spikeRatio, spikeRatio);
       var detailRatio = mesh.mesh.detailRatio || 1;
@@ -132,47 +142,68 @@ Renderer.prototype = {
     }
 
     //カリング(描画しない)
-    if (mesh.mesh.cullingIndex == 1){
+    if (mesh.mesh.cullingIndex == 1) {
       this.gl.enable(this.gl.CULL_FACE);
       this.gl.cullFace(this.gl.BACK);
-    }else if(mesh.mesh.cullingIndex == 2){
+    } else if (mesh.mesh.cullingIndex == 2) {
       this.gl.enable(this.gl.CULL_FACE);
       this.gl.cullFace(this.gl.FRONT);
     }
 
     // Angle Instanced Array
-    if(mesh.mesh.isInstancedArray){
+    if (mesh.mesh.isInstancedArray) {
       this.extension.angleInstancedArrays.drawElementsInstancedANGLE(this.gl.TRIANGLES, mesh.mesh.modelData.i.length
-        , this.gl.UNSIGNED_SHORT, 0, mesh.mesh.instanceLength );
+        , this.gl.UNSIGNED_SHORT, 0, mesh.mesh.instanceLength);
     }
-    else{
+    else {
       this.gl.drawElements(this.gl.TRIANGLES, mesh.mesh.modelData.i.length, this.gl.UNSIGNED_SHORT, 0);
     }
     this.gl.bindTexture(this.gl.TEXTURE_2D, null);
 
-    if (mesh.mesh.cullingIndex != 0){
+    if (mesh.mesh.cullingIndex != 0) {
       this.gl.disable(this.gl.CULL_FACE);
     }
     this.removeAttribute(this.attLocation);
   },
 
-  renderEffect: function() {
-    this.gl.useProgram(this.scene.postProcessObj.postProcess.program.current);
-    this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
-    this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
-    this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
+  renderEffect: function (bool) {
+    // this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    // this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
     this.gl.uniformMatrix4fv(this.scene.postProcessObj.postProcess.uniLocation.mvpMatrix, false, this.scene.postProcessObj.postProcess.vpMatrix);
     this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.uniform1i(this.scene.postProcessObj.postProcess.uniLocation.texture, 0);
-    if(this.scene.postProcessObj.postProcess.canvasWidth){
-      this.gl.uniform1f(this.scene.postProcessObj.postProcess.uniLocation.horizonRatio, this.scene.postProcessObj.postProcess.canvasWidth);
+
+    if (this.scene.postProcessObj.postProcess.key == 'blur') {
+      if (this.scene.postProcessObj.postProcess.canvasWidth) {
+        this.gl.uniform1f(this.scene.postProcessObj.postProcess.uniLocation.horizonRatio, this.scene.postProcessObj.postProcess.canvasWidth);
+      }
+      if (this.scene.postProcessObj.postProcess.canvasHeight) {
+        this.gl.uniform1f(this.scene.postProcessObj.postProcess.uniLocation.verticalRatio, this.scene.postProcessObj.postProcess.canvasHeight);
+      }
+      if (this.scene.postProcessObj.postProcess.weight) {
+        this.gl.uniform1fv(this.scene.postProcessObj.postProcess.uniLocation.weight, this.scene.postProcessObj.postProcess.weight);
+      }
+      if (this.scene.postProcessObj.postProcess.horizontal) {
+        this.gl.uniform1i(this.scene.postProcessObj.postProcess.uniLocation.horizontal, bool);
+      }
     }
-    if(this.scene.postProcessObj.postProcess.canvasHeight){
-      this.gl.uniform1f(this.scene.postProcessObj.postProcess.uniLocation.verticalRatio, this.scene.postProcessObj.postProcess.canvasHeight);
-    }
-    if(this.scene.postProcessObj.postProcess.weight){
-      this.gl.uniform1fv(this.scene.postProcessObj.postProcess.uniLocation.weight, this.scene.postProcessObj.postProcess.weight);
+    if (this.scene.postProcessObj.postProcess.key == 'mosaic') {
+      if (this.scene.postProcessObj.postProcess.canvasWidth) {
+        this.gl.uniform1f(this.scene.postProcessObj.postProcess.uniLocation.horizonRatio, this.scene.postProcessObj.postProcess.canvasWidth);
+      }
+      if (this.scene.postProcessObj.postProcess.canvasHeight) {
+        this.gl.uniform1f(this.scene.postProcessObj.postProcess.uniLocation.verticalRatio, this.scene.postProcessObj.postProcess.canvasHeight);
+      }
+      if (this.scene.postProcessObj.postProcess.pixelCount) {
+        this.gl.uniform1i(this.scene.postProcessObj.postProcess.uniLocation.pixelCount, this.scene.postProcessObj.postProcess.pixelCount);
+      }
+      if (this.scene.postProcessObj.postProcess.isOneTone != undefined) {
+        this.gl.uniform1i(this.scene.postProcessObj.postProcess.uniLocation.isOneTone, this.scene.postProcessObj.postProcess.isOneTone);
+      }
+      if (this.scene.postProcessObj.postProcess.isEffectEnabled != undefined) {
+        this.gl.uniform1i(this.scene.postProcessObj.postProcess.uniLocation.isEffectEnabled, this.scene.postProcessObj.postProcess.isEffectEnabled);
+      }
     }
     this.setAttribute(this.scene.postProcessObj.vertexBufferList,
       this.scene.postProcessObj.postProcess.attLocation,
@@ -182,14 +213,14 @@ Renderer.prototype = {
     this.gl.activeTexture(this.gl.TEXTURE0);
     this.gl.bindTexture(this.gl.TEXTURE_2D, this.scene.postProcessObj.postProcess.frameBuffer.t);
     this.gl.drawElements(this.gl.TRIANGLES, this.scene.postProcessObj.postProcess.effect.index.length, this.gl.UNSIGNED_SHORT, 0);
-    this.gl.bindTexture(this.gl.TEXTURE_2D,null);
+    this.gl.bindTexture(this.gl.TEXTURE_2D, null);
     //
     this.removeAttribute(this.scene.postProcessObj.postProcess.attLocation);
   },
 
   render: function () {
     //postProcess判定
-    if(this.scene.postProcessObj){
+    if (this.scene.postProcessObj) {
       this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, this.scene.postProcessObj.postProcess.frameBuffer.f);
     }
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
@@ -213,13 +244,20 @@ Renderer.prototype = {
 
     }
     //postProcess判定
-    if(this.scene.postProcessObj){
-      this.renderEffect();
+    if (this.scene.postProcessObj) {
+      this.gl.useProgram(this.scene.postProcessObj.postProcess.program.current);
+      this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null);
+      if (this.scene.postProcessObj.postProcess.key == 'blur') {
+        this.renderEffect(true);
+        this.renderEffect(false);
+      } else {
+        this.renderEffect();
+      }
     }
     this.gl.flush();
   },
 
-  initExtension:function(){
+  initExtension: function () {
     this.extension = {};
     //Flat shading
     if (!this.gl.getExtension('OES_standard_derivatives')) {
@@ -233,18 +271,18 @@ Renderer.prototype = {
     }
   },
 
-  createProgram: function(){
-    if(this.shaderData.basic) {
+  createProgram: function () {
+    if (this.shaderData.basic) {
       var vertexShaderSource = this.shaderData.basic.vertex;
       var fragmentShaderSource = this.shaderData.basic.fragment;
       this.programs = ShaderUtil.createShaderProgram(this.gl, vertexShaderSource, fragmentShaderSource);
     }
-    if(this.shaderData.point) {
+    if (this.shaderData.point) {
       var vertexShaderPointsSource = this.shaderData.point.vertex;
       var fragmentShaderPointsSource = this.shaderData.point.fragment;
       this.programs_points = ShaderUtil.createShaderProgram(this.gl, vertexShaderPointsSource, fragmentShaderPointsSource);
     }
-    if(this.shaderData.random){
+    if (this.shaderData.random) {
       var vertexShaderRandomSource = this.shaderData.random.vertex;
       var fragmentShaderRandomSource = this.shaderData.random.fragment;
       this.programs_random = ShaderUtil.createShaderProgram(this.gl, vertexShaderRandomSource, fragmentShaderRandomSource);
@@ -256,7 +294,7 @@ Renderer.prototype = {
     this.initExtension();
 
     //基本背景色の定義
-    this.gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    this.setClearColor(this.clearColorList);
     //深度テストの定義
     this.gl.clearDepth(1.0);
     this.gl.enable(this.gl.DEPTH_TEST);
@@ -264,7 +302,7 @@ Renderer.prototype = {
 
     //アルファブレンディングの有効化
     this.gl.enable(this.gl.BLEND);
-    this.gl.blendEquation(this.gl.FUNC_ADD,this.gl.ONE);
+    this.gl.blendEquation(this.gl.FUNC_ADD, this.gl.ONE);
     this.gl.blendFuncSeparate(this.gl.SRC_ALPHA, this.gl.ONE_MINUS_SRC_ALPHA, this.gl.ONE, this.gl.ONE);
 
     //色と深度の初期化
@@ -341,8 +379,8 @@ Renderer.prototype = {
     this.gl.uniform3fv(this.uniLocation_random.ambientColor, this.scene.light.ambientColor);
   },
 
-  setUniformLocation: function(uniLocation,programObject,propertyArray){
-    for(var i = 0,l = propertyArray.length; i<l; i++){
+  setUniformLocation: function (uniLocation, programObject, propertyArray) {
+    for (var i = 0, l = propertyArray.length; i < l; i++) {
       uniLocation[propertyArray[i]] = this.gl.getUniformLocation(programObject, propertyArray[i]);
     }
   },
@@ -370,8 +408,9 @@ Renderer.prototype = {
       }
     }
   },
-  removeAttribute: function(attL){
-    var l = attL.length;;
+  removeAttribute: function (attL) {
+    var l = attL.length;
+    ;
     for (var j = 0; j < l; j++) {
       this.gl.disableVertexAttribArray(attL[j]);
     }

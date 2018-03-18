@@ -1,7 +1,7 @@
 * {
   margin: 0;
   padding: 0;
-
+  font-family: Arial;
 }
 
 canvas {
@@ -18,10 +18,17 @@ canvas {
   right: 0;
 }
 
-
-
-
-
-
-
+#ui{
+  position: absolute;
+  padding: 5px;
+  top: 100px;
+  left: 0px;
+  color: #FFF;
+  transform: scale(2.5);
+  transform-origin: 0% 0%;
+  background-color: rgba(0,0,0,0.5)
+}
+#ui p{
+  margin-bottom: 5px;
+}
 
