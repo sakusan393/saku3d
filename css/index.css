@@ -21,14 +21,30 @@ canvas {
 #ui{
   position: absolute;
   padding: 5px;
-  top: 100px;
+  top: 60px;
   left: 0px;
   color: #FFF;
-  transform: scale(2.5);
+  transform: scale(2);
   transform-origin: 0% 0%;
-  background-color: rgba(0,0,0,0.5)
+  background-color: rgba(0,0,0,0.2)
 }
 #ui p{
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 }
 
+h1{
+  font-size: 20px;
+  margin-bottom: 12px;
+  text-decoration: underline;
+}
+h3{
+  font-size: 16px;
+  margin-bottom: 10px
+}
+
+li{
+  margin-bottom: 5px;
+}
+a {
+  color: #33F;
+}

@@ -23,8 +23,8 @@ World.prototype.init = function () {
   this.water = new WaterBall(this.gl,this.scene3D
     , {modelData:  window.sphere(60, 60, 12.5, [0,0,1,1.0]), specularIndex: 1, programIndex:0});
 
-  this.mesh = new Earth(this.gl,this.scene3D
-    , {modelData:  window.sphere(60, 60,15), specularIndex: 1, textureCanvas:canvas});
+  this.mesh = new Bubble(this.gl,this.scene3D
+    , {modelData:  window.sphere(60, 60,15), specularIndex: 1});
 
   var srcFiles1 = {
     obj: "models/soyuz.obj",

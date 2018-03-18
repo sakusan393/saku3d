@@ -128,7 +128,6 @@ World.prototype.loadedHandler = function () {
 }
 World.prototype.enterFrameHandler = function () {
 
-
   var time = CLOCK.getElapsedTime() * 0.003;
   this.vicviper.x = Math.sin(time * .2) * 30 * (Math.cos(time * .5) + 1);
   this.vicviper.y = Math.cos(time * .6) * 10 * (Math.cos(time * .2) + 1.5);

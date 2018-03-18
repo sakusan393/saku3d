@@ -2,9 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>index</title>
+  <title>Bubble</title>
 
-  <script data-src="shader/basic_8bit_fs.glsl" data-name="basic" type="x-shader/x-fragment"></script>
+  <link rel="stylesheet" type="text/css" media="screen,print" href="./css/index.css">
+
+  <script data-src="shader/basic_fs.glsl" data-name="basic" type="x-shader/x-fragment"></script>
   <script data-src="shader/basic_vs.glsl" data-name="basic" type="x-shader/x-vertex"></script>
   <script data-src="shader/bump_fs.glsl" data-name="bump" type="x-shader/x-fragment"></script>
   <script data-src="shader/bump_vs.glsl" data-name="bump" type="x-shader/x-vertex"></script>
@@ -13,33 +15,30 @@
   <script data-src="shader/random_fs.glsl" data-name="random" type="x-shader/x-fragment"></script>
   <script data-src="shader/random_vs.glsl" data-name="random" type="x-shader/x-vertex"></script>
 
-  <link rel="stylesheet" type="text/css" media="screen,print" href="./css/index.css">
 </head>
 <body>
-<canvas id="canvas" style="image-rendering: -webkit-optimize-contrast;image-rendering:pixelated;image-rendering:-moz-crisp-edges;"></canvas>
 
-
-<script>
-
-
-</script>
 <script src="js/lib/stats.min.js"></script>
 <script src="js/lib/gl-matrix.js"></script>
 <script src="js/lib/ImageLoader.js"></script>
 <script src="js/lib/ObjLoader.js"></script>
+<script src="js/lib/simplex-noise.js"></script>
 <script src="js/lib/ShaderLoader.js"></script>
-
 <script src="js/saku3d/util/utils.js"></script>
+<script src="js/saku3d/util/NoiseUtil.js"></script>
+<script src="js/saku3d/util/ImageFadeUtil.js"></script>
 <script src="js/saku3d/model/models.js"></script>
 <script src="js/saku3d/camera/Camera.js"></script>
-<script src="js/saku3d/renderer/Renderer.js"></script>
 <script src="js/saku3d/light/Light.js"></script>
+<script src="js/saku3d/renderer/Renderer.js"></script>
 <script src="js/saku3d/scene/Scene3D.js"></script>
 <script src="js/saku3d/core/AbstractWorld.js"></script>
 <script src="js/saku3d/core/AbstractModel.js"></script>
-<script src="js/saku3d/model/Face393.js"></script>
-<script src="js/saku3d/model/Vicviper.js"></script>
-<script src="js/saku3d/model/Option.js"></script>
+<script src="js/saku3d/model/Bubble.js"></script>
+<script src="js/saku3d/model/Bean.js"></script>
+
+<script src="js/saku3d/model/WaterBall.js"></script>
 <script src="js/saku3d_bubble.js"></script>
+
 </body>
 </html>

@@ -65,7 +65,7 @@ void main(){
             col = texture2D( texture, tPos );
             destColor = vec4(col.rgb*diff+specular + ambientColor.rgb  ,clamp(alpha * col.a,0.0,1.0));
         }else{
-            col = vec4(0.3,0.3,1.0,0.3);
+            col = vec4(0.5,0.6,1.0,1.0);
             // get a random offset
             destColor = vec4(col.rgb*diff+specular, col.a * alpha);
         }
