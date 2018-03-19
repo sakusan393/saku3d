@@ -22,8 +22,8 @@ Bubble.prototype = {
     this.textureObject.bump = null;
     this.spikeRatio = 1;
     this.detailRatio = .1;
-    this.gainRatio = 1;
-    this.timeRatio = 1;
+    this.gainRatio = 1 + Math.random() * 1.5;
+    this.timeRatio = 1 + Math.random() * 1.5;
   },
   setTexture: function (img) {
 
