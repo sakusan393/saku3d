@@ -13,7 +13,7 @@ World.prototype = {
     this.renderer = new Renderer(this.gl, this.scene3D, SHADER_LOADER.loadedData);
 
     this.postProcessEffect = new PostProcessEffect(this.gl, SHADER_LOADER.loadedData, this.canvas.width, this.canvas.height);
-    this.postProcessEffect.setCurrentProgram('blur')
+    this.postProcessEffect.setCurrentProgram('mosaic')
     this.scene3D.addPostProcess(this.postProcessEffect);
 
 
