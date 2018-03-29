@@ -56,7 +56,7 @@ void main(){
         }
         float diff = clamp(dot(n, normalize(lightDirection)) ,.3,3.0)* .3 * diffuseIntensity;
         vec4 col;
-        float ratio = 14.0;
+        float ratio = 8.0;
         if(bool(isTexture)){
             col = texture2D(texture, vTexCoord);
             destColor = vec4(col.rgb*diff+specular+ ambientColor.rgb  ,alpha * col.a);
