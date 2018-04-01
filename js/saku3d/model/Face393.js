@@ -43,9 +43,9 @@ Face393 = function (gl, scene3D, lookTarget) {
     this.isObjData = true;
     this.alpha = 1.0;
 
-    for (var i = 0; i < this.beamLength; i++) {
-        this.beamArray[i] = new Beans(this.gl, this.scene3D, this, this.lookTarget, ImageLoader.images["beans"]);
-    }
+    // for (var i = 0; i < this.beamLength; i++) {
+    //     this.beamArray[i] = new Beans(this.gl, this.scene3D, this, this.lookTarget, ImageLoader.images["beans"]);
+    // }
 }
 
 Face393.prototype = {

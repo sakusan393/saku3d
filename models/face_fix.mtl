@@ -30,7 +30,6 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd D:\Dropbox\work\MMD\model_393\eye.png
 
 newmtl eyebrows
 Ns 9.803922
@@ -61,7 +60,6 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd D:\\Dropbox\\work\\MMD\\model_yomeko\\hairspa.png
 
 newmtl mouth
 Ns 9.803922

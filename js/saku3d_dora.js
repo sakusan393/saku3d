@@ -14,6 +14,11 @@ World.prototype.init = function () {
   this.scene3D = new Scene3D(this.gl, this.camera, this.light);
   this.renderer = new Renderer(this.gl, this.scene3D, SHADER_LOADER.loadedData);
 
+  this.postProcessEffect = new PostProcessEffect(this.gl, SHADER_LOADER.loadedData, this.canvas.width, this.canvas.height);
+  this.postProcessEffect.setCurrentProgram('mosaic');
+  // this.scene3D.addPostProcess(this.postProcessEffect);
+
+
   // this.canvasTextureUtil = new NoiseUtil(new SimplexNoise(), CLOCK);
   // var canvas = this.canvasTextureUtil.update();
 
@@ -98,6 +103,7 @@ World.prototype.onResizeCanvas = function () {
   this.canvas.height = document.documentElement.clientHeight;
   this.gl.viewport(0, 0, this.canvas.width, this.canvas.height);
   this.camera.aspect = this.canvas.width / this.canvas.height;
+  this.postProcessEffect.updateTextureSize(screenWidth, screenHeight);
 };
 
 

@@ -16,22 +16,18 @@ World.prototype.init = function () {
 
 
   var srcFiles1 = {
-    obj: "models/moai.obj",
-    mtl: "models/moai.mtl"
+    obj: "models/face_body_fix.obj",
+    mtl: "models/face_body_fix.mtl"
   };
   ObjLoader.load(srcFiles1, (function(modelData){
     console.log(this)
-    this.mesh = new Moai(this.gl, this.scene3D, {modelData: modelData, specularIndex: 2});
-    this.mesh.setScale(1);
-    this.mesh.x = -.6;
-    this.mesh.rotationX = 270;
-    this.mesh.rotationZ = 0;
-    this.mesh2 = new Moai(this.gl, this.scene3D, {modelData: modelData, specularIndex: 2});
-    this.mesh2.setScale(1);
+    this.mesh = new F393(this.gl, this.scene3D, {modelData: modelData, specularIndex: 1});
+    this.mesh.setScale(1.3);
+    this.mesh.x = -0.5;
+    this.mesh2 = new F393(this.gl, this.scene3D, {modelData: modelData, specularIndex: 1});
+    this.mesh2.setScale(1.3);
+    this.mesh2.x = 0.5;
     this.mesh2.is8bitColor = true;
-    this.mesh2.x = .6;
-    this.mesh2.rotationX = 270;
-    this.mesh2.rotationZ = 0;
 
     this.scene3D.addChild(this.mesh);
     this.scene3D.addChild(this.mesh2);
@@ -39,8 +35,14 @@ World.prototype.init = function () {
   }).bind(this));
 }
 World.prototype.enterFrameHandler = function () {
-  this.mesh.rotationY += .3;
-  this.mesh2.rotationY += .3;
+  var roll = 0.3;
+  // this.mesh.rotationX += roll;
+  this.mesh.rotationY += roll;
+  // this.mesh.rotationZ += roll;
+  // this.mesh2.rotationX += roll;
+  this.mesh2.rotationY += roll;
+  // this.mesh2.rotationZ += roll;
+
   this.renderer.render();
   requestAnimationFrame(this.enterFrameHandler.bind(this))
 };
@@ -53,7 +55,9 @@ World.prototype.onResizeCanvas = function () {
   this.gl.viewport(0, 0, screenWidth, screenHeight);
   this.camera.aspect = screenWidth / screenHeight;
   this.postProcessEffect.updateTextureSize(screenWidth, screenHeight);
+
 };
+
 
 inherits(World, AbstractWorld);
 
@@ -61,11 +65,12 @@ inherits(World, AbstractWorld);
 window.onload = function () {
 
 
+
   SHADER_LOADER.load(function(data){
     SHADER_LOADER.loadedData = data;
+
     new World();
   });
-
 
   //テクスチャ読み込み後の処理
   // var loadCompleteHandler = function () {
