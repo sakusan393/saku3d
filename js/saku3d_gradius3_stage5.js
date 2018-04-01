@@ -30,20 +30,30 @@ World.prototype.init = function () {
   this.modelLoadLength = 3;
 
   var radioElement = document.getElementsByName('pixel');
-  var radioValue
-  window.addEventListener('click', (function () {
+  var radioValue;
+
+  var onRadioButtonChange = (function () {
     for (var i = 0, l = radioElement.length; i < l; i++) {
       if (radioElement[i].checked) {
         radioValue = radioElement[i].value;
       }
     }
-    console.log('change', radioValue);
+    var setIs8bit = (function(value){
+      for(var i = 0, l = this.cubes.length; i < l; i++){
+        this.cubes[i].is8bitColor = value;
+      }
+      for (var i = 0; i < this.optionLength; i++) {
+        this.options[i].is8bitColor = value;
+      }
+      this.vicviper.is8bitColor = value;
+    }).bind(this);
     switch(radioValue){
       case 'FC':{
         this.postProcessEffect.setPixelCount(256)
         this.postProcessEffect.setIsOneTone(false);
         this.postProcessEffect.setIsEffectEnabled(true);
         this.renderer.setClearColor([0.0, 0.0, 0.0, 1.0]);
+        setIs8bit(true);
         break;
       }
       case 'GB':{
@@ -51,16 +61,19 @@ World.prototype.init = function () {
         this.postProcessEffect.setIsOneTone(true)
         this.postProcessEffect.setIsEffectEnabled(true)
         this.renderer.setClearColor([0.1, 0.2, 0.0, 1.0]);
+        setIs8bit(true);
         break;
       }
       default :{
         this.postProcessEffect.setIsOneTone(false);
         this.postProcessEffect.setIsEffectEnabled(false);
         this.renderer.setClearColor([0.0, 0.0, 0.0, 1.0]);
+        setIs8bit(false);
         break;
       }
     }
-  }).bind(this));
+  }).bind(this);
+  window.addEventListener('click', onRadioButtonChange);
 
 
   ObjLoader.load(srcVicviper, (function (modelData) {
@@ -68,6 +81,7 @@ World.prototype.init = function () {
     this.vicviper.setScale(0.3);
     this.vicviper.isMoveForward = true;
     this.vicviper.diffuseIntensity = 1.4;
+    this.vicviper.is8bitColor = true;
     this.scene3D.addChild(this.vicviper);
     this.loadedHandler();
 
@@ -81,9 +95,10 @@ World.prototype.init = function () {
 
       for (var i = 0; i < this.optionLength; i++) {
         option = new Option(this.gl, this.scene3D, {modelData: modelData, specularIndex: 2});
-        option.diffuseIntensity = 20;
+        option.diffuseIntensity = 15;
         option.setScale(0.3);
         option.isMoveForward = true;
+        option.is8bitColor = true;
         this.options.push(option)
         this.scene3D.addChild(option);
       }
@@ -99,6 +114,7 @@ World.prototype.init = function () {
         for (var i = 0; i < this.cubeLength; i++) {
           cube = new Moai(this.gl, this.scene3D, {modelData: modelData, specularIndex: 1});
           cube.setScale(6);
+          cube.is8bitColor = true;
           cube.x = 100 * (Math.random() - 0.5);
           cube.y = 100 * (Math.random() - 0.5);
           cube.z = 300 * (Math.random() - 0.5);

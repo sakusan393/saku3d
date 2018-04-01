@@ -17,6 +17,7 @@ uniform vec3 lookPoint;
 uniform bool isLightEnable;
 uniform bool isFlatShade;
 uniform bool isTexture;
+uniform bool is8bitColor;
 uniform sampler2D texture;
 uniform float alpha;
 uniform float diffuseIntensity;
@@ -66,5 +67,15 @@ void main(){
   }else{
     destColor = vColor;
   }
+
+  if(bool(is8bitColor)){
+    float ratioR = 4.0;
+    float ratioG = 8.0;
+    float ratioB = 8.0;
+    destColor.r = float(int(destColor.r * ratioR)) / ratioR;
+    destColor.g = float(int(destColor.g * ratioG)) / ratioG;
+    destColor.b = float(int(destColor.b * ratioB)) / ratioB;
+  }
+
   gl_FragColor = destColor;
 }

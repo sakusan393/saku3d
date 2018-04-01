@@ -9,6 +9,7 @@ Option.prototype = {
   initialize: function (initObject) {
     this.isLightEnable = true;
     this.isTexture = false;
+    this.is8bitColor = false;
     this.alpha = 1.0;
     this.diffuseIntensity = 5.0;
     this.specularIndex = 0;

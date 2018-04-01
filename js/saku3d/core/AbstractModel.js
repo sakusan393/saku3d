@@ -8,6 +8,7 @@ AbstractModel = function (gl, scene3D, initObject) {
   this.isFlatShade = false;
   this.isLightEnable = false;
   this.isTexture = false;
+  this.is8bitColor = false;
   this.diffuseIntensity = 1.0;
   this.specularIntensity = 1.0;
   this.isInstancedArray = false;

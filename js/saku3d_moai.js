@@ -12,7 +12,7 @@ World.prototype.init = function () {
   this.renderer = new Renderer(this.gl, this.scene3D, SHADER_LOADER.loadedData);
   this.postProcessEffect = new PostProcessEffect(this.gl, SHADER_LOADER.loadedData, this.canvas.width, this.canvas.height);
   this.postProcessEffect.setCurrentProgram('mosaic')
-  this.scene3D.addPostProcess(this.postProcessEffect);
+  // this.scene3D.addPostProcess(this.postProcessEffect);
 
 
   var srcFiles1 = {
@@ -21,14 +21,15 @@ World.prototype.init = function () {
   };
   ObjLoader.load(srcFiles1, (function(modelData){
     console.log(this)
-    this.vicviper = new Option(this.gl, this.scene3D, {modelData: modelData, specularIndex: 1});
+    this.vicviper = new Moai(this.gl, this.scene3D, {modelData: modelData, specularIndex: 2});
     this.vicviper.setScale(1);
     this.vicviper.x = -1;
     this.vicviper.rotationX = 270;
     this.vicviper.rotationZ = 0;
     this.vicviper.scale = 2;
-    this.vicviper2 = new Option(this.gl, this.scene3D, {modelData: modelData, specularIndex: 2});
+    this.vicviper2 = new Moai(this.gl, this.scene3D, {modelData: modelData, specularIndex: 2});
     this.vicviper2.setScale(1);
+    this.vicviper2.is8bitColor = true;
     this.vicviper2.x = 1;
     this.vicviper2.rotationX = 270;
     this.vicviper2.rotationZ = 0;

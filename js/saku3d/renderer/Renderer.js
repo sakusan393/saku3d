@@ -118,6 +118,7 @@ Renderer.prototype = {
     this.gl.uniform1i(this.currentUniLocation.specularIndex, mesh.mesh.specularIndex);
     this.gl.uniform1i(this.currentUniLocation.isLightEnable, mesh.mesh.isLightEnable);
     this.gl.uniform1i(this.currentUniLocation.isTexture, mesh.mesh.isTexture);
+    this.gl.uniform1i(this.currentUniLocation.is8bitColor, mesh.mesh.is8bitColor);
     this.gl.uniform1i(this.currentUniLocation.isFlatShade, mesh.mesh.isFlatShade);
     this.gl.uniform1i(this.currentUniLocation.isInstancedArray, mesh.mesh.isInstancedArray);
 
@@ -332,6 +333,7 @@ Renderer.prototype = {
       "specularIntensity",
       "time",
       "randomSeed",
+      "is8bitColor",
     ];
     var uniformPropertyForRandomArray = [
       "spikeRatio",
