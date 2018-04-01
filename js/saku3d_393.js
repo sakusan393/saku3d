@@ -19,7 +19,7 @@ World.prototype.init = function () {
     obj: "models/face_body_fix.obj",
     mtl: "models/face_body_fix.mtl"
   };
-  ObjLoader.load(srcFiles1, (function(modelData){
+  ObjLoader.load(srcFiles1, (function (modelData) {
     console.log(this)
     this.mesh = new F393(this.gl, this.scene3D, {modelData: modelData, specularIndex: 1});
     this.mesh.setScale(1.3);
@@ -36,12 +36,12 @@ World.prototype.init = function () {
 }
 World.prototype.enterFrameHandler = function () {
   var roll = 0.3;
-  // this.mesh.rotationX += roll;
+  this.mesh.rotationX += roll * 0.2;
   this.mesh.rotationY += roll;
-  // this.mesh.rotationZ += roll;
-  // this.mesh2.rotationX += roll;
+  this.mesh.rotationZ += roll * 0.05;
+  this.mesh2.rotationX += roll * 0.2;
   this.mesh2.rotationY += roll;
-  // this.mesh2.rotationZ += roll;
+  this.mesh2.rotationZ += roll * 0.05;
 
   this.renderer.render();
   requestAnimationFrame(this.enterFrameHandler.bind(this))
@@ -65,8 +65,7 @@ inherits(World, AbstractWorld);
 window.onload = function () {
 
 
-
-  SHADER_LOADER.load(function(data){
+  SHADER_LOADER.load(function (data) {
     SHADER_LOADER.loadedData = data;
 
     new World();
