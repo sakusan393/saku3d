@@ -65,6 +65,7 @@ World.prototype.init = function () {
   ObjLoader.load(srcVicviper, (function (modelData) {
     this.vicviper = new Vicviper(this.gl, this.scene3D, {modelData: modelData, specularIndex: 2});
     this.vicviper.setScale(0.3);
+
     this.vicviper.isMoveForward = true;
     this.scene3D.addChild(this.vicviper);
     this.loadedHandler();
@@ -80,6 +81,7 @@ World.prototype.init = function () {
       for (var i = 0; i < this.optionLength; i++) {
         option = new Option(this.gl, this.scene3D, {modelData: modelData, specularIndex: 2});
         option.setScale(0.3);
+        option.diffuseIntensity = 20;
         option.isMoveForward = true;
         this.options.push(option)
         this.scene3D.addChild(option);
